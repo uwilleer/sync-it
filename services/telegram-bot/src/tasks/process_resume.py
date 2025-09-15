@@ -14,7 +14,7 @@ from keyboard.inline.skills import process_update_skills_keyboard
 from schemas.user_preference import UserPreferenceCreate
 from tasks.schemas import FileResumePayloadSchema, TextResumePayloadSchema
 from unitofwork import UnitOfWork
-from utils.extractors import TextExtractor
+from utils.text_extractor import TextExtractor
 
 from services import UserPreferenceService
 

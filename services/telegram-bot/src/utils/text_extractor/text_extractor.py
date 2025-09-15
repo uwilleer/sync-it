@@ -1,9 +1,9 @@
 from pathlib import Path
 from typing import ClassVar
 
-from utils.extractors.exceptions import UnsupportedFileTypeError
 from utils.readers import AbstractFileReader, PdfReader, TxtReader
 from utils.readers.enums import SupportedReaderExtensionsEnum
+from utils.text_extractor.exceptions import UnsupportedFileTypeError
 
 
 __all__ = ["TextExtractor"]
