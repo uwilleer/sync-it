@@ -110,14 +110,14 @@ services:
         condition: service_healthy
       pgbouncer:
         condition: service_healthy
-      telegram-bot-worker:
-        condition: service_healthy
 
   telegram-bot-worker:
     extends:
       service: telegram-bot-worker
       file: telegram-bot/docker-compose.yml
     depends_on:
+      telegram-bot:
+        condition: service_healthy
       redis:
         condition: service_healthy
       pgbouncer:
