@@ -45,9 +45,8 @@ class SkillEnum(BaseAliasEnum):
     DHCP = "DHCP"
     DJANGO = "Django", ("drf", "django orm", "django rest framework")
     DNS = "DNS"
-    DOCKER = "Docker"
-    DOCKER_COMPOSE = "Docker Compose", ("docker-compose",)
-    DOT_NET = ".NET", (".net core'", ".net framework")
+    DOCKER = "Docker", ("docker-compose", "docker compose")
+    DOT_NET = ".NET", (".net core", ".net framework")
     ELASTICSEARCH = "Elasticsearch", ("elk", "elk stack")
     ENGLISH = "Английский язык"
     ETL = "ETL"
@@ -97,7 +96,10 @@ class SkillEnum(BaseAliasEnum):
     MLFLOW = "MLflow"
     MOBX = "MobX"
     MONGODB = "MongoDB"
-    MS_EXCEL = "MS Excel"
+    MS_OFFICE = (
+        "MS Office",
+        ("ms powerpoint", "word", "microsoft excel", "powerpoint", "ms windows", "ms word", "ms excel"),
+    )  # noqa: E501
     MYSQL = "MySQL"
     NESTJS = "NestJS", ("nest.js",)
     NEXT_JS = "Next.js"
@@ -106,7 +108,6 @@ class SkillEnum(BaseAliasEnum):
     NOSQL = "NoSQL"
     NUMPY = "Numpy"
     NUXT_JS = "Nuxt.js", ("nuxt",)
-    OFFICE = "MS Office", ("ms powerpoint", "word", "microsoft excel", "powerpoint", "ms windows", "ms word")
     ONE_C = "1С", ("1c", "1с: предприятие", "1c: предприятие", "1c: erp", "1с:erp", "1с программирование")
     OOP = "ООП", ("oop",)
     OPENAI = "OpenAI", ("openai api",)
@@ -115,7 +116,6 @@ class SkillEnum(BaseAliasEnum):
     PANDAS = "pandas"
     PHP = "PHP"
     POSTGIS = "PostGIS"
-    POSTMAN = "Postman"
     POWER_BI = "Power BI"
     POWERSHELL = "PowerShell"
     PROMETHEUS = "Prometheus"
@@ -131,7 +131,7 @@ class SkillEnum(BaseAliasEnum):
     REDIS = "Redis"
     REDUX = "Redux", ("redux toolkit",)
     REQUESTS = "requests"
-    REST_API = "REST API", ("rest", "api", "restful api", "restful")
+    REST_API = "REST API", ("rest", "api", "restful api", "restful", "swagger", "postman")
     RPC = "RPC", ("grpc",)
     RUBY = "Ruby"
     RUST = "Rust"
@@ -151,7 +151,6 @@ class SkillEnum(BaseAliasEnum):
     SPRING_BOOT = "Spring Boot"
     SQL = "SQL", ("postgres", "postgresql", "ms sql server", "mssql", "ms sql")
     SQLALCHEMY = "SQLAlchemy"
-    SWAGGER = "Swagger"
     SWIFT = "Swift"
     SYMFONY = "Symfony"
     TABLEAU = "Tableau"

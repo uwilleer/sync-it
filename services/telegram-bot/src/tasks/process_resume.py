@@ -14,7 +14,7 @@ from keyboard.inline.skills import process_update_skills_keyboard
 from schemas.user_preference import UserPreferenceCreate
 from tasks.schemas import FileResumePayloadSchema, TextResumePayloadSchema
 from unitofwork import UnitOfWork
-from utils.extractors import TextExtractor
+from utils.text_extractor import TextExtractor
 
 from services import UserPreferenceService
 
@@ -54,11 +54,22 @@ def process_resume(
     except Exception as e:
         logger.exception("Error processing resume", exc_info=e)
 
+        if self.request.retries != self.max_retries:
+            loop.run_until_complete(
+                bot.send_message(
+                    chat_id,
+                    "⚠️ Произошла ошибка при извлечении навыков.\n"
+                    f"Пробуем еще раз. Попытка {self.request.retries + 1}/{self.max_retries}",
+                )
+            )
+
         if self.request.retries >= cast("int", self.max_retries):
             loop.run_until_complete(
                 bot.send_message(
                     chat_id,
-                    "⚠️ Произошла ошибка при извлечении навыков.\nПроверьте корректность содержимого файла.",
+                    "⚠️ Произошла ошибка при извлечении навыков.\nПроверьте корректность содержимого файла.\n\n"
+                    f"Если вы считаете, что ошибка на нашей стороне, пожалуйста, обратитесь в поддержку: "
+                    f"@{service_config.support_username}",
                     reply_markup=main_menu_keyboard(),
                 )
             )
