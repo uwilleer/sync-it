@@ -144,14 +144,14 @@ services:
         condition: service_healthy
       telegram-api:
         condition: service_healthy
-      vacancy-parser-worker:
-        condition: service_healthy
 
   vacancy-parser-worker:
     extends:
       service: vacancy-parser-worker
       file: vacancy-parser/docker-compose.yml
     depends_on:
+      vacancy-parser:
+        condition: service_healthy
       redis:
         condition: service_healthy
       pgbouncer:
@@ -184,14 +184,14 @@ services:
         condition: service_healthy
       gpt-api:
         condition: service_healthy
-      vacancy-processor-worker:
-        condition: service_healthy
 
   vacancy-processor-worker:
     extends:
       service: vacancy-processor-worker
       file: vacancy-processor/docker-compose.yml
     depends_on:
+      vacancy-processor:
+        condition: service_healthy
       redis:
         condition: service_healthy
       pgbouncer:
