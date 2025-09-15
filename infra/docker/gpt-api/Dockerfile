@@ -12,11 +12,11 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR ${APP_PATH}
 
+RUN apk update
+
 FROM base AS builder
 
-RUN apk update \
-    && apk add --no-cache uv \
-    && rm -rf /var/cache/apk/*
+RUN apk add --no-cache uv
 
 
 # ============================ #

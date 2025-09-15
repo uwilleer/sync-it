@@ -12,11 +12,12 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR ${APP_PATH}
 
+RUN apk update \
+    && apk add --no-cache poppler-utils tesseract-ocr tesseract-ocr-data-rus
+
 FROM base AS builder
 
-RUN apk update \
-    && apk add --no-cache uv \
-    && rm -rf /var/cache/apk/*
+RUN apk add --no-cache uv
 
 
 # ============================ #
@@ -51,7 +52,6 @@ COPY ./libs/common/environment ./libs/common/environment
 COPY ./libs/common/logger ./libs/common/logger
 COPY ./libs/common/gateway ./libs/common/gateway
 COPY ./libs/common/sentry ./libs/common/sentry
-
 
 
 # ============================ #
