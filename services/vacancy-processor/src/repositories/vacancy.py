@@ -29,7 +29,7 @@ class VacancyRepository(BaseRepository):
     BONUS_MIN_SKILL = 5  # Бонус за каждый навык сверх MIN_SKILLS_COUNT
     BEST_SKILLS_COUNT_BONUS = 10
     DAYS_INTERVAL = timedelta(days=30)
-    DAYS_RELEVANCE_BONUS = 2
+    DAYS_RELEVANCE_BONUS = 4
 
     async def add(self, vacancy: Vacancy) -> Vacancy:
         """Добавляет экземпляр вакансии в сессию."""
