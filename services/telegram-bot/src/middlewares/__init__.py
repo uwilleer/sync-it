@@ -5,6 +5,7 @@ from middlewares.answer_callback import AnswerCallbackMiddleware
 from middlewares.auth import AuthMiddleware
 from middlewares.database import DatabaseMiddleware
 from middlewares.logging import LoggingMiddleware
+from middlewares.reset_state import ResetStateMiddleware
 from middlewares.service import ServiceMiddleware
 from middlewares.throttling import ThrottlingMiddleware
 
@@ -27,5 +28,6 @@ def register_middlewares(dp: Dispatcher) -> None:
     dp.update.outer_middleware(DatabaseMiddleware())
     dp.update.outer_middleware(ServiceMiddleware())
     dp.message.middleware(AuthMiddleware())
+    dp.message.middleware(ResetStateMiddleware())
 
     dp.callback_query.middleware(AnswerCallbackMiddleware())

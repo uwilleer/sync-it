@@ -5,6 +5,7 @@ from common.shared.services import BaseUOWService
 from database.models import Skill
 from database.models.enums import SkillEnum
 from schemas.skill import SkillCreate, SkillRead
+from services.exceptions.skill import SkillNotFoundError
 from unitofwork import UnitOfWork
 
 
@@ -15,7 +16,14 @@ class SkillService(BaseUOWService[UnitOfWork]):
     """Сервис для бизнес-операций с навыками."""
 
     @alru_cache
-    async def get_skill_by_name(self, name: SkillEnum) -> SkillRead:
+    async def get_skill_by_name(self, name: SkillEnum, *, by_enum: bool = False) -> SkillRead:
+        # 'Мягкое' получения скилла используя его возможные вариации
+        if by_enum:
+            enum = SkillEnum.get_safe(name)
+            if not enum:
+                raise SkillNotFoundError
+            name = enum
+
         skill = await self._uow.skills.get_by_name(name)
 
         return SkillRead.model_validate(skill)

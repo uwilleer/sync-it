@@ -7,11 +7,11 @@ from pydantic import BaseModel
 
 
 __all__ = [
-    "GradeResponse",
+    "GradeListResponse",
     "GradeSchema",
-    "ProfessionResponse",
+    "ProfessionListResponse",
     "ProfessionSchema",
-    "SkillResponse",
+    "SkillListResponse",
     "SkillSchema",
     "VacanciesSummaryResponse",
     "VacancyWithNeighborsRequest",
@@ -30,7 +30,7 @@ class GradeSchema(BaseModel):
     name: str
 
 
-class GradeResponse(BaseModel):
+class GradeListResponse(BaseModel):
     grades: list[GradeSchema]
 
 
@@ -39,7 +39,7 @@ class ProfessionSchema(BaseModel):
     name: str
 
 
-class ProfessionResponse(BaseModel):
+class ProfessionListResponse(BaseModel):
     professions: list[ProfessionSchema]
 
 
@@ -57,7 +57,11 @@ class SkillSchema(BaseModel):
     name: str
 
 
-class SkillResponse(BaseModel):
+class SkillItemResponse(BaseModel):
+    skill: SkillSchema
+
+
+class SkillListResponse(BaseModel):
     skills: list[SkillSchema]
 
 

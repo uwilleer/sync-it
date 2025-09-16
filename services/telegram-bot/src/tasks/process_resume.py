@@ -102,8 +102,8 @@ async def _extract_and_save_user_preferences(user_id: int, text: str, chat_id: i
                     item_id=s.id,
                     item_name=s.name,
                 )
-                was_added = await service.toggle_preference(pref)
-                if was_added:
+                is_added = await service.toggle_preference(pref)
+                if is_added:
                     added.append(s.name)
                 else:
                     removed.append(s.name)

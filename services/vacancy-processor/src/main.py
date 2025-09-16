@@ -6,7 +6,8 @@ from api.v1 import router as v1_router
 from common.environment.config import env_config
 from common.logger.config import log_config
 from common.sentry.initialize import init_sentry
-from fastapi import FastAPI
+from common.shared.api.exceptions import http_exception_custom_handler
+from fastapi import FastAPI, HTTPException
 from seeds import seed_models
 import uvicorn
 
@@ -18,6 +19,9 @@ async def lifespan(_fast_api: FastAPI) -> AsyncGenerator[None]:
 
 
 app = FastAPI(title="Vacancy Processor Service", lifespan=lifespan)
+app.add_exception_handler(HTTPException, http_exception_custom_handler)
+
+
 app.include_router(api_router)
 app.include_router(v1_router, prefix="/api/v1")
 

@@ -1,5 +1,5 @@
 from async_lru import alru_cache
-from clients.schemas import ProfessionResponse, ProfessionSchema
+from clients.schemas import ProfessionListResponse, ProfessionSchema
 from common.gateway.enums import ServiceEnum
 from common.gateway.utils import build_service_url
 from common.shared.clients import BaseClient
@@ -15,7 +15,7 @@ class _ProfessionClient(BaseClient):
     async def get_all(self) -> list[ProfessionSchema]:
         response = await self.client.get(self.url)
         data = response.json()
-        model_response = ProfessionResponse.model_validate(data)
+        model_response = ProfessionListResponse.model_validate(data)
 
         return model_response.professions
 

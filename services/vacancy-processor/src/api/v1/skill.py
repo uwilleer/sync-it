@@ -1,7 +1,7 @@
 from typing import Annotated
 
 from api.depedencies import get_skill_service
-from api.v1.schemas import ExtractSkillsRequest, SkillListResponse
+from api.v1.schemas import ExtractSkillsRequest, SkillItemResponse, SkillListResponse
 from clients import gpt_client
 from database.models.enums import SkillEnum
 from fastapi import APIRouter, Depends
@@ -24,6 +24,14 @@ async def get_skills(service: Annotated[SkillService, Depends(get_skill_service)
     skills = await service.get_skills()
 
     return SkillListResponse(skills=[SkillRead.model_validate(s) for s in skills])
+
+
+@router.get("/{name}")
+async def get_by_name(service: Annotated[SkillService, Depends(get_skill_service)], name: str) -> SkillItemResponse:
+    """Возвращает скилл по его названию (включая вариации)"""
+    skill = await service.get_skill_by_name(name, by_enum=True)
+
+    return SkillItemResponse(skill=SkillRead.model_validate(skill))
 
 
 @router.post("/extract")
