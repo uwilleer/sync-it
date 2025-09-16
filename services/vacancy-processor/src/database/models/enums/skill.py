@@ -99,7 +99,7 @@ class SkillEnum(BaseAliasEnum):
     MS_OFFICE = (
         "MS Office",
         ("ms powerpoint", "word", "microsoft excel", "powerpoint", "ms windows", "ms word", "ms excel"),
-    )  # noqa: E501
+    )
     MYSQL = "MySQL"
     NESTJS = "NestJS", ("nest.js",)
     NEXT_JS = "Next.js"

@@ -32,6 +32,7 @@ async def send_welcome_message(target: Message | CallbackQuery, user: UserRead) 
     text = (
         f"Привет, {linked_full_name} 👋\n\n"
         f"📊 В базе сейчас {summary.total} вакансий.\n"
+        f"➕ За сутки добавлено: {summary.day_count}\n"
         f"➕ За неделю добавлено: {summary.week_count}\n"
         f"➕ За месяц добавлено: {summary.month_count}\n\n"
         f"🌍 Источники:\n"

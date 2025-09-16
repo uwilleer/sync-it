@@ -125,10 +125,11 @@ class VacancyRepository(BaseRepository):
 
         return [v for _, v in sorted(scored_vacancies, key=operator.itemgetter(0), reverse=True)]
 
-    async def get_summary(self) -> VacanciesSummarySchema:
+    async def get_summary(self) -> VacanciesSummarySchema:  # noqa: PLR0914
         """Возвращает агрегированную статистику по вакансиям."""
 
         now = datetime.now(UTC)
+        day_ago = now - timedelta(days=1)
         week_ago = now - timedelta(days=7)
         month_ago = now - timedelta(days=30)
 
@@ -140,6 +141,11 @@ class VacancyRepository(BaseRepository):
         sources_stmt = select(Vacancy.source, func.count(Vacancy.id)).group_by(Vacancy.source)
         sources_result = await self._session.execute(sources_stmt)
         sources: dict[str, int] = dict(sources_result.tuples().all())
+
+        # За день
+        day_stmt = select(func.count(Vacancy.id)).where(Vacancy.published_at >= day_ago)
+        day_result = await self._session.execute(day_stmt)
+        day_count = day_result.scalar_one()
 
         # За неделю
         week_stmt = select(func.count(Vacancy.id)).where(Vacancy.published_at >= week_ago)
@@ -154,6 +160,7 @@ class VacancyRepository(BaseRepository):
         return VacanciesSummarySchema(
             total=total,
             sources=sources,
+            day_count=day_count,
             week_count=week_count,
             month_count=month_count,
         )

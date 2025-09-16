@@ -114,6 +114,7 @@ class VacancyWithNeighborsResponse(BaseModel):
 class VacanciesSummarySchema(BaseModel):
     total: int
     sources: dict[SourceEnum, int]
+    day_count: int
     week_count: int
     month_count: int
 
