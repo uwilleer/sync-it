@@ -27,7 +27,9 @@ def register_middlewares(dp: Dispatcher) -> None:
 
     dp.update.outer_middleware(DatabaseMiddleware())
     dp.update.outer_middleware(ServiceMiddleware())
-    dp.message.middleware(AuthMiddleware())
-    dp.message.middleware(ResetStateMiddleware())
 
+    dp.message.middleware(AuthMiddleware())
+    dp.callback_query.middleware(AuthMiddleware())
+
+    dp.message.middleware(ResetStateMiddleware())
     dp.callback_query.middleware(AnswerCallbackMiddleware())

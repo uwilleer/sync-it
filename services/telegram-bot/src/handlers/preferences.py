@@ -2,13 +2,15 @@ from aiogram import F, Router
 from aiogram.types import CallbackQuery
 from callbacks.preferences import PreferencesActionEnum, PreferencesCallback
 from clients import grade_client, profession_client, work_format_client
+from clients.protocols import SupportsGetAll
 from common.logger import get_logger
 from database.models.enums import PreferencesCategoryCodeEnum
 from keyboard.inline.preferences import options_keyboard
+from schemas.user import UserRead
 from schemas.user_preference import UserPreferenceCreate
 from services.user import UserService
 from unitofwork import UnitOfWork
-from utils.clients import ClientType, get_client
+from utils.clients import get_client
 from utils.message import get_message, safe_edit_message
 
 from services import UserPreferenceService
@@ -27,7 +29,7 @@ async def handle_show_options(
     query: CallbackQuery,
     user_service: UserService,
     category_code: PreferencesCategoryCodeEnum,
-    client: ClientType,
+    client: SupportsGetAll,
     message_text: str,
 ) -> None:
     options = await client.get_all()
@@ -78,6 +80,7 @@ async def handle_grade(query: CallbackQuery, user_service: UserService) -> None:
 async def handle_select_option(
     callback: CallbackQuery,
     callback_data: PreferencesCallback,
+    user: UserRead,
     user_service: UserService,
     user_preferences_service: UserPreferenceService,
     uow: UnitOfWork,
@@ -104,7 +107,6 @@ async def handle_select_option(
         await callback.answer("Внутренняя ошибка. Опция не найдена.", show_alert=True)
         return
 
-    user = await user_service.get_by_telegram_id(callback.from_user.id, with_preferences=True)
     user_preference_create = UserPreferenceCreate(
         user_id=user.id,
         category_code=category_code,
@@ -115,7 +117,7 @@ async def handle_select_option(
     await user_preferences_service.toggle_preference(user_preference_create)
     await uow.commit()
 
-    user = await user_service.get_by_telegram_id(user.telegram_id, with_preferences=True)
+    user_with_preferences = await user_service.get_by_telegram_id(user.telegram_id, with_preferences=True)
 
     message = await get_message(callback)
 
@@ -125,6 +127,6 @@ async def handle_select_option(
         reply_markup=options_keyboard(
             category_code,
             options,
-            user,
+            user_with_preferences,
         ),
     )

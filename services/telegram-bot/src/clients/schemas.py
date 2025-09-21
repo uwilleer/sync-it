@@ -11,8 +11,10 @@ __all__ = [
     "GradeSchema",
     "ProfessionListResponse",
     "ProfessionSchema",
+    "SkillItemResponse",
     "SkillListResponse",
     "SkillSchema",
+    "SkillWithMatchSchema",
     "VacanciesSummaryResponse",
     "VacancyWithNeighborsRequest",
     "VacancyWithNeighborsResponse",
@@ -55,6 +57,10 @@ class WorkFormatResponse(BaseModel):
 class SkillSchema(BaseModel):
     id: int
     name: str
+
+
+class SkillWithMatchSchema(SkillSchema):
+    is_matched: bool
 
 
 class SkillItemResponse(BaseModel):

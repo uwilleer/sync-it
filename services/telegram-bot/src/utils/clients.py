@@ -3,19 +3,14 @@ from clients.protocols import SupportsGetAll
 from database.models.enums import PreferencesCategoryCodeEnum
 
 
-__all__ = [
-    "ClientType",
-    "get_client",
-]
+__all__ = ["get_client"]
 
-type ClientType = SupportsGetAll
-
-CLIENT_MAP: dict[PreferencesCategoryCodeEnum, ClientType] = {
+CLIENT_MAP: dict[PreferencesCategoryCodeEnum, SupportsGetAll] = {
     PreferencesCategoryCodeEnum.GRADE: grade_client,
     PreferencesCategoryCodeEnum.WORK_FORMAT: work_format_client,
     PreferencesCategoryCodeEnum.PROFESSION: profession_client,
 }
 
 
-def get_client(category: PreferencesCategoryCodeEnum) -> ClientType:
+def get_client(category: PreferencesCategoryCodeEnum) -> SupportsGetAll:
     return CLIENT_MAP[category]

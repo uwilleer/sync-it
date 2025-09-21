@@ -13,17 +13,16 @@ __all__ = ["skill_client"]
 class _SkillClient(BaseClient):
     url = build_service_url(ServiceEnum.VACANCY_PROCESSOR, "api/v1/skills")
 
-    # Кеш названий скиллов в нижнем регистре: {"python": {"name": "Python", "id": 1}, ...}
-    _skills_names_dict: dict[str, SkillSchema] | None = None
-
     # TODO: Возможен баг, когда в вакансии будет скилл, пользователь его захочет добавить,
     #  а кеш устарел, следовательно скилл не найдется.
     @cache(cache_ttl=60 * 60 * 24, serializer=PickleSerializer())
-    async def get_all(self) -> SkillListResponse:
+    async def get_all(self) -> list[SkillSchema]:
         response = await self.client.get(self.url)
-        response.raise_for_status()
 
-        return SkillListResponse.model_validate(response.json())
+        response.raise_for_status()
+        response_model = SkillListResponse.model_validate(response.json())
+
+        return response_model.skills
 
     async def get_by_name(self, name: str) -> SkillSchema | None:
         response = await self.client.get(f"{self.url}/{name}")

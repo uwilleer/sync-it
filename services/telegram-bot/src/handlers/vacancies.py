@@ -10,6 +10,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message, User
 from callbacks.vacancy import VacancyActionEnum, VacancyCallback
 from clients import skill_client
+from clients.schemas import SkillWithMatchSchema
 from clients.vacancy import vacancy_client
 from commands import BotCommandEnum
 from common.logger import get_logger
@@ -21,6 +22,7 @@ from keyboard.inline.vacancies import vacancies_keyboard
 from schemas.user import UserRead
 from schemas.user_preference import UserPreferenceCreate
 from states import VacancyState
+from unitofwork import UnitOfWork
 from utils.formatters import format_publication_time
 from utils.message import get_message, safe_edit_message
 
@@ -44,6 +46,29 @@ async def handle_vacancies_command(message: Message, user_service: UserService, 
 async def handle_vacancies_callback(
     callback: CallbackQuery, callback_data: VacancyCallback, user_service: UserService, state: FSMContext
 ) -> None:
+    await show_vacancies(callback, callback_data.vacancy_id, user_service, state)
+
+
+@router.callback_query(VacancyCallback.filter(F.action == VacancyActionEnum.SELECT_SKILLS))
+async def handle_vacancy_select_skills_callback(
+    callback: CallbackQuery,
+    callback_data: VacancyCallback,
+    user: UserRead,
+    user_service: UserService,
+    user_preferences_service: UserPreferenceService,
+    uow: UnitOfWork,
+    state: FSMContext,
+) -> None:
+    user_preference_create = UserPreferenceCreate(
+        user_id=user.id,
+        category_code=PreferencesCategoryCodeEnum.SKILL,
+        item_id=callback_data.skill_id,
+        item_name=callback_data.skill_name,
+    )
+
+    await user_preferences_service.toggle_preference(user_preference_create)
+    await uow.commit()
+
     await show_vacancies(callback, callback_data.vacancy_id, user_service, state)
 
 
@@ -121,6 +146,10 @@ async def show_vacancies(  # noqa: C901 PLR0912 PLR0914 PLR0915
         )
         return
 
+    user_skills = set(categorized_prefs[PreferencesCategoryCodeEnum.SKILL])
+    matched_skills = list(filter(lambda s: s.name in user_skills, vacancy.skills))
+    unmatched_skills = list(filter(lambda s: s.name not in user_skills, vacancy.skills))
+
     vacancy_text = f"<i>({vacancy.id})</i>\t"
     vacancy_text += f"<b>Должность:</b> {vacancy.profession.name if vacancy.profession else 'Неизвестно'}\n"
 
@@ -135,11 +164,8 @@ async def show_vacancies(  # noqa: C901 PLR0912 PLR0914 PLR0915
         work_format_names = [work_format.name for work_format in vacancy.work_formats]
         vacancy_text += f"<b>Формат работы:</b> {', '.join(work_format_names)}\n"
     if vacancy.skills:
-        user_skills = set(categorized_prefs[PreferencesCategoryCodeEnum.SKILL])
-        skills = {s.name for s in vacancy.skills}
-
-        matched = ", ".join(f"<code>{s}</code>" for s in sorted(skills & user_skills))
-        unmatched = ", ".join(f"<s>{s}</s>" for s in sorted(skills - user_skills))
+        matched = ", ".join(f"<code>{s.name}</code>" for s in matched_skills)
+        unmatched = ", ".join(f"<s>{s.name}</s>" for s in unmatched_skills)
 
         vacancy_text += f"<b>Ключевые навыки:</b> {matched}, {unmatched}\n"
     if vacancy.workplace_description:
@@ -159,18 +185,25 @@ async def show_vacancies(  # noqa: C901 PLR0912 PLR0914 PLR0915
         vacancy_text = vacancy_text[:max_text_length]
         logger.error("Vacancy text is too long. %s, %s", vacancy.id, vacancy.link)
 
+    matched_skill_schemas = [SkillWithMatchSchema(**s.model_dump(), is_matched=True) for s in matched_skills]
+    unmatched_skill_schemas = [SkillWithMatchSchema(**s.model_dump(), is_matched=False) for s in unmatched_skills]
+    skills = sorted(matched_skill_schemas + unmatched_skill_schemas, key=lambda s: s.name)
+
     with suppress(MessageNotModifiedError):
         await safe_edit_message(
             message,
             text=vacancy_text,
             reply_markup=vacancies_keyboard(
+                skills=skills,
                 vacancy_link=vacancy.link,
                 previous_vacancy_id=prev_id,
+                current_vacancy_id=vacancy_id or vacancy.id,
                 next_vacancy_id=next_id,
             ),
             parse_mode=ParseMode.HTML,
             disable_web_page_preview=True,
         )
+        # FIXME REMOVE
         await state.set_state(VacancyState.waiting_for_skills)
 
     if not vacancy_id and isinstance(event, CallbackQuery):
