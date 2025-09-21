@@ -122,7 +122,8 @@ async def _extract_and_save_user_preferences(user_id: int, text: str, chat_id: i
                     + ", ".join(f"<code>{s}</code>" for s in sorted(removed, key=lambda n: n.casefold()))
                 )
 
-            user_skills = await service.get_by_user_id(user_id)
+            user_preferences = await service.get_by_user_id(user_id)
+            user_skills = list(filter(lambda p: p.category_code == PreferencesCategoryCodeEnum.SKILL, user_preferences))
             user_skills_str = ", ".join(
                 f"<code>{s.item_name}</code>" for s in sorted(user_skills, key=lambda n: n.item_name.casefold())
             )
@@ -130,7 +131,7 @@ async def _extract_and_save_user_preferences(user_id: int, text: str, chat_id: i
 
             await bot.send_message(
                 chat_id,
-                f"Ваши актуальные навыки:\n{user_skills_str}\n\n{changed_skills_str}\n\n"
+                f"📚 Ваши актуальные навыки:\n{user_skills_str}\n\n{changed_skills_str}\n\n"
                 f"Если вы считаете, что какой-то навык не распознался, пожалуйста, обратитесь в поддержку: "
                 f"@{service_config.support_username}",
                 reply_markup=process_update_skills_keyboard(),
