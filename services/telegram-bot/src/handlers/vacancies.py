@@ -40,7 +40,7 @@ async def handle_vacancies_command(message: Message, user_service: UserService, 
     await show_vacancies(message, None, user_service, state)
 
 
-@router.callback_query(VacancyCallback.filter(F.action == VacancyActionEnum.SHOW_VACANCY))
+@router.callback_query(VacancyCallback.filter(F.action == VacancyActionEnum.SHOW_VACANCIES))
 async def handle_vacancies_callback(
     callback: CallbackQuery, callback_data: VacancyCallback, user_service: UserService, state: FSMContext
 ) -> None:

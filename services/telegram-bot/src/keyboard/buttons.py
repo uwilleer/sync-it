@@ -15,21 +15,21 @@ __all__ = [
 def MainMenuInlineKeyboardButton() -> InlineKeyboardButton:  # noqa: N802
     return InlineKeyboardButton(
         text="🏠 В меню",
-        callback_data=MenuCallback(action=MenuActionEnum.MAIN).pack(),
+        callback_data=MenuCallback(action=MenuActionEnum.SHOW_MAIN).pack(),
     )
 
 
 def VacanciesInlineKeyboardButton() -> InlineKeyboardButton:  # noqa: N802
     return InlineKeyboardButton(
         text="📋 Вакансии",
-        callback_data=VacancyCallback(action=VacancyActionEnum.SHOW_VACANCY).pack(),
+        callback_data=VacancyCallback(action=VacancyActionEnum.SHOW_VACANCIES).pack(),
     )
 
 
 def BackToPreferencesInlineKeyboardButton() -> InlineKeyboardButton:  # noqa: N802
     return InlineKeyboardButton(
         text="🔙 К предпочтениям",
-        callback_data=MenuCallback(action=MenuActionEnum.PREFERENCES).pack(),
+        callback_data=MenuCallback(action=MenuActionEnum.SHOW_PREFERENCES).pack(),
     )
 
 

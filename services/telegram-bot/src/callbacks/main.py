@@ -10,8 +10,8 @@ __all__ = [
 
 
 class MenuActionEnum(StrEnum):
-    MAIN = "main"
-    PREFERENCES = "preferences"
+    SHOW_MAIN = "main"
+    SHOW_PREFERENCES = "preferences"
 
 
 class MenuCallback(CallbackData, prefix="menu"):

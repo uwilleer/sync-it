@@ -26,7 +26,7 @@ def main_keyboard() -> InlineKeyboardMarkup:
         [
             InlineKeyboardButton(
                 text="⚙️ Изменить предпочтения",
-                callback_data=MenuCallback(action=MenuActionEnum.PREFERENCES).pack(),
+                callback_data=MenuCallback(action=MenuActionEnum.SHOW_PREFERENCES).pack(),
             ),
         ],
     ]

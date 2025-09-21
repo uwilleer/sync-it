@@ -10,7 +10,7 @@ __all__ = [
 
 
 class VacancyActionEnum(StrEnum):
-    SHOW_VACANCY = "show_vacancy"
+    SHOW_VACANCIES = "show_vacancies"
     SELECT_SKILLS = "select_skills"
 
 

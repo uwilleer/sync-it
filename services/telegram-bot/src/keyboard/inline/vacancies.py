@@ -66,7 +66,7 @@ def vacancies_keyboard(
             InlineKeyboardButton(
                 text="⬅️",
                 callback_data=VacancyCallback(
-                    action=VacancyActionEnum.SHOW_VACANCY,
+                    action=VacancyActionEnum.SHOW_VACANCIES,
                     vacancy_id=previous_vacancy_id,
                 ).pack(),
             )
@@ -89,7 +89,7 @@ def vacancies_keyboard(
             InlineKeyboardButton(
                 text="➡️",
                 callback_data=VacancyCallback(
-                    action=VacancyActionEnum.SHOW_VACANCY,
+                    action=VacancyActionEnum.SHOW_VACANCIES,
                     vacancy_id=next_vacancy_id,
                 ).pack(),
             )
@@ -106,7 +106,7 @@ def vacancies_keyboard(
     builder.row(
         InlineKeyboardButton(
             text="🔄 Обновить",
-            callback_data=VacancyCallback(action=VacancyActionEnum.SHOW_VACANCY).pack(),
+            callback_data=VacancyCallback(action=VacancyActionEnum.SHOW_VACANCIES).pack(),
         )
     )
 

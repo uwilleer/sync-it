@@ -28,14 +28,14 @@ async def handle_start_command(message: Message, user: UserRead, state: FSMConte
     await send_welcome_message(message, user, state)
 
 
-@router.callback_query(MenuCallback.filter(F.action == MenuActionEnum.MAIN))
+@router.callback_query(MenuCallback.filter(F.action == MenuActionEnum.SHOW_MAIN))
 async def handle_main_callback(callback: CallbackQuery, user_service: UserService, state: FSMContext) -> None:
     user = await user_service.get_by_telegram_id(callback.from_user.id)
 
     await send_welcome_message(callback, user, state)
 
 
-@router.callback_query(MenuCallback.filter(F.action == MenuActionEnum.PREFERENCES))
+@router.callback_query(MenuCallback.filter(F.action == MenuActionEnum.SHOW_PREFERENCES))
 async def handle_preferences(callback: CallbackQuery) -> None:
     await safe_edit_message(callback, text="⚙️ Выберите предпочтения:", reply_markup=preferences_keyboard())
 
