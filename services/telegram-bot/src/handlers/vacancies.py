@@ -5,11 +5,10 @@ from typing import cast
 
 from aiogram import F, Router
 from aiogram.enums import ParseMode
-from aiogram.filters import Command, StateFilter
+from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message, User
 from callbacks.vacancy import VacancyActionEnum, VacancyCallback
-from clients import skill_client
 from clients.schemas import SkillWithMatchSchema
 from clients.vacancy import vacancy_client
 from commands import BotCommandEnum
@@ -21,7 +20,6 @@ from keyboard.inline.main import main_menu_keyboard
 from keyboard.inline.vacancies import vacancies_keyboard
 from schemas.user import UserRead
 from schemas.user_preference import UserPreferenceCreate
-from states import VacancyState
 from unitofwork import UnitOfWork
 from utils.formatters import format_publication_time
 from utils.message import get_message, safe_edit_message
@@ -70,35 +68,6 @@ async def handle_vacancy_select_skills_callback(
     await uow.commit()
 
     await show_vacancies(callback, callback_data.vacancy_id, user_service, state)
-
-
-@router.message(StateFilter(VacancyState.waiting_for_skills))
-async def handle_skill_reply(message: Message, user: UserRead, user_preferences_service: UserPreferenceService) -> None:
-    if not message.text:
-        await message.reply("🤔 Вы прислали что-то не понятное.")
-        return
-
-    skill = await skill_client.get_by_name(message.text)
-    if not skill:
-        await message.delete()
-        await message.answer(f'Навык "{message.text}" не найден')
-        return
-
-    preference = UserPreferenceCreate(
-        user_id=user.id,
-        category_code=PreferencesCategoryCodeEnum.SKILL,
-        item_id=skill.id,
-        item_name=skill.name,
-    )
-
-    is_added = await user_preferences_service.toggle_preference(preference)
-    await user_preferences_service.commit()
-    await message.delete()
-
-    if is_added:
-        await message.answer(f"✅ Навык <code>{skill.name}</code> добавлен", parse_mode=ParseMode.HTML)
-    else:
-        await message.answer(f"❌ Навык <code>{skill.name}</code> удалён", parse_mode=ParseMode.HTML)
 
 
 async def show_vacancies(  # noqa: C901 PLR0912 PLR0914 PLR0915
@@ -203,8 +172,6 @@ async def show_vacancies(  # noqa: C901 PLR0912 PLR0914 PLR0915
             parse_mode=ParseMode.HTML,
             disable_web_page_preview=True,
         )
-        # FIXME REMOVE
-        await state.set_state(VacancyState.waiting_for_skills)
 
     if not vacancy_id and isinstance(event, CallbackQuery):
         await event.answer("Вакансии актуализированы")
