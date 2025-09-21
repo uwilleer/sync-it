@@ -1,10 +1,10 @@
 from typing import Annotated
 
 from api.depedencies import get_skill_service
-from api.v1.schemas import ExtractSkillsRequest, SkillItemResponse, SkillListResponse
+from api.v1.schemas import ExtractSkillsRequest, SkillItemResponse, SkillListQuery, SkillListResponse
 from clients import gpt_client
 from database.models.enums import SkillEnum
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from schemas.skill import SkillRead
 from utils.extractor import VacancyExtractor
 from utils.prompter import make_resume_prompt
@@ -19,9 +19,14 @@ router = APIRouter()
 
 
 @router.get("")
-async def get_skills(service: Annotated[SkillService, Depends(get_skill_service)]) -> SkillListResponse:
+async def get_skills(
+    query: Annotated[SkillListQuery, Query()], service: Annotated[SkillService, Depends(get_skill_service)]
+) -> SkillListResponse:
     """Возвращает актуальные скиллы."""
-    skills = await service.get_skills()
+    if query.names:
+        skills = await service.get_skills_by_names(query.names)
+    else:
+        skills = await service.get_skills()
 
     return SkillListResponse(skills=[SkillRead.model_validate(s) for s in skills])
 

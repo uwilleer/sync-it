@@ -11,6 +11,7 @@ __all__ = [
     "GradeListResponse",
     "ProfessionListResponse",
     "SkillItemResponse",
+    "SkillListQuery",
     "SkillListResponse",
     "VacanciesSummaryResponse",
     "VacancyListResponse",
@@ -37,6 +38,10 @@ class ExtractSkillsRequest(BaseModel):
 
 class SkillItemResponse(BaseModel):
     skill: SkillRead
+
+
+class SkillListQuery(BaseModel):
+    names: list[str]
 
 
 class SkillListResponse(BaseModel):

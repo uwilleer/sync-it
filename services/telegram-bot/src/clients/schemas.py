@@ -12,6 +12,7 @@ __all__ = [
     "ProfessionListResponse",
     "ProfessionSchema",
     "SkillItemResponse",
+    "SkillListQuery",
     "SkillListResponse",
     "SkillSchema",
     "SkillWithMatchSchema",
@@ -65,6 +66,10 @@ class SkillWithMatchSchema(SkillSchema):
 
 class SkillItemResponse(BaseModel):
     skill: SkillSchema
+
+
+class SkillListQuery(BaseModel):
+    names: list[str]
 
 
 class SkillListResponse(BaseModel):

@@ -28,6 +28,14 @@ class SkillService(BaseUOWService[UnitOfWork]):
 
         return SkillRead.model_validate(skill)
 
+    async def get_skills_by_names(self, names: Iterable[str]) -> list[SkillRead]:
+        enums = [SkillEnum.get_safe(name) for name in names]
+        enums_filtered = [e for e in enums if e is not None]
+
+        skills = await self._uow.skills.get_by_enums(enums_filtered)
+
+        return [SkillRead.model_validate(s) for s in skills]
+
     async def get_skills(self) -> list[SkillRead]:
         skills = await self._uow.skills.get_all()
 

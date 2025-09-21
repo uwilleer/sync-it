@@ -77,24 +77,17 @@ def process_resume(
             raise self.retry(countdown=60, exc=e) from e
 
 
-async def _extract_and_save_user_preferences(user_id: int, text: str, chat_id: int, *, toggle: bool = False) -> None:
-    skills = await skill_client.extract_skills_from_text(text)
-    if not skills:
-        await bot.send_message(
-            chat_id,
-            "⚠️ В приведенном тексте не найдено ни одного навыка.\n\n"
-            f"Если вы считаете, что это ошибка и ваш навык существует, пожалуйста, обратитесь в поддержку: "
-            f"@{service_config.support_username}",
-            reply_markup=main_menu_keyboard(),
-        )
-        return
-
+async def _extract_and_save_user_preferences(user_id: int, text: str, chat_id: int, *, toggle: bool = False) -> None:  # noqa: PLR0914
     async with UnitOfWork() as uow:
         service = UserPreferenceService(uow)
 
         if toggle:
+            skill_names = list(map(str.strip, text.strip().strip(",").split(",")))
+            skills = await skill_client.get_by_names(skill_names)
+
             added: list[str] = []
             removed: list[str] = []
+
             for s in skills:
                 pref = UserPreferenceCreate(
                     user_id=user_id,
@@ -138,6 +131,17 @@ async def _extract_and_save_user_preferences(user_id: int, text: str, chat_id: i
                 parse_mode=ParseMode.HTML,
             )
         else:
+            extracted_skills = await skill_client.extract_skills_from_text(text)
+            if not extracted_skills:
+                await bot.send_message(
+                    chat_id,
+                    "⚠️ В приведенном тексте не найдено ни одного навыка.\n\n"
+                    f"Если вы считаете, что это ошибка и ваш навык существует, пожалуйста, обратитесь в поддержку: "
+                    f"@{service_config.support_username}",
+                    reply_markup=main_menu_keyboard(),
+                )
+                return
+
             added_preferences = await service.replace_user_preferences(
                 user_id=user_id,
                 category_code=PreferencesCategoryCodeEnum.SKILL,
@@ -148,7 +152,7 @@ async def _extract_and_save_user_preferences(user_id: int, text: str, chat_id: i
                         item_id=s.id,
                         item_name=s.name,
                     )
-                    for s in skills
+                    for s in extracted_skills
                 ],
             )
             await uow.commit()
