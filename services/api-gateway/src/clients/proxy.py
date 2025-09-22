@@ -10,6 +10,7 @@ __all__ = ["proxy_client"]
 
 class _ProxyClient(BaseClient):
     def configure_client(self) -> None:
+        super().configure_client()
         self.client.timeout = 60
 
     async def proxy_request(self, service: ServiceEnum, path: str, request: Request) -> Response:

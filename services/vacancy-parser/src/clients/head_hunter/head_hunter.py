@@ -86,7 +86,6 @@ class _HeadHunterClient(BaseClient):
 
         return all_vacancy_ids
 
-    @limit_requests(5)
     async def get_vacancy_by_id(self, vacancy_id: int) -> HeadHunterVacancyDetailResponse | None:
         """Загружает и валидирует одну детальную вакансию по ее ID."""
         detailed_url = f"{self.url}/{vacancy_id}"

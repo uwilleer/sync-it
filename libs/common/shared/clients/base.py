@@ -11,8 +11,9 @@ class BaseClient:
 
     def __init__(self, client: AsyncClient = http_client) -> None:
         self.client = client
-        self.client.headers.update({"x-api-key": gateway_config.api_key})
         self.configure_client()
 
     def configure_client(self) -> None:
         """Конфигурирует клиент перед работой"""
+        self.client.headers.update({"x-api-key": gateway_config.api_key})
+        self.client.timeout = 15

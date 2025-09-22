@@ -12,9 +12,6 @@ __all__ = ["skill_client"]
 class _SkillClient(BaseClient):
     url = build_service_url(ServiceEnum.VACANCY_PROCESSOR, "api/v1/skills")
 
-    def configure_client(self) -> None:
-        self.client.timeout = 15
-
     async def extract_skills_from_text(self, text: str) -> list[SkillSchema]:
         """Извлекает скиллы из текста."""
         response = await self.client.post(f"{self.url}/extract", json={"text": text})

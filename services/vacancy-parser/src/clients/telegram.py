@@ -11,6 +11,7 @@ class _TelegramClient(BaseClient):
     url = build_service_url(ServiceEnum.TELEGRAM_API, "/api/v1/channel")
 
     def configure_client(self) -> None:
+        super().configure_client()
         self.client.timeout = 30
 
     async def get_newest_messages(

@@ -12,6 +12,7 @@ class _GPTClient(BaseClient):
     url = build_service_url(ServiceEnum.GPT_API, "/api/v1/completion")
 
     def configure_client(self) -> None:
+        super().configure_client()
         self.client.timeout = 30
 
     @limit_requests(30)
