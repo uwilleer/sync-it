@@ -1,7 +1,7 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from callbacks.main import MenuActionEnum, MenuCallback
-from keyboard.buttons import MainMenuInlineKeyboardButton, VacanciesInlineKeyboardButton
+from keyboard.inline.buttons import MainMenuInlineKeyboardButton, VacanciesInlineKeyboardButton
 
 
 __all__ = [

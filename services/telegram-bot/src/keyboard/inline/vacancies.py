@@ -4,7 +4,7 @@ from callbacks.noop import NoopActionEnum, NoopCallback
 from callbacks.vacancy import VacancyActionEnum, VacancyCallback
 from clients.schemas import SkillWithMatchSchema
 from common.shared.schemas import HttpsUrl
-from keyboard.buttons import MainMenuInlineKeyboardButton
+from keyboard.inline.buttons import MainMenuInlineKeyboardButton
 
 
 __all__ = ["vacancies_keyboard"]

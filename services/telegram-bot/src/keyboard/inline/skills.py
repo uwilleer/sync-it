@@ -1,7 +1,7 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from callbacks.skill import SkillActionEnum, SkillCallback
-from keyboard.buttons import (
+from keyboard.inline.buttons import (
     BackToPreferencesInlineKeyboardButton,
     MainMenuInlineKeyboardButton,
     VacanciesInlineKeyboardButton,

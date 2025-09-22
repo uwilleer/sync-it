@@ -6,7 +6,7 @@ from callbacks.preferences import PreferencesActionEnum, PreferencesCallback
 from callbacks.skill import SkillActionEnum, SkillCallback
 from clients.schemas import GradeSchema, ProfessionSchema, SkillSchema, WorkFormatSchema
 from database.models.enums import PreferencesCategoryCodeEnum
-from keyboard.buttons import (
+from keyboard.inline.buttons import (
     BackToPreferencesInlineKeyboardButton,
     MainMenuInlineKeyboardButton,
     ProfessionInlineKeyboardButton,
