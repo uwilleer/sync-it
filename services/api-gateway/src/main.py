@@ -1,4 +1,5 @@
 from clients import proxy_client
+from common.environment.config import env_config
 from common.gateway.config import gateway_config
 from common.gateway.enums import ServiceEnum
 from common.logger import get_logger
@@ -13,7 +14,12 @@ import uvicorn
 logger = get_logger(__name__)
 
 
-app = FastAPI(title="API Gateway Service")
+app = FastAPI(
+    title="API Gateway Service",
+    openapi_url="/openapi.json" if env_config.debug else None,
+    docs_url="/docs" if env_config.debug else None,
+    redoc_url="/redoc" if env_config.debug else None,
+)
 
 
 @app.get("/{service}/{path:path}", dependencies=[Depends(validate_api_key)])
