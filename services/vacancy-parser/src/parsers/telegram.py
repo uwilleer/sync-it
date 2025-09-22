@@ -19,6 +19,8 @@ logger = get_logger(__name__)
 
 
 class TelegramParser(BaseParser[TelegramVacancyService]):
+    MIN_VACANCY_TEXT_LENGTH = 600
+
     def __init__(
         self, uow: UnitOfWork, service: TelegramVacancyService, channel_links: Iterable[TelegramChannelUrl]
     ) -> None:
@@ -50,6 +52,9 @@ class TelegramParser(BaseParser[TelegramVacancyService]):
 
         vacancies: list[TelegramVacancyCreate] = []
         for message in newest_messages:
+            if len(message.text) < self.MIN_VACANCY_TEXT_LENGTH:
+                continue
+
             fingerprint = generate_fingerprint(message.text)
             duplicate = await self.service.find_duplicate_vacancy_by_fingerprint(fingerprint)
             if duplicate:
