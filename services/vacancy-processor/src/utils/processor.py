@@ -49,7 +49,7 @@ class VacancyProcessor:
         vacancies = await vacancy_client.get_vacancies()
         existing_vacancies = await self.uow.vacancies.get_existing_hashes([v.hash for v in vacancies])
         vacancies_to_process = [v for v in vacancies if v.hash not in existing_vacancies]
-        logger.info("Got %s new vacancies", len(vacancies_to_process))
+        logger.debug("Got %s new vacancies", len(vacancies_to_process))
 
         prompts = [make_vacancy_prompt(vacancy.data) for vacancy in vacancies_to_process]
         process_prompts_task = list(starmap(self._process_prompt, zip(prompts, vacancies_to_process, strict=True)))
@@ -76,7 +76,7 @@ class VacancyProcessor:
                 vacancies_to_delete.append(processed_vacancy)
 
         if vacancies_to_delete:
-            logger.info("Deleting %s vacancies", len(vacancies_to_delete))
+            logger.debug("Deleting %s vacancies", len(vacancies_to_delete))
             delete_vacancies_tasks = [vacancy_client.delete(vacancy) for vacancy in vacancies_to_delete]
             await asyncio.gather(*delete_vacancies_tasks)
 

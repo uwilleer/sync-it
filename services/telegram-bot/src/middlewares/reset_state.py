@@ -38,7 +38,7 @@ class ResetStateMiddleware(BaseMiddleware):
         state: FSMContext = data["state"]
 
         if _is_command(event.text):
-            logger.info("State cleared")
+            logger.debug("State cleared")
             await state.clear()
 
         return await handler(event, data)

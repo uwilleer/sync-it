@@ -28,7 +28,7 @@ class TelegramParser:
         message_block = soup.select_one(f'div.tgme_widget_message[data-post="{data_post_value}"]')
         if message_block is None:
             # Если сообщение удалено
-            logger.info("Message with id %s was deleted", message_id)
+            logger.debug("Message with id %s was deleted", message_id)
             return None
 
         data_post = message_block.attrs.get("data-post")
@@ -44,13 +44,13 @@ class TelegramParser:
         is_not_supported_message = message_block.select_one("div.message_media_not_supported")
         # Сообщение не поддерживается: Please open Telegram to view this post
         if is_not_supported_message is not None:
-            logger.info("Message with id %s is not supported", message_id)
+            logger.debug("Message with id %s is not supported", message_id)
             return None
 
         message_text_block = message_block.select_one("div.tgme_widget_message_text")
         # Если в сообщении нет текста (Только картинки, видео, документы и т.д.)
         if message_text_block is None:
-            logger.info("Message text block not found for message with id %s", message_id)
+            logger.debug("Message text block not found for message with id %s", message_id)
             return None
 
         message_time_block = message_block.select_one("time.time")

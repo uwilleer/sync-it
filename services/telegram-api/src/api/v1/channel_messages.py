@@ -25,7 +25,7 @@ async def channel_messages(
         # Парсим offset_last_message последних сообщений для актуализации вакансий
         offset_last_message = 100
         after_message_id = max(1, newest_message_id - offset_last_message)
-        logger.info("Last message id is unknown, using %s", after_message_id)
+        logger.debug("Last message id is unknown, using %s", after_message_id)
 
     max_messages_interval = 300
     if (newest_message_id - after_message_id) > max_messages_interval:

@@ -30,7 +30,7 @@ class HeadHunterParser(BaseParser["HeadHunterVacancyService"]):
         existing_hashes = await self.service.get_existing_hashes(vacancy_hashes)
 
         new_vacancies_ids = [v_id for v_id in newest_vacancy_ids if generate_hash(v_id) not in existing_hashes]
-        logger.info("Found %s new vacancies", len(new_vacancies_ids))
+        logger.debug("Found %s new vacancies", len(new_vacancies_ids))
 
         for vacancy_id in new_vacancies_ids:
             try:
@@ -40,7 +40,7 @@ class HeadHunterParser(BaseParser["HeadHunterVacancyService"]):
                 continue
 
             if not vacancy_detail:
-                logger.info("Skipping with id %s", vacancy_id)
+                logger.debug("Skipping with id %s", vacancy_id)
                 continue
 
             vacancy_description = clear_html(vacancy_detail.description)
@@ -48,7 +48,7 @@ class HeadHunterParser(BaseParser["HeadHunterVacancyService"]):
             fingerprint = generate_fingerprint(vacancy_description)
             duplicate = await self.service.find_duplicate_vacancy_by_fingerprint(fingerprint)
             if duplicate:
-                logger.info(
+                logger.debug(
                     "Found duplicate vacancy. New vacancy link: %s, Existing vacancy link: %s",
                     vacancy_detail.alternate_url,
                     duplicate.link,
@@ -72,4 +72,4 @@ class HeadHunterParser(BaseParser["HeadHunterVacancyService"]):
             )
 
             await self.service.add_vacancy(vacancy)
-            logger.info("Added vacancy %s", vacancy.link)
+            logger.debug("Added vacancy %s", vacancy.link)

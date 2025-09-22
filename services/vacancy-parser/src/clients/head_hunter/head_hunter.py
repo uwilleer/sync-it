@@ -77,7 +77,7 @@ class _HeadHunterClient(BaseClient):
 
         total_pages = first_page_data.pages
         if total_pages > 1:
-            logger.info("Fetching remaining %s pages...", total_pages - 1)
+            logger.debug("Fetching remaining %s pages...", total_pages - 1)
 
             tasks = [self._fetch_page(page=p, text_query=text_query) for p in range(1, total_pages)]
             for coro in asyncio.as_completed(tasks):

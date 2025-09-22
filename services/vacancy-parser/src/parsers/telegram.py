@@ -37,18 +37,18 @@ class TelegramParser(BaseParser[TelegramVacancyService]):
                 logger.exception("Error processing channel '%s'", channel_link, exc_info=e)
 
     async def _process_channel(self, channel_link: TelegramChannelUrl) -> None:
-        logger.info("Start parsing channel '%s'", channel_link)
+        logger.debug("Start parsing channel '%s'", channel_link)
 
         last_message_id = await self.service.get_last_message_id(channel_link)
-        logger.info("Last message id for channel '%s' is %s", channel_link, last_message_id)
+        logger.debug("Last message id for channel '%s' is %s", channel_link, last_message_id)
 
         newest_messages = await telegram_client.get_newest_messages(channel_link.channel_username, last_message_id)
 
         if not newest_messages:
-            logger.info("No new messages for channel '%s'", channel_link)
+            logger.debug("No new messages for channel '%s'", channel_link)
             return
 
-        logger.info("Got %s new messages", len(newest_messages))
+        logger.debug("Got %s new messages", len(newest_messages))
 
         vacancies: list[TelegramVacancyCreate] = []
         for message in newest_messages:
@@ -58,7 +58,7 @@ class TelegramParser(BaseParser[TelegramVacancyService]):
             fingerprint = generate_fingerprint(message.text)
             duplicate = await self.service.find_duplicate_vacancy_by_fingerprint(fingerprint)
             if duplicate:
-                logger.info(
+                logger.debug(
                     "Found duplicate vacancy. New vacancy link: %s/%s, Existing vacancy link: %s",
                     channel_link,
                     message.id,
@@ -80,12 +80,12 @@ class TelegramParser(BaseParser[TelegramVacancyService]):
         new_vacancies = await self._get_new_vacancies(vacancies)
 
         if not vacancies or not new_vacancies:
-            logger.info("No new vacancies for channel '%s'", channel_link)
+            logger.debug("No new vacancies for channel '%s'", channel_link)
             return
 
         for new_vacancy in new_vacancies:
             await self.service.add_vacancy(new_vacancy)
-            logger.info("Added vacancy: %s", new_vacancy.link)
+            logger.debug("Added vacancy: %s", new_vacancy.link)
 
     async def _get_new_vacancies(self, vacancies: list[TelegramVacancyCreate]) -> list[TelegramVacancyCreate]:
         vacancy_hashes = [v.hash for v in vacancies]

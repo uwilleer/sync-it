@@ -31,7 +31,7 @@ class _TelegramClient(BaseClient):
         response = await self.client.get(url)
 
         if response.is_redirect:
-            logger.info("Channel %s is private or does not exist")
+            logger.debug("Channel %s is private or does not exist")
             return None
 
         response.raise_for_status()
