@@ -10,7 +10,7 @@ MYPY_DIRS := libs $(foreach service,$(SERVICES),services/$(service)/src)
 # Проверяем существование dev-файла и добавляем его к COMPOSE_COMMAND если включен режим разработки
 ifeq ($(ENV_MODE),development)
 	ifeq ($(wildcard $(COMPOSE_DEV_FILE)),$(COMPOSE_DEV_FILE))
-		COMPOSE_COMMAND := $(COMPOSE_COMMAND) -f $(COMPOSE_DEV_FILE)
+		COMPOSE_COMMAND := $(COMPOSE_COMMAND) -f $(COMPOSE_DEV_FILE) --profile monitoring
 	endif
 endif
 

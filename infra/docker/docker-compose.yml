@@ -62,6 +62,8 @@ services:
   flower:
     image: mher/flower
     container_name: flower
+    profiles:
+      - monitoring
     env_file: ../.env
     environment:
       CELERY_BROKER_URL: "redis://${REDIS_HOST}:${REDIS_PORT}/${REDIS_CELERY_BROKER_DB}"
