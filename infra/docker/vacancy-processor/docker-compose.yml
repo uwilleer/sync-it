@@ -21,7 +21,6 @@ services:
   vacancy-processor-worker:
     <<: *service-common
     container_name: vacancy-processor-worker
-    cpus: 1
     command: [ "celery", "-A", "celery_app.app", "worker", "-n", "vacancy_processor", "-l", "${LOG_LEVEL}" ]
     healthcheck:
       test: [ "CMD-SHELL", "celery -A celery_app.app inspect ping -d celery@vacancy_processor" ]
