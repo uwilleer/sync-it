@@ -43,10 +43,7 @@ RUN uv sync --frozen --no-dev --package $SERVICE_NAME
 FROM builder AS source
 
 COPY ${SERVICE_PATH}/src ${SERVICE_PATH}/src
-COPY ./libs/common/logger ./libs/common/logger
-COPY ./libs/common/environment ./libs/common/environment
-COPY ./libs/common/shared ./libs/common/shared
-COPY ./libs/common/sentry ./libs/common/sentry
+COPY ./libs/common ./libs/common
 
 
 # ============================ #

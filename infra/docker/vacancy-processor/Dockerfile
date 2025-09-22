@@ -44,13 +44,7 @@ FROM builder AS source
 
 COPY ${SERVICE_PATH}/src ${SERVICE_PATH}/src
 COPY ${SERVICE_PATH}/alembic.ini ${SERVICE_PATH}/alembic.ini
-COPY ./libs/common/database ./libs/common/database
-COPY ./libs/common/environment ./libs/common/environment
-COPY ./libs/common/shared ./libs/common/shared
-COPY ./libs/common/logger ./libs/common/logger
-COPY ./libs/common/redis ./libs/common/redis
-COPY ./libs/common/gateway ./libs/common/gateway
-COPY ./libs/common/sentry ./libs/common/sentry
+COPY ./libs/common ./libs/common
 
 
 # ============================ #

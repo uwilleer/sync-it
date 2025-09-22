@@ -31,8 +31,6 @@ COPY ./libs/common ./libs/common
 FROM deps-base AS deps-dev
 
 RUN uv sync --frozen --dev --package $SERVICE_NAME
-COPY ./libs/common ./libs/common
-COPY ./${SERVICE_PATH}/pyproject.toml ${SERVICE_PATH}/pyproject.toml
 
 FROM deps-base AS deps-prod
 
@@ -45,10 +43,7 @@ RUN uv sync --frozen --no-dev --package $SERVICE_NAME
 FROM builder AS source
 
 COPY ${SERVICE_PATH}/src ${SERVICE_PATH}/src
-COPY ./libs/common/logger ./libs/common/logger
-COPY ./libs/common/environment ./libs/common/environment
-COPY ./libs/common/shared ./libs/common/shared
-COPY ./libs/common/sentry ./libs/common/sentry
+COPY ./libs/common ./libs/common
 
 
 # ============================ #
