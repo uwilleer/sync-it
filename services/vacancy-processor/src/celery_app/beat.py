@@ -6,7 +6,7 @@ from celery.schedules import schedule
 __all__ = ["beat_schedule"]
 
 beat_schedule = {
-    "process-vacancies-every-5-minute": {
+    "process-vacancies-every-5-minutes": {
         "task": "process_vacancies",
         "schedule": schedule(run_every=timedelta(minutes=5)),
     }

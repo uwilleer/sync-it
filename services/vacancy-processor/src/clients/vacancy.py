@@ -20,26 +20,29 @@ class _VacancyClient(BaseClient):
         response = await self.client.get(self.url)
         response.raise_for_status()
 
-        data = VacancyResponse(**response.json())
+        data = response.json()
+        model_response = VacancyResponse(**data)
 
-        return data.vacancies
+        return model_response.vacancies
 
-    @limit_requests(3)
+    @limit_requests(10)
     async def delete(self, vacancy: VacancySchema) -> bool:
         detail_vacancy_url = f"{self.url}/{vacancy.hash}"
 
         response = await self.client.post(detail_vacancy_url)
         response.raise_for_status()
 
-        response_data = VacancyProcessedResponse(**response.json())
-        if not response_data.is_processed:
+        data = response.json()
+        model_response = VacancyProcessedResponse(**data)
+
+        if not model_response.is_processed:
             logger.error("Failed to mark vacancy as processed: %s", vacancy.link)
             return False
 
         return True
 
     def configure_client(self) -> None:
-        self.client.timeout = 15
+        self.client.timeout = 30
 
 
 vacancy_client = _VacancyClient()
