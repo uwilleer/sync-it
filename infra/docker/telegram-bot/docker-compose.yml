@@ -6,7 +6,7 @@ x-service-common: &service-common
 
 x-healthcheck-common: &healthcheck-common
   interval: 30s
-  timeout: 7s
+  timeout: 15s
   retries: 3
   start_period: 7s
 
