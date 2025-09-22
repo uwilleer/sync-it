@@ -18,10 +18,14 @@ async def validate_api_key(request: Request, x_api_key: Annotated[str | None, He
     Проверяет доступ к API Gateway.
 
     - Пропускает запросы в dev-mode.
+    - Пропускает запросы на вебхук Telegram без проверки ключа.
     - Для всех остальных запросов требует валидный X-API-Key.
     """
     if env_config.debug:
         logger.info("Debug mode, skipping API key check")
+        return
+
+    if request.url.path.startswith("/telegram-bot/webhook"):
         return
 
     if request.client is None:
