@@ -12,6 +12,7 @@ from database.models.enums import PreferencesCategoryCodeEnum
 from keyboard.inline.main import main_menu_keyboard
 from keyboard.inline.skills import process_update_skills_keyboard
 from schemas.user_preference import UserPreferenceCreate
+from tasks.enums import ResumeTypeEnum
 from tasks.schemas import FileResumePayloadSchema, TextResumePayloadSchema
 from unitofwork import UnitOfWork
 from utils.text_extractor import TextExtractor
@@ -38,10 +39,10 @@ def process_resume(
     data_type = data.get("type")
 
     try:
-        if data_type == "text":
+        if data_type == ResumeTypeEnum.TEXT:
             text_schema = TextResumePayloadSchema(**data)
             text = text_schema.text
-        elif data_type == "file":
+        elif data_type == ResumeTypeEnum.FILE:
             file_schema = FileResumePayloadSchema(**data)
             with NamedTemporaryFile(suffix=file_schema.suffix) as tmp:
                 loop.run_until_complete(bot.download_file(file_schema.file_path, destination=tmp.name))

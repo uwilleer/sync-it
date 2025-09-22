@@ -123,7 +123,10 @@ class VacancyRepository(BaseRepository):
             if similarity >= self.MIN_SIMILARITY_PERCENT:
                 scored_vacancies.append((similarity, vacancy))
 
-        return [v for _, v in sorted(scored_vacancies, key=operator.itemgetter(0), reverse=True)]
+        scored_vacancies_sorted = sorted(scored_vacancies, key=operator.itemgetter(0), reverse=True)
+        scored_vacancies_with_limit = scored_vacancies_sorted[:50]
+
+        return [v for _score, v in scored_vacancies_with_limit]
 
     async def get_summary(self) -> VacanciesSummarySchema:  # noqa: PLR0914
         """Возвращает агрегированную статистику по вакансиям."""

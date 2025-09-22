@@ -51,7 +51,7 @@ class AuthMiddleware(BaseMiddleware):
         data["user"] = user
 
         if is_new and isinstance(event, Message):
-            await send_faq_message(event, need_reply_markup=False)
+            await send_faq_message(event, is_first_start=True)
             await asyncio.sleep(3)
             await update_skills(event, data["state"])
             await asyncio.sleep(3)

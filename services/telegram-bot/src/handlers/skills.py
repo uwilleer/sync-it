@@ -1,4 +1,3 @@
-import asyncio
 from pathlib import Path
 
 from aiogram import F, Router
@@ -11,11 +10,13 @@ from commands import BotCommandEnum
 from common.logger import get_logger
 from core.loader import bot
 from database.models.enums import PreferencesCategoryCodeEnum
+from keyboard.inline.buttons import ImportSkillsInlineKeyboardButton
 from keyboard.inline.main import main_menu_keyboard
 from keyboard.inline.skills import show_skills_keyboard, update_skills_keyboard
 from schemas.user import UserRead
 from states import PreferencesState
 from tasks import process_resume
+from tasks.enums import ResumeTypeEnum
 from tasks.schemas import FileResumePayloadSchema, TextResumePayloadSchema
 from utils.message import get_message, safe_edit_message
 from utils.readers.enums import SupportedReaderExtensionsEnum
@@ -36,11 +37,11 @@ MAX_MESSAGE_LENGTH = 4096
 
 
 update_preferences_text = (
-    "Пришлите информацию, где есть Ваши навыки одним из способов:\n"
+    "Пришлите информацию, где есть ваши навыки одним из способов:\n"
     "— Текстом (до 4096 символов)\n"
     f"— Файлом в формате: {', '.join(SupportedReaderExtensionsEnum)} (до {MAX_FILE_SIZE // 1024 // 1024} МБ)\n\n"
     f"ℹ️ Все ваши прошлые навыки будут удалены.\n"
-    f"ℹ️ Для более точного поиска вакансий, пришлите Ваше резюме.\n"
+    f"ℹ️ Для лучшего результата можете использовать своё резюме.\n"
     f"ℹ️ Старайтесь избегать случаев, когда текст в файле представлен в виде картинок (например, конвертация png в pdf), иначе точность извлечения навыков будет ниже."  # noqa: E501
 )
 
@@ -62,22 +63,19 @@ async def handle_toggle_skills(
     preferences = await user_preferences_service.filter_by_telegram_id_and_category(
         callback.from_user.id, PreferencesCategoryCodeEnum.SKILL
     )
-    if not preferences:
-        await safe_edit_message(callback, text="У вас пока нет добавленных навыков. \nПожалуйста, добавьте их.")
-        await asyncio.sleep(1)
-        await update_skills(callback, state, need_edit=False)
-        return
-
     sorted_preferences = sorted(preferences, key=lambda p: p.item_name.casefold())
     preferences_str = ", ".join(f"<code>{p.item_name}</code>" for p in sorted_preferences)
+
+    prefix = "📚 <b>Ваши навыки</b>:\n" if preferences_str else "😕 <b>У вас пока нет навыков</b>."
 
     await state.set_state(PreferencesState.waiting_toggle_skills)
     await safe_edit_message(
         callback,
         text=(
-            "📚 <b>Ваши навыки</b>:\n"
+            f"{prefix}"
             f"{preferences_str}\n\n"
-            "✅ Чтобы <b>добавить</b> новый навык — просто отправьте его название.\n"
+            f"✅ Чтобы <b>добавить</b> новый навык — просто отправьте его название "
+            f'или воспользуйтесь кнопкой "<b>{ImportSkillsInlineKeyboardButton().text}</b>"\n'
             "❌ Чтобы <b>удалить</b> навык — отправьте его название из списка.\n"
             "ℹ️ Если хотите добавить/удалить несколько навыков — перечислите их через запятую."
         ),
@@ -153,8 +151,9 @@ async def handle_resume_input(message: Message, state: FSMContext, user: UserRea
         )
         return
 
+    file_type_text = "файла" if resume_payload.type == ResumeTypeEnum.FILE else "текста"
     await message.answer(
-        "ℹ️ Начинаю извлечение навыков из текста.\nПожалуйста, подождите, это может занять некоторое время.",
+        f"ℹ️ Начинаю извлечение навыков из {file_type_text}.\nПожалуйста, подождите, это может занять некоторое время.",
     )
 
     process_resume.delay(user.id, message.chat.id, resume_payload.model_dump(), toggle=need_toggle)
