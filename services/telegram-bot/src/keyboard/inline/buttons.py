@@ -61,6 +61,6 @@ def BackToPreferencesInlineKeyboardButton() -> InlineKeyboardButton:  # noqa: N8
 
 def ProfessionInlineKeyboardButton() -> InlineKeyboardButton:  # noqa: N802
     return InlineKeyboardButton(
-        text="🎯 Направление",
+        text="🎯 Профессия",
         callback_data=PreferencesCallback(action=PreferencesActionEnum.SHOW_PROFESSIONS).pack(),
     )

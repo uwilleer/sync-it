@@ -50,7 +50,7 @@ async def handle_profession(query: CallbackQuery, user_service: UserService) -> 
         user_service,
         PreferencesCategoryCodeEnum.PROFESSION,
         profession_client,
-        "Выберите направление:",
+        "Выберите профессию:",
     )
 
 
