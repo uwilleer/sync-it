@@ -28,22 +28,22 @@ class SkillEnum(BaseAliasEnum):
     BITRIX = "Bitrix", ("битрикс", "битрикс 24", "битрикс24", "bitrix24")
     BPMN = "BPMN"
     C = "C"
-    C_SHARP = "C#"
+    C_SHARP = "C#", ("csharp",)
     CASSANDRA = "Cassandra"
     CELERY = "Celery"
     CI_CD = "CI/CD", ("gitlab ci", "gitlab ci/cd", "github actions")
     CLICKHOUSE = "ClickHouse"
     CMS = "CMS"
     CONFLUENCE = "Confluence", ("atlassian confluence",)
-    CPP = "C++"
+    CPP = "C++", ("cpp",)
     CRM = "CRM"
     CSS = "CSS", ("css3",)
     CYPRESS = "Cypress"
     DART = "DART"
     DAX = "DAX"
-    DEVOPS = "DevOps"
+    DEVOPS = "DevOps", ("dev/ops",)
     DHCP = "DHCP"
-    DJANGO = "Django", ("drf", "django orm", "django rest framework")
+    DJANGO = "Django", ("drf", "django orm", "django rest framework", "django rest")
     DNS = "DNS"
     DOCKER = "Docker", ("docker-compose", "docker compose")
     DOT_NET = ".NET", (".net core", ".net framework")
@@ -58,15 +58,22 @@ class SkillEnum(BaseAliasEnum):
     FIGMA = "Figma"
     FLASK = "Flask"
     FLUTTER = "Flutter"
+    GCP = "GCP", ("google cloud platform", "google cloud")
     GIT = "Git", ("github", "gitlab")
     GO = "Go", ("golang",)
+    GOOGLE_SHEETS = "Google Sheets"
+    GPO = "GPO", ("group policy", "group policy object")
+    GRADLE = "Gradle"
     GRAFANA = "Grafana"
     GRAPHQL = "GraphQL"
+    GREENPLUM = "Greenplum"
     GRPC = "gRPC"
     GULP = "Gulp"
     GUNICORN = "Gunicorn"
     HADOOP = "Hadoop"
     HELM = "Helm"
+    HIBERNATE = "Hibernate"
+    HIVE = "Hive"
     HTML = "HTML", ("html5",)
     HTTP = "HTTP", ("https", "http/https")
     HYPER_V = "Hyper-V"
@@ -89,10 +96,11 @@ class SkillEnum(BaseAliasEnum):
     LARAVEL = "Laravel"
     LINUX = "Linux", ("ubuntu", "debian", "centos", "unix", "macos")
     LLM = "LLM"
+    MACHINE_LEARNING = "Machine Learning", ("ml",)
     MAVEN = "Maven"
     MICROSERVICES = "Микросервисы"
     MIKROTIK = "MikroTik"
-    ML = "ML"
+    MIRO = "Miro"
     MLFLOW = "MLflow"
     MOBX = "MobX"
     MONGODB = "MongoDB"
@@ -102,7 +110,7 @@ class SkillEnum(BaseAliasEnum):
     )
     MYSQL = "MySQL"
     NESTJS = "NestJS", ("nest.js",)
-    NEXT_JS = "Next.js"
+    NEXT_JS = "Next.js", ("nextjs",)
     NGINX = "Nginx"
     NODE_JS = "Node.js", ("nodejs",)
     NOSQL = "NoSQL"
@@ -113,12 +121,16 @@ class SkillEnum(BaseAliasEnum):
     OPENAI = "OpenAI", ("openai api",)
     OPENSHIFT = "OpenShift"
     OPENSTACK = "OpenStack"
+    ORACLE = "Oracle"
     PANDAS = "pandas"
     PHP = "PHP"
+    PLAYWRIGHT = "Playwright"
     POSTGIS = "PostGIS"
     POWER_BI = "Power BI"
+    POWER_QUERY = "Power Query"
     POWERSHELL = "PowerShell"
     PROMETHEUS = "Prometheus"
+    PROXMOX = "Proxmox"
     PYDANTIC = "Pydantic"
     PYTEST = "pytest"
     PYTHON = "Python", ("python 3.x", "python 3")
@@ -138,6 +150,7 @@ class SkillEnum(BaseAliasEnum):
     RXJS = "RxJS"
     S3 = "S3", ("aws s3", "aws")
     SCALA = "Scala"
+    SCIKIT_LEARN = "Scikit-learn", ("scikit learn",)
     SCRUM = "SCRUM"
     SCSS = "SCSS", ("sass",)
     SELENIUM = "Selenium"
@@ -148,7 +161,7 @@ class SkillEnum(BaseAliasEnum):
     SPA = "SPA"
     SPARK = "Spark", ("apache spark", "pyspark")
     SPRING = "Spring", ("spring framework",)
-    SPRING_BOOT = "Spring Boot"
+    SPRING_BOOT = "Spring Boot", ("java spring boot",)
     SQL = "SQL", ("postgres", "postgresql", "ms sql server", "mssql", "ms sql")
     SQLALCHEMY = "SQLAlchemy"
     SWIFT = "Swift"
@@ -158,11 +171,13 @@ class SkillEnum(BaseAliasEnum):
     TCP_IP = "TCP/IP"
     TENSORFLOW = "TensorFlow"
     TERRAFORM = "Terraform"
-    TYPESCRIPT = "TypeScript"
+    TYPESCRIPT = "TypeScript", ("ts",)
     UML = "UML"
-    UNITTEST = "unittest"
+    UNITTEST = "unittest", ("unit testing", "unit test")
     UX_UI = "UX/UI", ("ui/ux", "ui", "ux")
     VITE = "Vite"
+    VLAN = "VLAN"
+    VMWARE = "VMware"
     VPN = "VPN"
     VUE_JS = "Vue.js", ("vue", "vuejs")
     VUEX = "Vuex"
@@ -175,7 +190,6 @@ class SkillEnum(BaseAliasEnum):
     YII2 = "Yii2", ("yii",)
     ZABBIX = "Zabbix"
     ZUSTAND = "Zustand"
-
     # TODO: добавить проверку, что паттерны не совпадают с алиасами
     __ignore_patterns__ = (
         "adobe",
