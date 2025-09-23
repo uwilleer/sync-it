@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from clients.head_hunter import head_hunter_client
 from common.logger import get_logger
 from parsers.base import BaseParser
-from schemas.vacancy import HeadHunterVacancyCreate
+from schemas.vacancies import HeadHunterVacancyCreate
 from unitofwork import UnitOfWork
 from utils import clear_html, generate_fingerprint, generate_hash
 

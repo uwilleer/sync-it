@@ -1,6 +1,6 @@
 from database.models import HeadHunterVacancy
 from repositories import HeadHunterVacancyRepository
-from schemas.vacancy import HeadHunterVacancyCreate, HeadHunterVacancyRead
+from schemas.vacancies import HeadHunterVacancyCreate, HeadHunterVacancyRead
 
 from services import BaseVacancyService
 

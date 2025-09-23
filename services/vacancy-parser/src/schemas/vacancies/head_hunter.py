@@ -1,66 +1,13 @@
-from datetime import datetime
-
-from common.shared.schemas import HttpsUrl
 from database.models.enums import SourceEnum
-from pydantic import BaseModel, ConfigDict, Field, computed_field, field_serializer
-from pydantic_core.core_schema import SerializationInfo
+from pydantic import Field, computed_field
+from schemas.vacancies import BaseVacancy, BaseVacancyCreate, BaseVacancyRead
 from utils import generate_hash
 
 
 __all__ = [
     "HeadHunterVacancyCreate",
     "HeadHunterVacancyRead",
-    "TelegramVacancyCreate",
-    "TelegramVacancyRead",
-    "VacancyCreate",
-    "VacancyRead",
 ]
-
-
-class BaseVacancy(BaseModel):
-    source: SourceEnum
-    fingerprint: str
-    link: HttpsUrl
-    published_at: datetime
-
-
-class VacancyCreate(BaseVacancy):
-    @computed_field  # type: ignore[prop-decorator]
-    @property
-    def hash(self) -> str:
-        raise NotImplementedError("Define hash in child class")
-
-    @field_serializer("link")
-    def serialize_link(self, value: HttpsUrl, _info: SerializationInfo) -> str:  # noqa: PLR6301
-        return str(value)
-
-
-class VacancyRead(BaseVacancy):
-    id: int
-    hash: str
-    data: str
-    processed_at: datetime | None
-
-    model_config = ConfigDict(from_attributes=True)
-
-
-class BaseTelegramVacancy(BaseVacancy):
-    source: SourceEnum = SourceEnum.TELEGRAM
-    channel_username: str
-    message_id: int
-
-
-class TelegramVacancyCreate(BaseTelegramVacancy, VacancyCreate):
-    data: str
-
-    @computed_field  # type: ignore[prop-decorator]
-    @property
-    def hash(self) -> str:
-        return generate_hash(f"{self.link}:{self.message_id}")
-
-
-class TelegramVacancyRead(BaseTelegramVacancy, VacancyRead):
-    pass
 
 
 class BaseHeadHunterVacancy(BaseVacancy):
@@ -68,7 +15,7 @@ class BaseHeadHunterVacancy(BaseVacancy):
     vacancy_id: int
 
 
-class HeadHunterVacancyCreate(BaseHeadHunterVacancy, VacancyCreate):
+class HeadHunterVacancyCreate(BaseHeadHunterVacancy, BaseVacancyCreate):
     # Exclude поля нужны для расчета data. Для модели они лишние
     employer: str = Field(exclude=True)
     name: str = Field(exclude=True)
@@ -105,5 +52,5 @@ class HeadHunterVacancyCreate(BaseHeadHunterVacancy, VacancyCreate):
         return "\n".join(text_parts)
 
 
-class HeadHunterVacancyRead(BaseHeadHunterVacancy, VacancyRead):
+class HeadHunterVacancyRead(BaseHeadHunterVacancy, BaseVacancyRead):
     data: str

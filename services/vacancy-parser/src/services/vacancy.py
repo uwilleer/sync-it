@@ -1,5 +1,5 @@
 from repositories import VacancyRepository
-from schemas.vacancy import VacancyCreate, VacancyRead
+from schemas.vacancies import VacancyRead
 
 from services import BaseVacancyService
 
@@ -7,9 +7,9 @@ from services import BaseVacancyService
 __all__ = ["VacancyService"]
 
 
-class VacancyService(BaseVacancyService[VacancyRead, VacancyCreate, VacancyRepository]):
+class VacancyService(BaseVacancyService[VacancyRead, None, VacancyRepository]):
     _read_schema = VacancyRead
-    _create_schema = VacancyCreate
+    _create_schema = None
     _repo: "VacancyRepository"
 
     def _get_repo(self) -> "VacancyRepository":

@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 from database.models import TelegramVacancy
 from repositories import TelegramVacancyRepository
-from schemas.vacancy import TelegramVacancyCreate, TelegramVacancyRead
+from schemas.vacancies import TelegramVacancyCreate, TelegramVacancyRead
 
 from services import BaseVacancyService
 

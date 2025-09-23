@@ -2,8 +2,7 @@ from datetime import datetime
 
 from common.shared.schemas import HttpsUrl
 from database.models.enums import SourceEnum
-from pydantic import BaseModel, ConfigDict, field_serializer, field_validator
-from pydantic_core.core_schema import SerializationInfo
+from pydantic import BaseModel, ConfigDict, field_validator
 from schemas.grade import GradeRead
 from schemas.profession import ProfessionRead
 from schemas.skill import SkillRead
@@ -34,10 +33,6 @@ class BaseVacancy(BaseModel):
 
 class VacancyCreate(BaseVacancy):
     profession_id: int | None
-
-    @field_serializer("link")
-    def serialize_link(self, value: HttpsUrl, _info: SerializationInfo) -> str:  # noqa: PLR6301
-        return str(value)
 
     @field_validator("salary")
     @classmethod

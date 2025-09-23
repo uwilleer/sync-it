@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Any
 
 from common.shared.services import BaseUOWService
-from schemas.vacancy import VacancyCreate, VacancyRead
+from schemas.vacancies import BaseVacancyCreate, BaseVacancyRead
 from unitofwork import UnitOfWork
 
 
@@ -15,12 +15,12 @@ if TYPE_CHECKING:
 
 
 class BaseVacancyService[
-    VacancyReadType: VacancyRead,
-    VacancyCreateType: VacancyCreate,
+    VacancyReadType: BaseVacancyRead,
+    VacancyCreateType: BaseVacancyCreate | None,
     VacancyRepositoryType: BaseVacancyRepository[Any],  # Головная боль без Any
 ](BaseUOWService[UnitOfWork], ABC):
     _read_schema: type[VacancyReadType]
-    _create_schema: type[VacancyCreateType]
+    _create_schema: type[VacancyCreateType] | None
     _repo: "VacancyRepositoryType"
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
