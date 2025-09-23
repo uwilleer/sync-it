@@ -7,11 +7,11 @@ from sqlalchemy import DateTime, ForeignKey, Index, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 
-__all__ = ["Vacancy"]
-
-
 if TYPE_CHECKING:
     from database.models import Grade, Profession, Skill, WorkFormat
+
+
+__all__ = ["Vacancy"]
 
 
 class Vacancy(Base):

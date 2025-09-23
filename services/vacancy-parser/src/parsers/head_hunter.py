@@ -8,10 +8,11 @@ from unitofwork import UnitOfWork
 from utils import clear_html, generate_fingerprint, generate_hash
 
 
-__all__ = ["HeadHunterParser"]
-
 if TYPE_CHECKING:
     from services import HeadHunterVacancyService
+
+
+__all__ = ["HeadHunterParser"]
 
 
 logger = get_logger(__name__)

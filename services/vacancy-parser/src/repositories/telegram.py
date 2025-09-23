@@ -5,11 +5,11 @@ from repositories import BaseVacancyRepository
 from sqlalchemy import func, select
 
 
-__all__ = ["TelegramVacancyRepository"]
-
-
 if TYPE_CHECKING:
     from parsers.schemas import TelegramChannelUrl
+
+
+__all__ = ["TelegramVacancyRepository"]
 
 
 class TelegramVacancyRepository(BaseVacancyRepository[TelegramVacancy]):

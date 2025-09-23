@@ -8,10 +8,11 @@ from schemas.vacancies import BaseVacancyCreate, BaseVacancyRead
 from unitofwork import UnitOfWork
 
 
-__all__ = ["BaseVacancyService"]
-
 if TYPE_CHECKING:
     from repositories import BaseVacancyRepository
+
+
+__all__ = ["BaseVacancyService"]
 
 
 class BaseVacancyService[

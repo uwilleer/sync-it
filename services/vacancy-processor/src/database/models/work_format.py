@@ -6,11 +6,11 @@ from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 
-__all__ = ["WorkFormat"]
-
-
 if TYPE_CHECKING:
     from database.models import Vacancy
+
+
+__all__ = ["WorkFormat"]
 
 
 class WorkFormat(Base):

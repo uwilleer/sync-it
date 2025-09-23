@@ -5,11 +5,11 @@ from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 
-__all__ = ["Profession"]
-
-
 if TYPE_CHECKING:
     from database.models import Vacancy
+
+
+__all__ = ["Profession"]
 
 
 class Profession(Base):
