@@ -1,10 +1,10 @@
 # isort: off
-from services.vacancy.base import BaseVacancyService
-from services.vacancy.vacancy import VacancyService
+from services.base import BaseVacancyService
+from services.vacancy import VacancyService
 # isort: on
 
-from services.vacancy.head_hunter import HeadHunterVacancyService
-from services.vacancy.telegram import TelegramVacancyService
+from services.head_hunter import HeadHunterVacancyService
+from services.telegram import TelegramVacancyService
 
 
 __all__ = [
