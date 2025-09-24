@@ -13,14 +13,14 @@ __all__ = ["BaseVacancyRepository"]
 class BaseVacancyRepository[VacancyType: Vacancy](BaseRepository):
     """Базовый репозиторий для работы с моделями вакансий."""
 
-    _model: type[VacancyType]
+    model: type[VacancyType]
 
     async def get_recent_vacancies(self, limit: int = 100) -> Sequence[VacancyType]:
         """Получить последние актуальные вакансии."""
         stmt = (
-            select(self._model)
-            .where(self._model.processed_at.is_(None))
-            .order_by(self._model.published_at.desc())
+            select(self.model)
+            .where(self.model.processed_at.is_(None))
+            .order_by(self.model.published_at.desc())
             .limit(limit)
         )
         result = await self._session.execute(stmt)
@@ -28,7 +28,7 @@ class BaseVacancyRepository[VacancyType: Vacancy](BaseRepository):
 
     async def get_existing_hashes(self, hashes: Iterable[str]) -> set[str]:
         """Получить set уже существующих хешей в БД."""
-        stmt = select(self._model.hash).where(self._model.hash.in_(hashes))
+        stmt = select(self.model.hash).where(self.model.hash.in_(hashes))
         result = await self._session.execute(stmt)
 
         return set(result.scalars().all())
@@ -36,8 +36,8 @@ class BaseVacancyRepository[VacancyType: Vacancy](BaseRepository):
     async def find_duplicate_vacancy_by_fingerprint(self, fingerprint: str) -> VacancyType | None:
         """Найти дубликат вакансии по содержимому."""
         stmt = (
-            select(self._model)
-            .where(func.similarity(self._model.fingerprint, fingerprint) > FINGERPRINT_SIMILARITY_THRESHOLD)
+            select(self.model)
+            .where(func.similarity(self.model.fingerprint, fingerprint) > FINGERPRINT_SIMILARITY_THRESHOLD)
             .limit(1)
         )
         result = await self._session.execute(stmt)
