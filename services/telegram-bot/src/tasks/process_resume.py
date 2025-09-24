@@ -85,6 +85,15 @@ async def _extract_and_save_user_preferences(user_id: int, text: str, chat_id: i
         if toggle:
             skill_names = list(map(str.strip, text.strip().strip(",").split(",")))
             skills = await skill_client.get_by_names(skill_names)
+            if not skills:
+                await bot.send_message(
+                    chat_id,
+                    "⚠️ В сообщении не найдено ни одного навыка.\n\n"
+                    f"Если вы считаете, что это ошибка и ваш навык существует, пожалуйста, обратитесь в поддержку: "
+                    f"@{service_config.support_username}",
+                    reply_markup=process_update_skills_keyboard(),
+                )
+                return
 
             added: list[str] = []
             removed: list[str] = []
@@ -139,7 +148,7 @@ async def _extract_and_save_user_preferences(user_id: int, text: str, chat_id: i
                     "⚠️ В приведенном тексте не найдено ни одного навыка.\n\n"
                     f"Если вы считаете, что это ошибка и ваш навык существует, пожалуйста, обратитесь в поддержку: "
                     f"@{service_config.support_username}",
-                    reply_markup=main_menu_keyboard(),
+                    reply_markup=process_update_skills_keyboard(),
                 )
                 return
 
