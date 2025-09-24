@@ -8,4 +8,4 @@ __all__ = ["VacancyRepository"]
 class VacancyRepository(BaseVacancyRepository[Vacancy]):
     """Репозиторий для работы с моделями вакансий."""
 
-    _model = Vacancy
+    model = Vacancy
