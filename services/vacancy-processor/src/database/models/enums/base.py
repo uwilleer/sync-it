@@ -31,9 +31,9 @@ class BaseAliasEnum(StrEnum):
             cls._validate_ignore_patterns_conflicts()
 
     @classmethod
-    def get_safe(cls, label: str) -> Self | None:
+    def get_safe(cls, label: str, *, allow_unknown: bool = False) -> Self | None:
         """Возвращает элемент Enum по строковому значению или алиасу."""
-        if label == cls.UNKNOWN:  # type: ignore[attr-defined]
+        if not allow_unknown and label == cls.UNKNOWN:  # type: ignore[attr-defined]
             return None
 
         for member in cls:
