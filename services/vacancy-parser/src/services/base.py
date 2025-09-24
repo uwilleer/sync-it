@@ -56,7 +56,7 @@ class BaseVacancyService[
         return await self.repo.mark_as_processed(vacancy_hash=vacancy_hash)
 
     async def add_vacancy(self, vacancy: VacancyCreateType) -> VacancyReadType:
-        vacancy_model = self.repo.model(**vacancy.model_dump(mode="json"))
+        vacancy_model = self.repo.model(**vacancy.model_dump())
         created_vacancy = await self.repo.add(vacancy_model)
 
         return self.read_schema.model_validate(created_vacancy)
