@@ -1,4 +1,5 @@
 from aiogram import F, Router
+from aiogram.enums import ParseMode
 from aiogram.types import CallbackQuery
 from callbacks.preferences import PreferencesActionEnum, PreferencesCallback
 from clients import grade_client, profession_client, work_format_client
@@ -40,6 +41,7 @@ async def handle_show_options(
         query,
         text=message_text,
         reply_markup=options_keyboard(category_code, options, user),
+        parse_mode=ParseMode.HTML,
     )
 
 
@@ -50,7 +52,7 @@ async def handle_profession(query: CallbackQuery, user_service: UserService) -> 
         user_service,
         PreferencesCategoryCodeEnum.PROFESSION,
         profession_client,
-        "Выберите профессию:",
+        "Выберите профессию.\n\n<i>Неизвестно — вакансии, у которых не удалось определить профессию.</i>",
     )
 
 
@@ -61,7 +63,7 @@ async def handle_work_format(query: CallbackQuery, user_service: UserService) ->
         user_service,
         PreferencesCategoryCodeEnum.WORK_FORMAT,
         work_format_client,
-        "Выберите формат работы:",
+        "Выберите формат работы.\n\n<i>Неизвестно — вакансии, у которых не удалось определить формат работы.</i>",
     )
 
 
@@ -72,7 +74,7 @@ async def handle_grade(query: CallbackQuery, user_service: UserService) -> None:
         user_service,
         PreferencesCategoryCodeEnum.GRADE,
         grade_client,
-        "Выберите грейд:",
+        "Выберите грейд.\n\n<i>Неизвестно — вакансии, у которых не удалось определить формат работы.</i>",
     )
 
 
