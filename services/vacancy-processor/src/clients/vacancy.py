@@ -1,4 +1,4 @@
-from clients.schemas import VacancyProcessedResponse, VacancyResponse, VacancySchema
+from clients.schemas import VacanciesListRequest, VacancyListResponse, VacancyProcessedResponse, VacancySchema
 from common.gateway.enums import ServiceEnum
 from common.gateway.utils import build_service_url
 from common.logger import get_logger
@@ -19,11 +19,13 @@ class _VacancyClient(BaseClient):
         self.client.timeout = 30
 
     async def get_vacancies(self) -> list[VacancySchema]:
-        response = await self.client.get(self.url)
+        params = VacanciesListRequest(limit=100)
+
+        response = await self.client.get(self.url, params=params.model_dump_json())
         response.raise_for_status()
 
         data = response.json()
-        model_response = VacancyResponse(**data)
+        model_response = VacancyListResponse(**data)
 
         return model_response.vacancies
 
