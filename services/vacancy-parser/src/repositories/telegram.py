@@ -13,10 +13,10 @@ __all__ = ["TelegramVacancyRepository"]
 
 
 class TelegramVacancyRepository(BaseVacancyRepository[TelegramVacancy]):
-    _model = TelegramVacancy
+    model = TelegramVacancy
 
     async def get_last_message_id(self, link: "TelegramChannelUrl") -> int | None:
         """Получить последний message_id для заданного Telegram канала."""
-        smtp = select(func.max(self._model.message_id)).where(self._model.channel_username == link.channel_username)
+        smtp = select(func.max(self.model.message_id)).where(self.model.channel_username == link.channel_username)
         result = await self._session.execute(smtp)
         return result.scalar_one_or_none()

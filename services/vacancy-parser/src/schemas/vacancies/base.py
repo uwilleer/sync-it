@@ -2,7 +2,7 @@ from datetime import datetime
 
 from common.shared.schemas import HttpsUrl
 from database.models.enums import SourceEnum
-from pydantic import BaseModel, computed_field
+from pydantic import BaseModel, ConfigDict, computed_field
 
 
 __all__ = [
@@ -20,6 +20,8 @@ class BaseVacancy(BaseModel):
 
 
 class BaseVacancyCreate(BaseVacancy):
+    model_config = ConfigDict(json_encoders={HttpsUrl: str})
+
     @computed_field  # type: ignore[prop-decorator]
     @property
     def hash(self) -> str:
