@@ -33,6 +33,9 @@ class BaseAliasEnum(StrEnum):
     @classmethod
     def get_safe(cls, label: str) -> Self | None:
         """Возвращает элемент Enum по строковому значению или алиасу."""
+        if label == cls.UNKNOWN:  # type: ignore[attr-defined]
+            return None
+
         for member in cls:
             if label.lower() in member.aliases:
                 return member
