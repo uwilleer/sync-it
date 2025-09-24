@@ -2,7 +2,7 @@ from datetime import datetime
 
 from common.shared.schemas import HttpsUrl
 from database.models.enums import SourceEnum
-from pydantic import BaseModel, ConfigDict, field_validator
+from pydantic import BaseModel, ConfigDict, field_serializer, field_validator
 from schemas.grade import GradeRead
 from schemas.profession import ProfessionRead
 from schemas.skill import SkillRead
@@ -41,6 +41,10 @@ class VacancyCreate(BaseVacancy):
         if value is not None and len(value) > max_length:
             raise ValueError("Salary field must not exceed 96 characters")
         return value
+
+    @field_serializer("link")
+    def serialize_url(self, link: HttpsUrl) -> str:  # noqa: PLR6301
+        return str(link)
 
 
 class VacancyRead(BaseVacancy):

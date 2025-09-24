@@ -19,7 +19,7 @@ RETRY_DELAY = 3
 client = AsyncClient()
 
 
-@limit_requests(35)
+@limit_requests(1000)
 async def get_gpt_response(prompt: str) -> str | None:
     message = Message(role="user", content=prompt)
 
@@ -30,14 +30,7 @@ async def get_gpt_response(prompt: str) -> str | None:
                 model="gpt-4.1-mini",
                 messages=[message],
             )
-            content = cast("str", response.choices[0].message.content)
-
-            if "502 Bad Gateway" not in content:
-                logger.debug("Received content: %s", content)
-                return content
-
-            logger.warning("Got 502, retrying (%s/%s)...", attempt, MAX_RETRIES)
-            await asyncio.sleep(RETRY_DELAY**3)
+            return cast("str", response.choices[0].message.content)
 
         except Exception as e:
             logger.exception("Failed to get GPT response on attempt %s", attempt, exc_info=e)

@@ -2,13 +2,14 @@ from datetime import datetime
 
 from common.shared.schemas import HttpsUrl
 from database.models.enums import SourceEnum
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 __all__ = [
     "CompletionResponse",
+    "VacanciesListRequest",
+    "VacancyListResponse",
     "VacancyProcessedResponse",
-    "VacancyResponse",
     "VacancySchema",
 ]
 
@@ -26,7 +27,12 @@ class VacancySchema(BaseModel):
     published_at: datetime
 
 
-class VacancyResponse(BaseModel):
+# FIXME: Дубляж. См. VacanciesListQuery
+class VacanciesListRequest(BaseModel):
+    limit: int = Field(ge=1, le=1000)
+
+
+class VacancyListResponse(BaseModel):
     vacancies: list[VacancySchema]
 
 

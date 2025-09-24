@@ -104,7 +104,7 @@ class VacancyExtractor:
         if any(part in profession_str.lower() for part in ProfessionEnum.__ignore_patterns__):
             return ProfessionEnum.UNKNOWN
 
-        profession = ProfessionEnum.get_safe(profession_str)
+        profession = ProfessionEnum.get_safe(profession_str, allow_unknown=True)
         if not profession:
             logger.warning("Unknown profession part: %s", profession_str)
             return ProfessionEnum.UNKNOWN
@@ -160,7 +160,7 @@ class VacancyExtractor:
         for part in grade_parts:
             clean_part = part.strip()
 
-            grade = GradeEnum.get_safe(clean_part)
+            grade = GradeEnum.get_safe(clean_part, allow_unknown=True)
             if not grade:
                 logger.warning("Unknown grade part: %s", clean_part)
                 continue
@@ -190,7 +190,7 @@ class VacancyExtractor:
         for part in work_format_parts:
             clean_part = part.strip()
 
-            work_format = WorkFormatEnum.get_safe(clean_part)
+            work_format = WorkFormatEnum.get_safe(clean_part, allow_unknown=True)
             if not work_format:
                 logger.warning("Unknown work format part: %s", clean_part)
                 continue

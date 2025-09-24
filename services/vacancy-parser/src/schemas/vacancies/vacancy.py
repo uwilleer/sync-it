@@ -1,7 +1,6 @@
 from datetime import datetime
 from typing import Any
 
-from pydantic import ConfigDict
 from schemas.vacancies import BaseVacancyCreate, BaseVacancyRead
 
 
@@ -16,8 +15,6 @@ class VacancyRead(BaseVacancyRead):
     hash: str
     data: str
     processed_at: datetime | None
-
-    model_config = ConfigDict(from_attributes=True)
 
 
 class VacancyCreate(BaseVacancyCreate):
