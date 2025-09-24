@@ -1,6 +1,6 @@
 from collections.abc import Iterable
 
-from clients.telegram import telegram_client
+from clients import telegram_client
 from common.logger import get_logger
 from common.shared.schemas import HttpsUrl
 from parsers.base import BaseParser

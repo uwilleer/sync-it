@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from clients.head_hunter import head_hunter_client
+from clients import head_hunter_client
 from common.logger import get_logger
 from parsers.base import BaseParser
 from schemas.vacancies import HeadHunterVacancyCreate

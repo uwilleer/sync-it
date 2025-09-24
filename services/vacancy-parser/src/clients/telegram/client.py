@@ -1,4 +1,8 @@
-from clients.schemas import TelegramChannelMessageSchema, TelegramChannelMessagesResponse, TelegramNewestMessagesRequest
+from clients.telegram.schemas import (
+    TelegramChannelMessageSchema,
+    TelegramChannelMessagesResponse,
+    TelegramNewestMessagesRequest,
+)
 from common.gateway.enums import ServiceEnum
 from common.gateway.utils import build_service_url
 from common.shared.clients import BaseClient
