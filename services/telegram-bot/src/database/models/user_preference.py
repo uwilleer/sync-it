@@ -5,11 +5,10 @@ from sqlalchemy import ForeignKey, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 
-__all__ = ["UserPreference"]
-
-
 if TYPE_CHECKING:
     from database.models import User
+
+__all__ = ["UserPreference"]
 
 
 class UserPreference(Base):

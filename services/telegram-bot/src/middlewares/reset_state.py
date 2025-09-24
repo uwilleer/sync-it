@@ -7,11 +7,11 @@ from commands import BotCommandEnum
 from common.logger import get_logger
 
 
-__all__ = ["ResetStateMiddleware"]
-
-
 if TYPE_CHECKING:
     from aiogram.fsm.context import FSMContext
+
+
+__all__ = ["ResetStateMiddleware"]
 
 
 logger = get_logger(__name__)

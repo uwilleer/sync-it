@@ -2,16 +2,16 @@ from typing import TYPE_CHECKING
 
 from database.models import TelegramVacancy
 from repositories import TelegramVacancyRepository
-from schemas.vacancy import TelegramVacancyCreate, TelegramVacancyRead
+from schemas.vacancies import TelegramVacancyCreate, TelegramVacancyRead
 
 from services import BaseVacancyService
 
 
-__all__ = ["TelegramVacancyService"]
-
-
 if TYPE_CHECKING:
     from parsers.schemas import TelegramChannelUrl
+
+
+__all__ = ["TelegramVacancyService"]
 
 
 class TelegramVacancyService(BaseVacancyService[TelegramVacancyRead, TelegramVacancyCreate, TelegramVacancyRepository]):

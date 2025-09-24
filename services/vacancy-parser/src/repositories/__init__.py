@@ -1,10 +1,10 @@
 # isort: off
-from repositories.vacancy.base import BaseVacancyRepository
-from repositories.vacancy.vacancy import VacancyRepository
+from repositories.base import BaseVacancyRepository
+from repositories.vacancy import VacancyRepository
 # isort: on
 
-from repositories.vacancy.head_hunter import HeadHunterVacancyRepository
-from repositories.vacancy.telegram import TelegramVacancyRepository
+from repositories.head_hunter import HeadHunterVacancyRepository
+from repositories.telegram import TelegramVacancyRepository
 
 
 __all__ = [
