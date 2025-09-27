@@ -15,7 +15,7 @@ class _GPTClient(BaseClient):
         super().configure_client()
         self.client.timeout = 30
 
-    @limit_requests(500)
+    @limit_requests(50)
     async def get_completion(self, prompt: str) -> str:
         response = await self.client.post(self.url, json={"prompt": prompt})
         response.raise_for_status()
