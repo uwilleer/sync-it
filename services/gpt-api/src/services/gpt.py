@@ -3,7 +3,7 @@ from typing import cast
 
 from common.logger import get_logger
 from common.shared.decorators.concurency import limit_requests
-from g4f.Provider import OIVSCodeSer0501  # type: ignore[import-untyped]
+from g4f.Provider import OIVSCodeSer2  # type: ignore[import-untyped]
 from g4f.client import AsyncClient  # type: ignore[import-untyped]
 from g4f.typing import Message  # type: ignore[import-untyped]
 
@@ -26,8 +26,8 @@ async def get_gpt_response(prompt: str) -> str | None:
     for attempt in range(1, MAX_RETRIES + 1):
         try:
             response = await client.chat.completions.create(
-                provider=OIVSCodeSer0501,
-                model="gpt-4.1-mini",
+                model="gpt-4o-mini",
+                provider=OIVSCodeSer2,
                 messages=[message],
             )
             return cast("str", response.choices[0].message.content)
