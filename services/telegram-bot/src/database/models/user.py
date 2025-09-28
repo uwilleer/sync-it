@@ -27,6 +27,6 @@ class User(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
 
     preferences: Mapped[list["UserPreference"]] = relationship(
-        back_populates="users",
+        back_populates="user",
         cascade="all, delete-orphan",
     )
