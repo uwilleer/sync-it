@@ -145,7 +145,7 @@ class VacancyExtractor:
 
         grade_str = match.group(1).strip()
         # Junior/Middle/Senior
-        grade_parts = re.split(r"[/,\s]+", grade_str.strip())
+        grade_parts = re.split(r"[/,()\s]+", grade_str.strip())
         joined_parts_lower = " ".join(grade_parts).lower()
 
         if "нет опыта" in joined_parts_lower:
