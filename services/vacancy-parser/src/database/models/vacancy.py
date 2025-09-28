@@ -27,15 +27,7 @@ class Vacancy(Base):
         "polymorphic_identity": "base",
     }
 
-    __table_args__ = (
-        Index("idx_vacancies_not_processed", "processed_at", postgresql_where="processed_at IS NULL"),
-        Index(
-            "idx_vacancies_fingerprint_trgm",
-            "fingerprint",
-            postgresql_using="gin",
-            postgresql_ops={"fingerprint": "gin_trgm_ops"},
-        ),
-    )
+    __table_args__ = (Index("idx_vacancies_not_processed", "processed_at", postgresql_where="processed_at IS NULL"),)
 
     @property
     def is_processed(self) -> bool:

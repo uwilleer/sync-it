@@ -4,7 +4,7 @@ from datetime import UTC, datetime
 from common.shared.repositories import BaseRepository
 from constants.fingerprint import FINGERPRINT_SIMILARITY_THRESHOLD
 from database.models import Vacancy
-from sqlalchemy import Text, bindparam, select, text, update
+from sqlalchemy import func, select, update
 
 
 __all__ = ["BaseVacancyRepository"]
@@ -41,17 +41,10 @@ class BaseVacancyRepository[VacancyType: Vacancy](BaseRepository):
         return result.scalar_one_or_none()
 
     async def find_duplicate_vacancy_by_fingerprint(self, fingerprint: str) -> VacancyType | None:
-        """
-        Найти дубликат вакансии по содержимому.
-        Использует GIN индекс и триграммы для ускорения поиска.
-        """
-        await self._session.execute(text(f"SET pg_trgm.similarity_threshold = {FINGERPRINT_SIMILARITY_THRESHOLD}"))
-
+        """Найти дубликат вакансии по содержимому."""
         stmt = (
             select(self.model)
-            .where(text("fingerprint % :fp").bindparams(bindparam("fp", type_=Text)))
-            .order_by(text("fingerprint <-> :fp").bindparams(bindparam("fp", type_=Text)))
-            .params(fp=fingerprint)
+            .where(func.similarity(self.model.fingerprint, fingerprint) > FINGERPRINT_SIMILARITY_THRESHOLD)
             .limit(1)
         )
         result = await self._session.execute(stmt)
