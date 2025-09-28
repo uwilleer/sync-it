@@ -4,6 +4,7 @@ from typing import Any
 import warnings
 
 from common.logger import get_logger
+from common.sentry.config import sentry_config
 from sqlalchemy import ClauseElement, Compiled, Connection, event
 from sqlalchemy.dialects.postgresql.asyncpg import PGExecutionContext_asyncpg
 from sqlalchemy.engine import Engine
@@ -48,4 +49,6 @@ def setup_alchemy_logging() -> None:
         else:
             formatted_sql = sqlparse.format(statement, reindent=True, keyword_case="upper")
 
-        logger.debug("Query Time: %.5fs\n%s", query_duration, formatted_sql)
+        logger.debug("%s\nQuery Time: %.5fs", query_duration, formatted_sql)
+        if query_duration > sentry_config.slow_sql_threshold:
+            logger.warning("Slow SQL query", extra={"query": formatted_sql, "duration": query_duration})

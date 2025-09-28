@@ -13,6 +13,7 @@ class SentryConfig(BaseSettings):
     traces_sample_rate: float = Field(ge=0.0, le=1.0)
     profiles_sample_rate: float = Field(ge=0.0, le=1.0)
     profile_lifecycle: ProfileLifecycleEnum
+    slow_sql_threshold: float = Field(gt=0.0)
 
     model_config = SettingsConfigDict(env_prefix="SENTRY_")
 
