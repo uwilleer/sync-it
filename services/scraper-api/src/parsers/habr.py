@@ -28,7 +28,6 @@ class HabrParser(BaseParser):
 
         description_block = soup.select_one("article.vacancy-show")
         if description_block is None:
-            logger.warning("Description block not found for vacancy with id %s", vacancy_id)
             raise ParserBlockNotFoundError
 
         blocks_to_remove = [
