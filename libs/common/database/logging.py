@@ -52,4 +52,4 @@ def setup_alchemy_logging() -> None:
         logger.debug("%s\n[ Query Time: %ss ]", formatted_sql, query_duration)
 
         if query_duration > sentry_config.slow_sql_threshold:
-            logger.warning("Slow SQL query", extra={"query": formatted_sql, "duration": query_duration})
+            logger.warning("Slow SQL query\n%s", formatted_sql, extra={"duration": query_duration})
