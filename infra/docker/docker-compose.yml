@@ -2,78 +2,27 @@ name: ${ENV_PROJECT_NAME}
 
 services:
   postgres:
-    image: postgres:17.5-alpine
-    container_name: postgres
-    env_file: ../.env
-    command: -p ${DB_PORT}
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-    networks:
-      - app-network
-    healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "${DB_USER}", "-d", "${DB_NAME}", "-p", "${DB_PORT}" ]
-      interval: 10s
-      timeout: 1s
-      retries: 3
-      start_period: 1s
-      start_interval: 1s
+    extends:
+      service: postgres
+      file: postgres/docker-compose.yml
 
   pgbouncer:
-    image: edoburu/pgbouncer:v1.24.1-p1
-    container_name: pgbouncer
-    env_file: ../.env
-    environment:
-      - AUTH_TYPE=scram-sha-256
-      - LISTEN_PORT=${DB_PORT}
-    ports:
-      - "${DB_PORT}:${DB_PORT}"
-    networks:
-      - app-network
+    extends:
+      service: pgbouncer
+      file: pgbouncer/docker-compose.yml
     depends_on:
       postgres:
         condition: service_healthy
-    healthcheck:
-      test: ["CMD", "pg_isready", "-h", "${DB_HOST}", "-p", "${DB_PORT}"]
-      interval: 10s
-      timeout: 1s
-      retries: 3
-      start_period: 1s
-      start_interval: 1s
 
   redis:
-    image: redis:8.0.2-alpine
-    container_name: redis
-    env_file: ../.env
-    ports:
-      - "${REDIS_PORT}:${REDIS_PORT}"
-    command: [ "redis-server", "--port", "${REDIS_PORT}" ]
-    volumes:
-      - redis-data:/data
-    networks:
-      - app-network
-    healthcheck:
-      test: [ "CMD", "redis-cli", "-p", "${REDIS_PORT}", "ping" ]
-      interval: 10s
-      timeout: 1s
-      retries: 3
-      start_period: 1s
-      start_interval: 1s
+    extends:
+      service: redis
+      file: redis/docker-compose.yml
 
   flower:
-    image: mher/flower
-    container_name: flower
-    profiles:
-      - monitoring
-    env_file: ../.env
-    environment:
-      CELERY_BROKER_URL: "redis://${REDIS_HOST}:${REDIS_PORT}/${REDIS_CELERY_BROKER_DB}"
-    ports:
-      - "${FLOWER_PORT}:${FLOWER_PORT}"
-    volumes:
-      - flower-data:/data
-    command: [ "celery", "flower", "--port=${FLOWER_PORT}", "-l", "${LOG_LEVEL}" ]
-    networks:
-      - app-network
+    extends:
+      service: flower
+      file: flower/docker-compose.yml
     depends_on:
       redis:
         condition: service_healthy

@@ -1,0 +1,16 @@
+services:
+  flower:
+    image: mher/flower
+    container_name: flower
+    profiles:
+      - monitoring
+    env_file: ${SERVICE_PROJECT_ROOT}/infra/.env
+    environment:
+      CELERY_BROKER_URL: "redis://${REDIS_HOST}:${REDIS_PORT}/${REDIS_CELERY_BROKER_DB}"
+    ports:
+      - "${FLOWER_PORT}:${FLOWER_PORT}"
+    volumes:
+      - flower-data:/data
+    command: [ "celery", "flower", "--port=${FLOWER_PORT}", "-l", "${LOG_LEVEL}" ]
+    networks:
+      - app-network

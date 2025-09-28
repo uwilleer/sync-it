@@ -1,0 +1,19 @@
+services:
+  pgbouncer:
+    image: edoburu/pgbouncer:v1.24.1-p1
+    container_name: pgbouncer
+    env_file: ${SERVICE_PROJECT_ROOT}/infra/.env
+    environment:
+      - AUTH_TYPE=scram-sha-256
+      - LISTEN_PORT=${DB_PORT}
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    networks:
+      - app-network
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-h", "${DB_HOST}", "-p", "${DB_PORT}" ]
+      interval: 10s
+      timeout: 1s
+      retries: 3
+      start_period: 1s
+      start_interval: 1s
