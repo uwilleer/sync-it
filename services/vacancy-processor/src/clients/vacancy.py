@@ -19,7 +19,7 @@ class _VacancyClient(BaseClient):
         self.client.timeout = 30
 
     async def get_vacancies(self) -> list[VacancySchema]:
-        params = VacanciesListRequest(limit=150)
+        params = VacanciesListRequest(limit=500)
 
         response = await self.client.get(self.url, params=params.model_dump_json())
         response.raise_for_status()
