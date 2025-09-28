@@ -19,6 +19,8 @@ class ProfessionEnum(BaseAliasEnum):
     DEVOPS = "DevOps", ("devops инженер", "devops-инженер", "devops engineer", "devops/mlops инженер")
     FRONTEND = "Frontend developer", ("frontend разработчик", "flutter-разработчик", "frontend-разработчик")
     FULLSTACK = "Fullstack developer", ("fullstack разработчик",)
+    ML_ENGINEER = "ML Engineer", ("ml-инженер", "machine learning engineer", "ai-инженер")
+    MOBILE = "Mobile developer", ("android разработчик", "android developer", "ios developer", "ios разработчик")
     QA_ENGINEER = "QA Engineer", ("fullstack qa", "qa automation engineer", "тестировщик", "qa инженер", "qa fullstack")
     SYSTEM_ADMINISTRATOR = "Системный администратор"
     TECH_LEAD = "Tech Lead"

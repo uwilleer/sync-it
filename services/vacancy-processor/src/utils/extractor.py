@@ -100,8 +100,8 @@ class VacancyExtractor:
             logger.warning("Profession pattern not found in text: %s", text)
             return ProfessionEnum.UNKNOWN
 
-        profession_str = match.group(1).strip()
-        if any(part in profession_str.lower() for part in ProfessionEnum.__ignore_patterns__):
+        profession_str = match.group(1).strip().lower()
+        if any(part in profession_str for part in ProfessionEnum.__ignore_patterns__):
             return ProfessionEnum.UNKNOWN
 
         profession = ProfessionEnum.get_safe(profession_str, allow_unknown=True)
@@ -158,7 +158,7 @@ class VacancyExtractor:
             return {GradeEnum.SENIOR, GradeEnum.LEAD}
 
         for part in grade_parts:
-            clean_part = part.strip()
+            clean_part = part.strip().lower()
 
             grade = GradeEnum.get_safe(clean_part, allow_unknown=True)
             if not grade:
@@ -188,7 +188,7 @@ class VacancyExtractor:
         work_format_parts = re.split(r"[/,]+", work_format_str)
 
         for part in work_format_parts:
-            clean_part = part.strip()
+            clean_part = part.strip().lower()
 
             work_format = WorkFormatEnum.get_safe(clean_part, allow_unknown=True)
             if not work_format:
@@ -217,13 +217,15 @@ class VacancyExtractor:
         # Python, Git
         skills_parts = re.split(r",", skills_str)  # noqa: RUF055 убрать noqa после добавления паттерна
         for part in skills_parts:
-            clean_part = part.strip()
-            if any(s in clean_part.lower() for s in SkillEnum.__ignore_patterns__):
+            clean_part = part.strip().lower()
+            if any(s in clean_part for s in SkillEnum.__ignore_patterns__):
                 continue
 
-            skill = SkillEnum.get_safe(clean_part)
+            skill = SkillEnum.get_safe(clean_part, allow_unknown=True)
             if not skill:
                 logger.warning("Unknown skill part: %s", clean_part)
+                continue
+            if skill == SkillEnum.UNKNOWN:
                 continue
 
             skills.add(skill)

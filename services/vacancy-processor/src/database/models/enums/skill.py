@@ -10,15 +10,22 @@ class SkillEnum(BaseAliasEnum):
     UNKNOWN = "Неизвестно"
 
     ACTIVE_DIRECTORY = "Active Directory"
+    AGILE = "Agile"
     AIOGRAM = "aiogram"
     AIOHTTP = "aiohttp"
-    AIRFLOW = "Airflow", ("apache airflow",)
-    ALLURE = "Allure"
+    ALLURE = "Allure", ("allure testops",)
     ANDROID = "Android"
     ANGULAR = "Angular"
     ANSIBLE = "Ansible"
+    APACHE = "Apache"
+    APACHE_AIRFLOW = "Apache Airflow", ("airflow",)
+    APACHE_KAFKA = "Apache Kafka", ("kafka",)
+    APACHE_NIFI = "Apache NiFi", ("nifi",)
+    APACHE_SPARK = "Apache Spark", ("spark", "pyspark")
+    APACHE_SUPERSET = "Apache Superset", ("superset",)
     ARGOCD = "ArgoCD"
     ASP_NET = "ASP.NET"
+    ASP_NET_CORE = "ASP.NET Core"
     ASYNCIO = "asyncio"
     AXIOS = "Axios"
     AZURE = "Azure", ("azure devops",)
@@ -32,8 +39,10 @@ class SkillEnum(BaseAliasEnum):
     CASSANDRA = "Cassandra"
     CELERY = "Celery"
     CI_CD = "CI/CD", ("gitlab ci", "gitlab ci/cd", "github actions")
+    CISCO = "Cisco"
     CLICKHOUSE = "ClickHouse"
     CMS = "CMS"
+    COMPUTER_VISION = "Computer Vision"
     CONFLUENCE = "Confluence", ("atlassian confluence",)
     CPP = "C++", ("cpp",)
     CRM = "CRM"
@@ -47,6 +56,7 @@ class SkillEnum(BaseAliasEnum):
     DNS = "DNS"
     DOCKER = "Docker", ("docker-compose", "docker compose")
     DOT_NET = ".NET", (".net core", ".net framework")
+    DWH = "DWH"
     ELASTICSEARCH = "Elasticsearch", ("elk", "elk stack")
     ENGLISH = "Английский язык"
     ETL = "ETL"
@@ -87,7 +97,6 @@ class SkillEnum(BaseAliasEnum):
     JSON = "JSON"
     JUNIT = "JUnit"
     JWT = "JWT"
-    KAFKA = "Kafka", ("apache kafka",)
     KANBAN = "Kanban"
     KIBANA = "Kibana"
     KOTLIN = "Kotlin"
@@ -97,8 +106,9 @@ class SkillEnum(BaseAliasEnum):
     LINUX = "Linux", ("ubuntu", "debian", "centos", "unix", "macos")
     LLM = "LLM"
     MACHINE_LEARNING = "Machine Learning", ("ml",)
+    MARIA_DB = "MariaDB"
     MAVEN = "Maven"
-    MICROSERVICES = "Микросервисы"
+    MICROSERVICES = "Микросервисы", ("микросервисная архитектура", "microservices")
     MIKROTIK = "MikroTik"
     MIRO = "Miro"
     MLFLOW = "MLflow"
@@ -108,10 +118,12 @@ class SkillEnum(BaseAliasEnum):
         "MS Office",
         ("ms powerpoint", "word", "microsoft excel", "powerpoint", "ms windows", "ms word", "ms excel"),
     )
+    MS_SQL = "MS SQL", ("ms sql server", "mssql")
     MYSQL = "MySQL"
     NESTJS = "NestJS", ("nest.js",)
     NEXT_JS = "Next.js", ("nextjs",)
     NGINX = "Nginx"
+    NLP = "NLP"
     NODE_JS = "Node.js", ("nodejs",)
     NOSQL = "NoSQL"
     NUMPY = "Numpy"
@@ -126,6 +138,7 @@ class SkillEnum(BaseAliasEnum):
     PHP = "PHP"
     PLAYWRIGHT = "Playwright"
     POSTGIS = "PostGIS"
+    POSTGRES = "PostgreSQL", ("postgres", "postgress")
     POWER_BI = "Power BI"
     POWER_QUERY = "Power Query"
     POWERSHELL = "PowerShell"
@@ -133,12 +146,12 @@ class SkillEnum(BaseAliasEnum):
     PROXMOX = "Proxmox"
     PYDANTIC = "Pydantic"
     PYTEST = "pytest"
-    PYTHON = "Python", ("python 3.x", "python 3")
+    PYTHON = "Python", ("python 3.x", "python 3", "async python")
     PYTORCH = "PyTorch"
     QA = "QA"
     R = "R"
-    RABBITMQ = "RabbitMQ"
-    REACT = "React", ("reactjs", "react hooks")
+    RABBITMQ = "RabbitMQ", ("rabbit mq",)
+    REACT = "React", ("reactjs", "react hooks", "react.js")
     REACT_NATIVE = "React Native"
     REDIS = "Redis"
     REDUX = "Redux", ("redux toolkit",)
@@ -159,16 +172,18 @@ class SkillEnum(BaseAliasEnum):
     SOAP = "SOAP"
     SOLID = "SOLID"
     SPA = "SPA"
-    SPARK = "Spark", ("apache spark", "pyspark")
     SPRING = "Spring", ("spring framework",)
     SPRING_BOOT = "Spring Boot", ("java spring boot",)
-    SQL = "SQL", ("postgres", "postgresql", "ms sql server", "mssql", "ms sql")
+    SQL = "SQL", ("реляционные базы данных",)
     SQLALCHEMY = "SQLAlchemy"
+    STL = "STL"
     SWIFT = "Swift"
     SYMFONY = "Symfony"
     TABLEAU = "Tableau"
     TAILWIND = "Tailwind"
-    TCP_IP = "TCP/IP"
+    TCP_IP = "TCP/IP", ("tcp",)
+    TDD = "TDD"
+    TEAM_CITY = "TeamCity"
     TENSORFLOW = "TensorFlow"
     TERRAFORM = "Terraform"
     TYPESCRIPT = "TypeScript", ("ts",)
@@ -181,6 +196,7 @@ class SkillEnum(BaseAliasEnum):
     VPN = "VPN"
     VUE_JS = "Vue.js", ("vue", "vuejs")
     VUEX = "Vuex"
+    WATERFALL = "Waterfall"
     WEBPACK = "Webpack"
     WEBSOCKET = "WebSocket", ("websockets",)
     WINDOWS = "Windows"
@@ -190,6 +206,7 @@ class SkillEnum(BaseAliasEnum):
     YII2 = "Yii2", ("yii",)
     ZABBIX = "Zabbix"
     ZUSTAND = "Zustand"
+
     # TODO: добавить проверку, что паттерны не совпадают с алиасами
     __ignore_patterns__ = (
         "adobe",
