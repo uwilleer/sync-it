@@ -38,7 +38,7 @@ class _TelegramClient(BaseParserClient):
 
         return self.parser.parse_message_id(response.text)
 
-    @limit_requests(25)
+    @limit_requests(20)
     async def get_detailed_message(self, channel_username: str, message_id: int) -> TelegramChannelMessageSchema | None:
         url = f"{self.url}/s/{channel_username}/{message_id}"
 
