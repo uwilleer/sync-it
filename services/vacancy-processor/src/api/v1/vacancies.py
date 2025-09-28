@@ -3,12 +3,13 @@ from typing import Annotated
 from api.depedencies import get_vacancy_service
 from api.v1.schemas import (
     VacanciesSummaryResponse,
+    VacancyListQuery,
     VacancyListResponse,
+    VacancyWithNeighborsQuery,
     VacancyWithNeighborsResponse,
     VacancyWithNeighborsSchema,
 )
 from common.logger import get_logger
-from database.models.enums import GradeEnum, ProfessionEnum, SkillEnum, WorkFormatEnum
 from fastapi import APIRouter, Depends, Query
 
 from services import VacancyService
@@ -24,10 +25,10 @@ router = APIRouter()
 @router.get("")
 async def get_vacancies(
     service: Annotated[VacancyService, Depends(get_vacancy_service)],
-    limit: int = 100,
+    query: Annotated[VacancyListQuery, Query()],
 ) -> VacancyListResponse:
     """Получить список актуальных вакансий, подходящих под заданные фильтры."""
-    vacancies = await service.get_vacancies(limit=limit)
+    vacancies = await service.get_vacancies(query)
 
     return VacancyListResponse(vacancies=vacancies)
 
@@ -35,19 +36,15 @@ async def get_vacancies(
 @router.get("/match")
 async def get_vacancy_with_neighbors(
     service: Annotated[VacancyService, Depends(get_vacancy_service)],
-    vacancy_id: int | None = None,
-    professions: Annotated[list[ProfessionEnum] | None, Query()] = None,
-    grades: Annotated[list[GradeEnum] | None, Query()] = None,
-    work_formats: Annotated[list[WorkFormatEnum] | None, Query()] = None,
-    skills: Annotated[list[SkillEnum] | None, Query()] = None,
+    query: Annotated[VacancyWithNeighborsQuery, Query()],
 ) -> VacancyWithNeighborsResponse:
-    professions = professions or []
-    grades = grades or []
-    work_formats = work_formats or []
-    skills = skills or []
-
     prev_id, vacancy, next_id = await service.get_vacancy_with_neighbors(
-        vacancy_id, professions, grades, work_formats, skills
+        query.current_vacancy_id,
+        query.professions,
+        query.grades,
+        query.work_formats,
+        query.skills,
+        query.sources,
     )
 
     result = VacancyWithNeighborsSchema(

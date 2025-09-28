@@ -1,9 +1,12 @@
+from collections.abc import Awaitable, Callable
+from typing import Any
+
 from aiogram import F, Router
 from aiogram.enums import ParseMode
 from aiogram.types import CallbackQuery
 from callbacks.preferences import PreferencesActionEnum, PreferencesCallback
-from clients import grade_client, profession_client, work_format_client
-from clients.protocols import SupportsGetAll
+from clients import profession_client, work_format_client
+from clients.vacancy import vacancy_client
 from common.logger import get_logger
 from database.models.enums import PreferencesCategoryCodeEnum
 from keyboard.inline.preferences import options_keyboard
@@ -30,10 +33,10 @@ async def handle_show_options(
     query: CallbackQuery,
     user_service: UserService,
     category_code: PreferencesCategoryCodeEnum,
-    client: SupportsGetAll,
+    client_method: Callable[..., Awaitable[Any]],
     message_text: str,
 ) -> None:
-    options = await client.get_all()
+    options = await client_method()
 
     user = await user_service.get_by_telegram_id(query.from_user.id, with_preferences=True)
 
@@ -51,8 +54,8 @@ async def handle_profession(query: CallbackQuery, user_service: UserService) -> 
         query,
         user_service,
         PreferencesCategoryCodeEnum.PROFESSION,
-        profession_client,
-        "Выберите профессию.\n\n<i>Неизвестно — вакансии, у которых не удалось определить профессию.</i>",
+        profession_client.get_all,
+        "Выберите профессию.\n\nℹ️ <i>Неизвестно — вакансии, у которых не удалось определить профессию.</i>",
     )
 
 
@@ -62,8 +65,8 @@ async def handle_work_format(query: CallbackQuery, user_service: UserService) ->
         query,
         user_service,
         PreferencesCategoryCodeEnum.WORK_FORMAT,
-        work_format_client,
-        "Выберите формат работы.\n\n<i>Неизвестно — вакансии, у которых не удалось определить формат работы.</i>",
+        work_format_client.get_all,
+        "Выберите формат работы.\n\nℹ️ <i>Неизвестно — вакансии, у которых не удалось определить формат работы.</i>",
     )
 
 
@@ -73,8 +76,20 @@ async def handle_grade(query: CallbackQuery, user_service: UserService) -> None:
         query,
         user_service,
         PreferencesCategoryCodeEnum.GRADE,
-        grade_client,
-        "Выберите грейд.\n\n<i>Неизвестно — вакансии, у которых не удалось определить формат работы.</i>",
+        vacancy_client.get_sources,
+        "Выберите грейд.\n\nℹ️ <i>Неизвестно — вакансии, у которых не удалось определить формат работы.</i>",
+    )
+
+
+@router.callback_query(PreferencesCallback.filter(F.action == PreferencesActionEnum.SHOW_SOURCES))
+async def handle_sources(query: CallbackQuery, user_service: UserService) -> None:
+    await handle_show_options(
+        query,
+        user_service,
+        PreferencesCategoryCodeEnum.SOURCE,
+        vacancy_client.get_sources,
+        "Источники, откуда хотите получать вакансии.\n\n"
+        "ℹ️ <i>Если не выбрать ни одного — будут показаны вакансии со всех источников.</i>",
     )
 
 
@@ -96,7 +111,10 @@ async def handle_select_option(
         return
 
     client = get_client(category_code)
-    options = await client.get_all()
+    if category_code == PreferencesCategoryCodeEnum.SOURCE:
+        options = await client.get_sources()  # type: ignore[attr-defined] # FIXME Сделано костыльно
+    else:
+        options = await client.get_all()
 
     item_name = ""
     for option in options:

@@ -16,7 +16,9 @@ __all__ = [
     "SkillListResponse",
     "SkillSchema",
     "SkillWithMatchSchema",
+    "SourceEnum",
     "VacanciesSummaryResponse",
+    "VacanciesSummarySchema",
     "VacancyWithNeighborsRequest",
     "VacancyWithNeighborsResponse",
     "VacancyWithNeighborsSchema",
@@ -92,6 +94,15 @@ class SourceEnum(StrEnum):
         logger.error("Unknown source: %s", self)
         return "Неизвестно"
 
+    @classmethod
+    def from_human(cls, value: str) -> "SourceEnum":
+        mapping = {
+            "Телеграм": cls.TELEGRAM,
+            "HeadHunter": cls.HEAD_HUNTER,
+            "Хабр": cls.HABR,
+        }
+        return mapping[value]
+
 
 class VacancySchema(BaseModel):
     id: int
@@ -118,11 +129,12 @@ class VacancyWithNeighborsSchema(BaseModel):
 
 
 class VacancyWithNeighborsRequest(BaseModel):
-    vacancy_id: int | None = None
-    professions: list[str] | None = None
-    grades: list[str] | None = None
-    work_formats: list[str] | None = None
-    skills: list[str] | None = None
+    current_vacancy_id: int | None = None
+    professions: list[str] = []
+    grades: list[str] = []
+    work_formats: list[str] = []
+    skills: list[str] = []
+    sources: list[str] = []
 
 
 class VacancyWithNeighborsResponse(BaseModel):

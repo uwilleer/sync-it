@@ -1,10 +1,11 @@
 from collections.abc import Iterable
 
+from api.v1.schemas import VacancyListQuery
 from common.redis.decorators.cache import build_key, cache
 from common.shared.serializers.pickle import PickleSerializer
 from common.shared.services import BaseUOWService
 from database.models import Vacancy
-from database.models.enums import GradeEnum, ProfessionEnum, SkillEnum, WorkFormatEnum
+from database.models.enums import GradeEnum, ProfessionEnum, SkillEnum, SourceEnum, WorkFormatEnum
 from schemas.grade import GradeRead
 from schemas.skill import SkillRead
 from schemas.vacancy import VacanciesSummarySchema, VacancyCreate, VacancyRead
@@ -21,8 +22,9 @@ def _neighbors_key_builder(
     grades: list[GradeEnum],
     work_formats: list[WorkFormatEnum],
     skills: list[SkillEnum],
+    sources: list[SourceEnum],
 ) -> str:
-    enums_str = sorted(map(str, [*professions, *grades, *work_formats, *skills]))
+    enums_str = sorted(map(str, [*professions, *grades, *work_formats, *skills, *sources]))
 
     return build_key(*enums_str)
 
@@ -55,19 +57,20 @@ class VacancyService(BaseUOWService[UnitOfWork]):
     async def get_existing_hashes(self, hashes: Iterable[str]) -> set[str]:
         return await self._uow.vacancies.get_existing_hashes(hashes)
 
-    async def get_vacancies(self, limit: int) -> list[VacancyRead]:
+    async def get_vacancies(self, query: VacancyListQuery) -> list[VacancyRead]:
         """Получает вакансии с применением фильтров."""
-        vacancies = await self._uow.vacancies.get_all(limit=limit)
+        vacancies = await self._uow.vacancies.get_filtered(limit=query.limit)
 
         return [VacancyRead.model_validate(v) for v in vacancies]
 
     async def get_vacancy_with_neighbors(
         self,
-        vacancy_id: int | None,
+        current_vacancy_id: int | None,
         professions: list[ProfessionEnum],
         grades: list[GradeEnum],
         work_formats: list[WorkFormatEnum],
         skills: list[SkillEnum],
+        sources: list[SourceEnum],
     ) -> tuple[int | None, VacancyRead | None, int | None]:
         if not skills:
             return None, None, None
@@ -77,14 +80,15 @@ class VacancyService(BaseUOWService[UnitOfWork]):
             grades=grades,
             work_formats=work_formats,
             skills=skills,
+            sources=sources,
         )
 
         if not vacancies:
             return None, None, None
 
-        if vacancy_id:
+        if current_vacancy_id:
             try:
-                index = next(i for i, v in enumerate(vacancies) if v.id == vacancy_id)
+                index = next(i for i, v in enumerate(vacancies) if v.id == current_vacancy_id)
             except StopIteration:
                 return None, None, None
         else:
@@ -106,6 +110,7 @@ class VacancyService(BaseUOWService[UnitOfWork]):
         grades: list[GradeEnum],
         work_formats: list[WorkFormatEnum],
         skills: list[SkillEnum],
+        sources: list[SourceEnum],
     ) -> list[Vacancy]:
         """Возвращает только релевантные вакансии (для кеша)."""
         return await self._uow.vacancies.get_relevant(
@@ -113,4 +118,5 @@ class VacancyService(BaseUOWService[UnitOfWork]):
             grades=grades,
             work_formats=work_formats,
             skills=skills,
+            sources=sources,
         )

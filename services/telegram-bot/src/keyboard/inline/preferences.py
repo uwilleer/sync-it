@@ -1,5 +1,3 @@
-from typing import TypeVar
-
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from callbacks.preferences import PreferencesActionEnum, PreferencesCallback
@@ -41,13 +39,16 @@ def preferences_keyboard() -> InlineKeyboardMarkup:
                 callback_data=PreferencesCallback(action=PreferencesActionEnum.SHOW_WORK_FORMATS).pack(),
             ),
         ],
+        [
+            InlineKeyboardButton(
+                text="🔎 Источники",
+                callback_data=PreferencesCallback(action=PreferencesActionEnum.SHOW_SOURCES).pack(),
+            ),
+        ],
         [MainMenuInlineKeyboardButton()],
     ]
 
     return InlineKeyboardBuilder(markup=buttons).as_markup()
-
-
-OptionsType = TypeVar("OptionsType", GradeSchema, ProfessionSchema, WorkFormatSchema, SkillSchema)
 
 
 def options_keyboard[OptionsType: (GradeSchema, ProfessionSchema, WorkFormatSchema, SkillSchema)](

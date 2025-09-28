@@ -1,4 +1,5 @@
-from pydantic import BaseModel
+from database.models.enums import GradeEnum, ProfessionEnum, SkillEnum, SourceEnum, WorkFormatEnum
+from pydantic import BaseModel, Field
 from schemas.grade import GradeRead
 from schemas.profession import ProfessionRead
 from schemas.skill import SkillRead
@@ -14,8 +15,11 @@ __all__ = [
     "SkillListQuery",
     "SkillListResponse",
     "VacanciesSummaryResponse",
+    "VacancyListQuery",
     "VacancyListResponse",
+    "VacancyWithNeighborsQuery",
     "VacancyWithNeighborsResponse",
+    "VacancyWithNeighborsSchema",
     "WorkFormatListResponse",
 ]
 
@@ -46,6 +50,19 @@ class SkillListQuery(BaseModel):
 
 class SkillListResponse(BaseModel):
     skills: list[SkillRead]
+
+
+class VacancyListQuery(BaseModel):
+    limit: int = Field(default=100, ge=1, le=1000, description="Лимит вакансий")
+
+
+class VacancyWithNeighborsQuery(BaseModel):
+    current_vacancy_id: int | None = Field(None)
+    professions: list[ProfessionEnum] = Field([])
+    grades: list[GradeEnum] = Field([])
+    work_formats: list[WorkFormatEnum] = Field([])
+    skills: list[SkillEnum] = Field([])
+    sources: list[SourceEnum] = Field([])
 
 
 class VacancyListResponse(BaseModel):

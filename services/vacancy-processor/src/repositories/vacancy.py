@@ -6,7 +6,7 @@ from typing import Any, TypeVar
 from common.logger import get_logger
 from common.shared.repositories import BaseRepository
 from database.models import Grade, Profession, Vacancy, WorkFormat
-from database.models.enums import GradeEnum, ProfessionEnum, SkillEnum, WorkFormatEnum
+from database.models.enums import GradeEnum, ProfessionEnum, SkillEnum, SourceEnum, WorkFormatEnum
 from schemas.vacancy import VacanciesSummarySchema
 from sqlalchemy import Select, func, select
 from sqlalchemy.orm import joinedload, selectinload
@@ -54,7 +54,7 @@ class VacancyRepository(BaseRepository):
 
         return result.unique().scalar_one_or_none()
 
-    async def get_all(self, limit: int) -> Sequence[Vacancy]:
+    async def get_filtered(self, limit: int) -> Sequence[Vacancy]:
         """Получает отфильтрованный список вакансий."""
         stmt = select(Vacancy)
         stmt = self._apply_vacancy_prefetch_details_to_stmt(stmt)
@@ -64,12 +64,13 @@ class VacancyRepository(BaseRepository):
 
         return result.scalars().unique().all()
 
-    async def get_relevant(
+    async def get_relevant(  # noqa: C901
         self,
         professions: Sequence[ProfessionEnum],
         grades: Sequence[GradeEnum],
         work_formats: Sequence[WorkFormatEnum],
         skills: Sequence[SkillEnum],
+        sources: Sequence[SourceEnum],
     ) -> list[Vacancy]:
         """
         Находит вакансию по ID и ее соседей в списке, отсортированном по релевантности,
@@ -86,6 +87,8 @@ class VacancyRepository(BaseRepository):
             stmt = stmt.join(Vacancy.grades).filter(Grade.name.in_(grades))
         if work_formats:
             stmt = stmt.join(Vacancy.work_formats).filter(WorkFormat.name.in_(work_formats))
+        if sources:
+            stmt = stmt.filter(Vacancy.source.in_(sources))
 
         result = await self._session.execute(stmt)
         vacancies = result.scalars().unique().all()
@@ -143,7 +146,9 @@ class VacancyRepository(BaseRepository):
         # Количество по источникам
         sources_stmt = select(Vacancy.source, func.count(Vacancy.id)).group_by(Vacancy.source)
         sources_result = await self._session.execute(sources_stmt)
-        sources: dict[str, int] = dict(sources_result.tuples().all())
+        raw_sources: dict[str, int] = dict(sources_result.tuples().all())
+        # FIXME Костыльно
+        sources: dict[str, int] = {source.value: raw_sources.get(source.value, 0) for source in SourceEnum}
 
         # За день
         day_stmt = select(func.count(Vacancy.id)).where(Vacancy.published_at >= day_ago)

@@ -9,7 +9,7 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message, User
 from callbacks.vacancy import VacancyActionEnum, VacancyCallback
-from clients.schemas import SkillWithMatchSchema
+from clients.schemas import SkillWithMatchSchema, SourceEnum
 from clients.vacancy import vacancy_client
 from commands import BotCommandEnum
 from common.logger import get_logger
@@ -98,19 +98,24 @@ async def show_vacancies(  # noqa: C901 PLR0912 PLR0914 PLR0915
         await update_skills(message, state, need_edit=False)
         return
 
+    sources = [str(SourceEnum.from_human(s)) for s in categorized_prefs[PreferencesCategoryCodeEnum.SOURCE]]
+
     result = await vacancy_client.get_by_id_with_cursor_pagination(
-        vacancy_id=vacancy_id,
+        current_vacancy_id=vacancy_id,
         professions=categorized_prefs[PreferencesCategoryCodeEnum.PROFESSION],
         grades=categorized_prefs[PreferencesCategoryCodeEnum.GRADE],
         work_formats=categorized_prefs[PreferencesCategoryCodeEnum.WORK_FORMAT],
         skills=categorized_prefs[PreferencesCategoryCodeEnum.SKILL],
+        sources=sources,
     )
     vacancy, prev_id, next_id = result.vacancy, result.prev_id, result.next_id
 
     if not vacancy:
         await safe_edit_message(
             message,
-            text="К сожалению, доступных вакансий нет.\nИзмените предпочтения или загляните сюда позже 😉",
+            text="К сожалению, доступных вакансий нет.\n"
+            "ℹ️ Скорее всего вы задали слишком строгие требования "
+            "или у вас небольшое количество навыков. Проверьте ваши фильтры.\n\n",
             reply_markup=main_menu_keyboard(),
         )
         return

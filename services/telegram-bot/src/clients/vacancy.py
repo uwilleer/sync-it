@@ -1,4 +1,8 @@
+from dataclasses import dataclass
+
+from async_lru import alru_cache
 from clients.schemas import (
+    SourceEnum,
     VacanciesSummaryResponse,
     VacanciesSummarySchema,
     VacancyWithNeighborsRequest,
@@ -15,23 +19,32 @@ from common.shared.serializers.pickle import PickleSerializer
 __all__ = ["vacancy_client"]
 
 
+# Костылище
+@dataclass
+class _SourceSchema:
+    id: int
+    name: str
+
+
 class _VacancyClient(BaseClient):
     url = build_service_url(ServiceEnum.VACANCY_PROCESSOR, "api/v1/vacancies")
 
     async def get_by_id_with_cursor_pagination(
         self,
-        vacancy_id: int | None = None,
+        current_vacancy_id: int | None = None,
         professions: list[str] | None = None,
         grades: list[str] | None = None,
         work_formats: list[str] | None = None,
         skills: list[str] | None = None,
+        sources: list[str] | None = None,
     ) -> VacancyWithNeighborsSchema:
         params_model = VacancyWithNeighborsRequest(
-            vacancy_id=vacancy_id,
+            current_vacancy_id=current_vacancy_id,
             professions=professions,
             grades=grades,
             work_formats=work_formats,
             skills=skills,
+            sources=sources,
         )
         url = f"{self.url}/match"
         response = await self.client.get(
@@ -52,6 +65,16 @@ class _VacancyClient(BaseClient):
         model_response = VacanciesSummaryResponse.model_validate(data)
 
         return model_response.result
+
+    @alru_cache(ttl=60 * 60 * 24)
+    async def get_sources(self) -> list["_SourceSchema"]:  # noqa: PLR6301
+        # FIXME За такое по рукам бить надо.
+        sources = []
+
+        for idx, source in enumerate(SourceEnum, start=1):
+            sources.append(_SourceSchema(id=idx, name=source.humanize()))
+
+        return sources
 
 
 vacancy_client = _VacancyClient()

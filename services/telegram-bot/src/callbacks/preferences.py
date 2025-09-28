@@ -14,6 +14,7 @@ class PreferencesActionEnum(StrEnum):
     SHOW_GRADES = "show_grades"
     SHOW_PROFESSIONS = "show_professions"
     SHOW_WORK_FORMATS = "show_work_formats"
+    SHOW_SOURCES = "show_sources"
 
     SELECT_OPTION = "select_option"
 
