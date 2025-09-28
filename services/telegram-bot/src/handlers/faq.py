@@ -23,7 +23,7 @@ async def handle_faq_command(message: Message) -> None:
 async def send_faq_message(message: Message, *, is_first_start: bool = False) -> None:
     text = FAQ_TEXT
     if is_first_start:
-        text += f"\n\n💬 Нужна помощь? Пишите в поддержку: @{service_config.support_username}"
+        text += f"\n💬 Нужна помощь?\nПишите в поддержку: @{service_config.support_username}"
 
     await message.answer(
         text=text,
