@@ -58,15 +58,14 @@ class TelegramParser(BaseParser[TelegramVacancyService]):
                 continue
 
             fingerprint = generate_fingerprint(message.text)
-            duplicate = await self.service.find_duplicate_vacancy_by_fingerprint(fingerprint)
-            if duplicate:
+            duplicate_hash = await self.service.find_duplicate_vacancy_by_fingerprint(fingerprint)
+            if duplicate_hash:
                 logger.debug(
-                    "Found duplicate vacancy. New vacancy link: %s/%s, Existing vacancy link: %s",
+                    "Found duplicate vacancy. New vacancy link: %s/%s",
                     channel_link,
                     message.id,
-                    duplicate.link,
                 )
-                await self.service.update_vacancy_published_at(duplicate.hash, message.datetime)
+                await self.service.update_vacancy_published_at(duplicate_hash, message.datetime)
                 continue
 
             vacancy_create = TelegramVacancyCreate(

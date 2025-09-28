@@ -40,14 +40,13 @@ class HabrParser(BaseParser["HabrVacancyService"]):
                 continue
 
             fingerprint = generate_fingerprint(vacancy_detail.text)
-            duplicate = await self.service.find_duplicate_vacancy_by_fingerprint(fingerprint)
-            if duplicate:
+            duplicate_hash = await self.service.find_duplicate_vacancy_by_fingerprint(fingerprint)
+            if duplicate_hash:
                 logger.debug(
-                    "Found duplicate vacancy. New vacancy id: %s, Existing vacancy id: %s",
+                    "Found duplicate vacancy. New vacancy id: %s",
                     vacancy_detail.id,
-                    duplicate.id,
                 )
-                await self.service.update_vacancy_published_at(duplicate.hash, vacancy_detail.datetime)
+                await self.service.update_vacancy_published_at(duplicate_hash, vacancy_detail.datetime)
                 continue
 
             vacancy_create = HabrVacancyCreate(

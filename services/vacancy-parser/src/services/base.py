@@ -32,12 +32,8 @@ class BaseVacancyService[
     def _get_repo(self) -> "VacancyRepositoryType":
         pass
 
-    async def find_duplicate_vacancy_by_fingerprint(self, fingerprint: str) -> VacancyReadType | None:
-        duplicate = await self.repo.find_duplicate_vacancy_by_fingerprint(fingerprint)
-        if not duplicate:
-            return None
-
-        return self.read_schema.model_validate(duplicate)
+    async def find_duplicate_vacancy_by_fingerprint(self, fingerprint: str) -> str | None:
+        return await self.repo.find_duplicate_vacancy_hash_by_fingerprint(fingerprint)
 
     async def get_existing_hashes(self, hashes: Iterable[str]) -> set[str]:
         return await self.repo.get_existing_hashes(hashes)

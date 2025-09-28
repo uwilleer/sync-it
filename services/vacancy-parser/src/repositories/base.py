@@ -40,10 +40,10 @@ class BaseVacancyRepository[VacancyType: Vacancy](BaseRepository):
 
         return result.scalar_one_or_none()
 
-    async def find_duplicate_vacancy_by_fingerprint(self, fingerprint: str) -> VacancyType | None:
+    async def find_duplicate_vacancy_hash_by_fingerprint(self, fingerprint: str) -> str | None:
         """Найти дубликат вакансии по содержимому."""
         stmt = (
-            select(self.model)
+            select(self.model.hash)
             .where(func.similarity(self.model.fingerprint, fingerprint) > FINGERPRINT_SIMILARITY_THRESHOLD)
             .limit(1)
         )
@@ -58,18 +58,13 @@ class BaseVacancyRepository[VacancyType: Vacancy](BaseRepository):
         return vacancy
 
     async def update_published_at(self, vacancy_hash: str, published_at: datetime) -> bool:
-        """Обновляет дату публикации вакансии."""
-        # Только для обновления. Используем Vacancy, а не self._model
-        stmt = select(Vacancy).where(Vacancy.hash == vacancy_hash).with_for_update()
+        """Обновляет дату публикации вакансии напрямую через UPDATE."""
+        stmt = (
+            update(Vacancy).where(Vacancy.hash == vacancy_hash).values(published_at=published_at).returning(Vacancy.id)
+        )
         result = await self._session.execute(stmt)
-        vacancy = result.scalar_one_or_none()
-
-        if not vacancy:
-            return False
-
-        vacancy.published_at = published_at
-
-        return True
+        updated = result.scalar_one_or_none()
+        return updated is not None
 
     async def mark_as_processed(self, vacancy_hash: str) -> bool:
         """
