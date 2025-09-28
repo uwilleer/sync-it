@@ -1,3 +1,4 @@
+import asyncio
 from typing import TYPE_CHECKING
 
 from clients import head_hunter_client
@@ -33,15 +34,17 @@ class HeadHunterParser(BaseParser["HeadHunterVacancyService"]):
         new_vacancies_ids = [v_id for v_id in newest_vacancy_ids if generate_hash(v_id) not in existing_hashes]
         logger.debug("Found %s new vacancies", len(new_vacancies_ids))
 
-        for vacancy_id in new_vacancies_ids:
+        tasks = [head_hunter_client.get_vacancy_by_id(vacancy_id) for vacancy_id in new_vacancies_ids]
+
+        for coro in asyncio.as_completed(tasks):
             try:
-                vacancy_detail = await head_hunter_client.get_vacancy_by_id(vacancy_id)
+                vacancy_detail = await coro
             except Exception as e:
-                logger.exception("Error processing vacancy with id %s", vacancy_id, exc_info=e)
+                logger.exception("Error processing vacancy", exc_info=e)
                 continue
 
             if not vacancy_detail:
-                logger.debug("Skipping with id %s", vacancy_id)
+                logger.debug("Skipping not founded vacancy")
                 continue
 
             vacancy_description = clear_html(vacancy_detail.description)
