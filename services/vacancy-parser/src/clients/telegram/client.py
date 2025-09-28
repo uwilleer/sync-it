@@ -12,7 +12,7 @@ __all__ = ["telegram_client"]
 
 
 class _TelegramClient(BaseClient):
-    url = build_service_url(ServiceEnum.TELEGRAM_API, "/api/v1/channel")
+    url = build_service_url(ServiceEnum.SCRAPER_API, "/api/v1/telegram/channel")
 
     def configure_client(self) -> None:
         super().configure_client()

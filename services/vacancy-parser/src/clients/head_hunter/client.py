@@ -25,10 +25,6 @@ class _HeadHunterClient(BaseClient):
     vacancies_per_page = 100  # Количество вакансий на странице. Максимум 100
     vacancies_period = 1  # Количество дней, в пределах которых производится поиск по вакансиям
 
-    # Последовательность id IT профессий согласно API HeadHunter
-    # https://api.hh.ru/openapi/redoc#tag/Obshie-spravochniki/operation/get-professional-roles-dictionary
-    professional_roles: tuple[int, ...] = ()
-
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         self._update_headers()
@@ -52,7 +48,6 @@ class _HeadHunterClient(BaseClient):
         """Загружает и валидирует одну страницу вакансий."""
         params = QueryParams(
             {
-                "professional_role": self.professional_roles,
                 "text": text_query,
                 "per_page": self.vacancies_per_page,
                 "period": self.vacancies_period,
@@ -67,7 +62,7 @@ class _HeadHunterClient(BaseClient):
 
         return HeadHunterVacancyListResponse.model_validate(data)
 
-    async def get_newest_vacancy_ids(self) -> list[int]:
+    async def get_newest_vacancies_ids(self) -> list[int]:
         """Асинхронно получает id актуальных вакансиий."""
         professions = await profession_client.get_all()
         text_query = " OR ".join([p.name for p in professions])

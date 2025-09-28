@@ -6,9 +6,10 @@ from common.logger import get_logger
 from common.redis.decorators.singleton import singleton
 from constants.telegram import channel_links
 from parsers import HeadHunterParser, TelegramParser
+from parsers.habr import HabrParser
 from unitofwork import UnitOfWork
 
-from services import HeadHunterVacancyService, TelegramVacancyService
+from services import HabrVacancyService, HeadHunterVacancyService, TelegramVacancyService
 
 
 __all__ = ["parse_vacancies"]
@@ -52,5 +53,13 @@ async def parse_head_hunter_vacancies() -> None:
     async with UnitOfWork() as uow:
         service = HeadHunterVacancyService(uow)
         parser = HeadHunterParser(uow, service)
+        await parser.parse()
+        await uow.commit()
+
+
+async def parse_habr_vacancies() -> None:
+    async with UnitOfWork() as uow:
+        service = HabrVacancyService(uow)
+        parser = HabrParser(uow, service)
         await parser.parse()
         await uow.commit()

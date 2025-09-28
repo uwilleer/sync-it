@@ -9,6 +9,7 @@ __all__ = [
     "BackToPreferencesInlineKeyboardButton",
     "BackToSkillsInlineKeyboardButton",
     "ChangePreferencesInlineKeyboardButton",
+    "ImportSkillsInlineKeyboardButton",
     "MainMenuInlineKeyboardButton",
     "ProfessionInlineKeyboardButton",
     "VacanciesInlineKeyboardButton",

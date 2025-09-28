@@ -33,6 +33,7 @@ class BaseVacancyCreate(BaseVacancy):
 
 
 class BaseVacancyRead(BaseVacancy):
+    id: int
     hash: str
 
     model_config = ConfigDict(from_attributes=True)

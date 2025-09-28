@@ -10,7 +10,7 @@ __all__ = ["router"]
 
 logger = get_logger(__name__)
 
-router = APIRouter(prefix="/telegram")
+router = APIRouter()
 
 
 @router.get("/channel/{channel_username}/messages")

@@ -26,7 +26,7 @@ class HeadHunterParser(BaseParser["HeadHunterVacancyService"]):
     async def parse(self) -> None:
         logger.info("Starting HeadHunter parser")
 
-        newest_vacancy_ids = await head_hunter_client.get_newest_vacancy_ids()
+        newest_vacancy_ids = await head_hunter_client.get_newest_vacancies_ids()
         vacancy_hashes = [generate_hash(vacancy_id) for vacancy_id in newest_vacancy_ids]
         existing_hashes = await self.service.get_existing_hashes(vacancy_hashes)
 
