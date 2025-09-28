@@ -1,6 +1,6 @@
 services:
   redis:
-    image: redis:8.0.2-alpine
+    image: redis:8.2.1-alpine
     container_name: redis
     env_file: ${SERVICE_PROJECT_ROOT}/infra/.env
     ports:

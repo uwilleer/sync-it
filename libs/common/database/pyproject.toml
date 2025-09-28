@@ -2,7 +2,7 @@
 name = "database-lib"
 dynamic = ["version"]
 dependencies = [
-    "alembic>=1.16.2",
+    "alembic>=1.16.5",
     "asyncpg>=0.30.0",
     "sqlalchemy>=2.0.43",
     "sqlparse>=0.5.3",

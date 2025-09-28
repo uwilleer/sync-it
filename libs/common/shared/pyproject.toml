@@ -3,9 +3,6 @@ name = "shared-lib"
 dynamic = ["version"]
 dependencies = [
     "async-lru>=2.0.5",
-    "database-lib",
-    "redis-lib",
-    "logger-lib",
     "orjson>=3.11.3",
 ]
 

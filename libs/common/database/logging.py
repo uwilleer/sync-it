@@ -37,7 +37,7 @@ def setup_alchemy_logging() -> None:
         _executemany: Any,
     ) -> None:
         query_start_time = alchemy_query_start_time.get()
-        query_duration = time.time() - query_start_time
+        query_duration = round(time.time() - query_start_time, 5)
 
         # В момент компиляции запроса объект ещё не имеет значения id, оно ещё не подтянуто из базы
         warnings.filterwarnings("ignore", category=SAWarning, message=".*NULL.*")
@@ -49,6 +49,7 @@ def setup_alchemy_logging() -> None:
         else:
             formatted_sql = sqlparse.format(statement, reindent=True, keyword_case="upper")
 
-        logger.debug("%s\nQuery Time: %.5fs", query_duration, formatted_sql)
+        logger.debug("%s\n[ Query Time: %ss ]", formatted_sql, query_duration)
+
         if query_duration > sentry_config.slow_sql_threshold:
             logger.warning("Slow SQL query", extra={"query": formatted_sql, "duration": query_duration})

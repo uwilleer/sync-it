@@ -2,8 +2,7 @@
 name = "sentry-lib"
 dynamic = ["version"]
 dependencies = [
-    "sentry-sdk>=2.35.0",
-    "logger-lib",
+    "sentry-sdk>=2.39.0",
 ]
 
 [tool.setuptools.packages.find]

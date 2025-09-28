@@ -2,7 +2,7 @@
 name = "redis-lib"
 dynamic = ["version"]
 dependencies = [
-    "redis>=6.2.0",
+    "redis>=6.4.0",
 ]
 
 [tool.setuptools.packages.find]
