@@ -1,11 +1,8 @@
-import asyncio
 from typing import cast
 
 from common.logger import get_logger
+from common.shared.clients import http_client
 from common.shared.decorators.concurency import limit_requests
-from g4f.Provider import OIVSCodeSer2  # type: ignore[import-untyped]
-from g4f.client import AsyncClient  # type: ignore[import-untyped]
-from g4f.typing import Message  # type: ignore[import-untyped]
 
 
 __all__ = ["get_gpt_response"]
@@ -13,29 +10,29 @@ __all__ = ["get_gpt_response"]
 
 logger = get_logger(__name__)
 
-MAX_RETRIES = 3
-RETRY_DELAY = 3
-
-client = AsyncClient()
-
 
 @limit_requests(100)
 async def get_gpt_response(prompt: str) -> str | None:
-    message = Message(role="user", content=prompt)
+    url = "https://api.laozhang.ai/v1/chat/completions"
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer sk-x44C9oPPWHGWmT4c51D07816Ee3d4eCdA642D9D2E8904b82",
+    }
+    data = {
+        "model": "gpt-3.5-turbo",
+        "stream": False,
+        "messages": [
+            {"role": "user", "content": prompt},
+        ],
+    }
 
-    for attempt in range(1, MAX_RETRIES + 1):
-        try:
-            response = await client.chat.completions.create(
-                model="gpt-4o-mini",
-                provider=OIVSCodeSer2,
-                messages=[message],
-            )
-            return cast("str", response.choices[0].message.content)
+    try:
+        response = await http_client.post(url, headers=headers, json=data)
+        response.raise_for_status()
+        data = response.json()
 
-        except Exception as e:
-            logger.exception("Failed to get GPT response on attempt %s", attempt, exc_info=e)
-            if attempt == MAX_RETRIES:
-                return None
-            await asyncio.sleep(RETRY_DELAY)
+        return cast("str", data["choices"][0]["message"]["content"])
+    except Exception as e:
+        logger.exception("Failed to get GPT completion", exc_info=e)
 
     return None
