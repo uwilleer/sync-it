@@ -85,7 +85,7 @@ class TelegramParser(BaseParser[TelegramVacancyService]):
             return
 
         for new_vacancy in new_vacancies:
-            await self.service.add_vacancy(new_vacancy)
+            await self.service.add_vacancy(new_vacancy, with_refresh=False)
             logger.debug("Added vacancy: %s", new_vacancy.link)
 
     async def _get_new_vacancies(self, vacancies: list[TelegramVacancyCreate]) -> list[TelegramVacancyCreate]:

@@ -74,5 +74,5 @@ class HeadHunterParser(BaseParser["HeadHunterVacancyService"]):
                 published_at=vacancy_detail.published_at,
             )
 
-            await self.service.add_vacancy(vacancy)
+            await self.service.add_vacancy(vacancy, with_refresh=False)
             logger.debug("Added vacancy %s", vacancy.link)

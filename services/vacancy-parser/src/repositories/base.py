@@ -50,12 +50,15 @@ class BaseVacancyRepository[VacancyType: Vacancy](BaseRepository):
         result = await self._session.execute(stmt)
         return result.scalar_one_or_none()
 
-    async def add(self, vacancy: VacancyType) -> VacancyType:
+    async def add(self, vacancy: VacancyType, *, with_refresh: bool) -> VacancyType | None:
         self._session.add(vacancy)
         await self._session.flush()
-        await self._session.refresh(vacancy)
 
-        return vacancy
+        if with_refresh:
+            await self._session.refresh(vacancy)
+            return vacancy
+
+        return None
 
     async def update_published_at(self, vacancy_hash: str, published_at: datetime) -> bool:
         """Обновляет дату публикации вакансии напрямую через UPDATE."""

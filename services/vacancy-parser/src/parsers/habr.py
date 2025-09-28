@@ -56,5 +56,5 @@ class HabrParser(BaseParser["HabrVacancyService"]):
                 published_at=vacancy_detail.datetime,
                 data=vacancy_detail.text,
             )
-            await self.service.add_vacancy(vacancy_create)
+            await self.service.add_vacancy(vacancy_create, with_refresh=False)
             logger.debug("Added vacancy %s", vacancy_create.link)

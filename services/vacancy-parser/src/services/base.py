@@ -51,8 +51,11 @@ class BaseVacancyService[
         """Помечает вакансию как обработанную по её хешу."""
         return await self.repo.mark_as_processed(vacancy_hash=vacancy_hash)
 
-    async def add_vacancy(self, vacancy: VacancyCreateType) -> VacancyReadType:
+    async def add_vacancy(self, vacancy: VacancyCreateType, *, with_refresh: bool) -> VacancyReadType | None:
         vacancy_model = self.repo.model(**vacancy.model_dump())
-        created_vacancy = await self.repo.add(vacancy_model)
+        created_vacancy = await self.repo.add(vacancy_model, with_refresh=with_refresh)
 
-        return self.read_schema.model_validate(created_vacancy)
+        if with_refresh and created_vacancy:
+            return self.read_schema.model_validate(created_vacancy)
+
+        return None

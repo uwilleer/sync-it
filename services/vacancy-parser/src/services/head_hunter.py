@@ -18,8 +18,3 @@ class HeadHunterVacancyService(
 
     def _get_repo(self) -> "HeadHunterVacancyRepository":
         return self._uow.hh_vacancies
-
-    async def get_vacancy_by_id(self, vacancy_id: int) -> HeadHunterVacancyRead | None:
-        vacancy = await self.repo.get_vacancy_by_id(vacancy_id)
-
-        return self.read_schema.model_validate(vacancy) if vacancy else None
