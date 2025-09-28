@@ -8,7 +8,7 @@ on:
 jobs:
   lint:
     name: Lint and Type Check
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     timeout-minutes: 3
     steps:
       - name: Checkout code
