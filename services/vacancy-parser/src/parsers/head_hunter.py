@@ -31,7 +31,7 @@ class HeadHunterParser(BaseParser["HeadHunterVacancyService"]):
         vacancy_hashes = [generate_hash(vacancy_id) for vacancy_id in newest_vacancy_ids]
         existing_hashes = await self.service.get_existing_hashes(vacancy_hashes)
 
-        new_vacancies_ids = [v_id for v_id in newest_vacancy_ids if generate_hash(v_id) not in existing_hashes]
+        new_vacancies_ids = {v_id for v_id in newest_vacancy_ids if generate_hash(v_id) not in existing_hashes}
         logger.debug("Found %s new vacancies", len(new_vacancies_ids))
 
         tasks = [head_hunter_client.get_vacancy_by_id(vacancy_id) for vacancy_id in new_vacancies_ids]
