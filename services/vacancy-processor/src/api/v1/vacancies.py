@@ -28,7 +28,7 @@ async def get_vacancies(
     query: Annotated[VacancyListQuery, Query()],
 ) -> VacancyListResponse:
     """Получить список актуальных вакансий, подходящих под заданные фильтры."""
-    vacancies = await service.get_vacancies(query)
+    vacancies = await service.get_vacancies(query.limit)
 
     return VacancyListResponse(vacancies=vacancies)
 

@@ -1,6 +1,5 @@
 from collections.abc import Iterable
 
-from api.v1.schemas import VacancyListQuery
 from common.redis.decorators.cache import build_key, cache
 from common.shared.serializers.pickle import PickleSerializer
 from common.shared.services import BaseUOWService
@@ -57,9 +56,9 @@ class VacancyService(BaseUOWService[UnitOfWork]):
     async def get_existing_hashes(self, hashes: Iterable[str]) -> set[str]:
         return await self._uow.vacancies.get_existing_hashes(hashes)
 
-    async def get_vacancies(self, query: VacancyListQuery) -> list[VacancyRead]:
+    async def get_vacancies(self, limit: int) -> list[VacancyRead]:
         """Получает вакансии с применением фильтров."""
-        vacancies = await self._uow.vacancies.get_filtered(limit=query.limit)
+        vacancies = await self._uow.vacancies.get_filtered(limit=limit)
 
         return [VacancyRead.model_validate(v) for v in vacancies]
 
