@@ -5,7 +5,7 @@ __all__ = ["ServiceEnum"]
 
 
 class ServiceEnum(StrEnum):
-    TELEGRAM_API = "telegram-api"
+    SCRAPER_API = "scraper-api"
     TELEGRAM_BOT = "telegram-bot"
     GPT_API = "gpt-api"
     VACANCY_PARSER = "vacancy-parser"

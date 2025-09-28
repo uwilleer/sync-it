@@ -88,10 +88,10 @@ services:
       service: gpt-api
       file: gpt-api/docker-compose.yml
 
-  telegram-api:
+  scraper-api:
     extends:
-      service: telegram-api
-      file: telegram-api/docker-compose.yml
+      service: scraper-api
+      file: scraper-api/docker-compose.yml
 
   telegram-bot-migrator:
     profiles:
@@ -146,7 +146,7 @@ services:
         condition: service_healthy
       api-gateway:
         condition: service_healthy
-      telegram-api:
+      scraper-api:
         condition: service_healthy
 
   vacancy-parser-worker:

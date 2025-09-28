@@ -54,7 +54,7 @@ mypy_path = [
     "libs",
     "services/api-gateway/src",
     "services/gpt-api/src",
-    "services/telegram-api/src",
+    "services/scraper-api/src",
     "services/telegram-bot/src",
     "services/vacancy-parser/src",
     "services/vacancy-processor/src",

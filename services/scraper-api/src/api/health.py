@@ -1,5 +1,7 @@
+import asyncio
+
 from api.schemas import HealthResponse
-from clients import telegram_client
+from clients import habr_client, telegram_client
 from common.logger import get_logger
 from fastapi import APIRouter, HTTPException
 
@@ -15,7 +17,12 @@ logger = get_logger(__name__)
 @router.get("")
 async def healthcheck() -> HealthResponse:
     try:
-        await telegram_client.ping()
+        tasks = [
+            telegram_client.ping(),
+            habr_client.ping(),
+        ]
+        for coro in asyncio.as_completed(tasks):
+            await coro
 
         return HealthResponse(status="Healthy")
     except Exception as e:

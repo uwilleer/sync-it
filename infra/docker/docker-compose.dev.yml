@@ -25,12 +25,12 @@ services:
       - "${GPT_API_PORT}:${ENV_SERVICE_INTERNAL_PORT}"
     <<: *service-common
 
-  telegram-api:
+  scraper-api:
     build:
-      dockerfile: infra/docker/telegram-api/Dockerfile
+      dockerfile: infra/docker/scraper-api/Dockerfile
       <<: *build-common
     ports:
-      - "${TELEGRAM_API_PORT}:${ENV_SERVICE_INTERNAL_PORT}"
+      - "${SCRAPER_API_PORT}:${ENV_SERVICE_INTERNAL_PORT}"
     <<: *service-common
 
   vacancy-parser:

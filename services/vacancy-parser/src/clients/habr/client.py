@@ -1,0 +1,50 @@
+from datetime import datetime
+
+from clients.habr.schemas import (
+    HabrVacanciesDetailedResponse,
+    HabrVacanciesListResponse,
+    HabrVacanciesRequest,
+    HabrVacancySchema,
+)
+from common.gateway.enums import ServiceEnum
+from common.gateway.utils import build_service_url
+from common.logger import get_logger
+from common.shared.clients import BaseClient
+
+
+__all__ = ["habr_client"]
+
+
+logger = get_logger(__name__)
+
+
+class _HabrClient(BaseClient):
+    url = build_service_url(ServiceEnum.SCRAPER_API, "/api/v1/habr/vacancies")
+
+    def configure_client(self) -> None:
+        super().configure_client()
+        self.client.timeout = 30
+
+    async def get_newest_vacancies_ids(self, date_gte: datetime | None) -> list[int]:
+        params = HabrVacanciesRequest(date_gte=date_gte)
+        response = await self.client.get(self.url, params=params.model_dump(exclude_none=True))
+        response.raise_for_status()
+
+        data = response.json()
+        model_response = HabrVacanciesListResponse.model_validate(data)
+
+        return model_response.vacancies
+
+    async def get_vacancy_by_id(self, vacancy_id: int) -> HabrVacancySchema:
+        url = f"{self.url}/{vacancy_id}"
+
+        response = await self.client.get(url)
+        response.raise_for_status()
+
+        data = response.json()
+        model_response = HabrVacanciesDetailedResponse.model_validate(data)
+
+        return model_response.vacancy
+
+
+habr_client = _HabrClient()

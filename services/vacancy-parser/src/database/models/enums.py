@@ -1,5 +1,5 @@
 from enum import StrEnum
-from typing import Self, TypeVar
+from typing import Self
 
 
 __all__ = [
@@ -8,9 +8,7 @@ __all__ = [
 ]
 
 
-T = TypeVar("T", bound="BaseStrEnum")
-
-
+# TODO: DRY
 class BaseStrEnum(StrEnum):
     @classmethod
     def get_safe(cls, label: str) -> Self | None:
@@ -24,3 +22,4 @@ class BaseStrEnum(StrEnum):
 class SourceEnum(BaseStrEnum):
     TELEGRAM = "telegram"
     HEAD_HUNTER = "head_hunter"
+    HABR = "habr"

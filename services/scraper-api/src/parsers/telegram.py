@@ -1,6 +1,9 @@
+from datetime import datetime
+
 from bs4 import BeautifulSoup
 from common.logger import get_logger
-from schemas import ChannelMessageSchema
+from parsers import BaseParser
+from schemas import TelegramChannelMessageSchema
 
 
 __all__ = ["TelegramParser"]
@@ -9,7 +12,7 @@ __all__ = ["TelegramParser"]
 logger = get_logger(__name__)
 
 
-class TelegramParser:
+class TelegramParser(BaseParser):
     @staticmethod
     def parse_message_id(html_content: str) -> int:
         soup = BeautifulSoup(html_content, "html.parser")
@@ -21,7 +24,7 @@ class TelegramParser:
     @staticmethod
     def parse_detailed_message(
         html_content: str, channel_username: str, message_id: int
-    ) -> ChannelMessageSchema | None:
+    ) -> TelegramChannelMessageSchema | None:
         soup = BeautifulSoup(html_content, "html.parser")
         data_post_value = f"{channel_username}/{message_id}"
 
@@ -59,12 +62,13 @@ class TelegramParser:
             return None
 
         message_datetime_str = str(message_time_block.attrs["datetime"])
+        message_datetime = datetime.fromisoformat(message_datetime_str)
 
         for br in message_text_block.find_all("br"):
             br.replace_with("\n")
 
-        return ChannelMessageSchema(
+        return TelegramChannelMessageSchema(
             id=message_id,
-            datetime=message_datetime_str,
+            datetime=message_datetime,
             text=message_text_block.get_text().strip(),
         )

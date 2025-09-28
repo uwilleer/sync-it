@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        service: [api-gateway, gpt-api, telegram-api, telegram-bot, vacancy-parser, vacancy-processor]
+        service: [api-gateway, gpt-api, scraper-api, telegram-bot, vacancy-parser, vacancy-processor]
 
     steps:
       - name: Checkout code

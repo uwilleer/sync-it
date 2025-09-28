@@ -1,5 +1,5 @@
 [project]
-name = "telegram-api"
+name = "scraper-api"
 dynamic = ["version"]
 dependencies = [
     "beautifulsoup4>=4.13.4",
