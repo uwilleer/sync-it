@@ -79,12 +79,15 @@ class SkillListResponse(BaseModel):
 class SourceEnum(StrEnum):
     TELEGRAM = "telegram"
     HEAD_HUNTER = "head_hunter"
+    HABR = "habr"
 
     def humanize(self) -> str:
         if self == SourceEnum.TELEGRAM:
-            return "Telegram"
+            return "Телеграм"
         if self == SourceEnum.HEAD_HUNTER:
             return "HeadHunter"
+        if self == SourceEnum.HABR:
+            return "Хабр"
 
         logger.error("Unknown source: %s", self)
         return "Неизвестно"
