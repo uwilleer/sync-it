@@ -12,10 +12,10 @@ __all__ = ["UserPreference"]
 
 
 class UserPreference(Base):
-    __tablename__ = "user_preference"
+    __tablename__ = "user_preferences"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
 
     # ex.: grade, profession, work_format
     category_code: Mapped[str] = mapped_column(String(16), index=True)

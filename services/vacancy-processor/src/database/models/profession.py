@@ -13,7 +13,7 @@ __all__ = ["Profession"]
 
 
 class Profession(Base):
-    __tablename__ = "profession"
+    __tablename__ = "professions"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(32), unique=True)

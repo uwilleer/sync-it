@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 
 from database.models import Base
-from database.models.tables import vacancy_grade_table, vacancy_skill_table, vacancy_work_format_table
+from database.models.tables import vacancy_grades_table, vacancy_skills_table, vacancy_work_formats_table
 from sqlalchemy import DateTime, ForeignKey, Index, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -15,7 +15,7 @@ __all__ = ["Vacancy"]
 
 
 class Vacancy(Base):
-    __tablename__ = "vacancy"
+    __tablename__ = "vacancies"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     source: Mapped[str] = mapped_column(String(16), index=True)
@@ -31,14 +31,14 @@ class Vacancy(Base):
 
     published_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
 
-    profession_id: Mapped[int | None] = mapped_column(ForeignKey("profession.id", ondelete="CASCADE"))
+    profession_id: Mapped[int | None] = mapped_column(ForeignKey("professions.id", ondelete="CASCADE"))
     profession: Mapped["Profession"] = relationship(back_populates="vacancies")
 
-    grades: Mapped[list["Grade"]] = relationship(secondary=vacancy_grade_table, back_populates="vacancies")
+    grades: Mapped[list["Grade"]] = relationship(secondary=vacancy_grades_table, back_populates="vacancies")
     work_formats: Mapped[list["WorkFormat"]] = relationship(
-        secondary=vacancy_work_format_table, back_populates="vacancies"
+        secondary=vacancy_work_formats_table, back_populates="vacancies"
     )
-    skills: Mapped[list["Skill"]] = relationship(secondary=vacancy_skill_table, back_populates="vacancies")
+    skills: Mapped[list["Skill"]] = relationship(secondary=vacancy_skills_table, back_populates="vacancies")
 
     __table_args__ = (
         Index("idx_vacancy_published_at_id", "published_at", "id"),

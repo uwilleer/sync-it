@@ -15,7 +15,7 @@ def _utcnow() -> datetime:
 
 
 class User(Base):
-    __tablename__ = "user"
+    __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     telegram_id: Mapped[int] = mapped_column(BigInteger, unique=True)
@@ -27,6 +27,6 @@ class User(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
 
     preferences: Mapped[list["UserPreference"]] = relationship(
-        back_populates="user",
+        back_populates="users",
         cascade="all, delete-orphan",
     )
