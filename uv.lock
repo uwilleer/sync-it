@@ -14,7 +14,7 @@ members = [
     "sentry-lib",
     "shared-lib",
     "syncit-core",
-    "telegram-api",
+    "scraper-api",
     "telegram-bot",
     "vacancy-parser",
     "vacancy-processor",
@@ -1359,8 +1359,8 @@ dev = [
 ]
 
 [[package]]
-name = "telegram-api"
-source = { virtual = "services/telegram-api" }
+name = "scraper-api"
+source = { virtual = "services/scraper-api" }
 dependencies = [
     { name = "beautifulsoup4" },
     { name = "environment-lib" },

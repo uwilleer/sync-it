@@ -1,12 +1,12 @@
 import asyncio
 
-from clients.schemas import TelegramDetailedMessageParams, TelegramPingResponse
+from clients.schemas import PingResponse, TelegramDetailedMessageParams
 from common.logger import get_logger
 from common.shared.clients import BaseClient
 from common.shared.decorators.concurency import limit_requests
 from httpx import URL
 from parsers import TelegramParser
-from schemas import ChannelMessageSchema
+from schemas import TelegramChannelMessageSchema
 
 
 __all__ = ["telegram_client"]
@@ -19,12 +19,12 @@ class _TelegramClient(BaseClient):
     url = URL("https://t.me")
     _parser = TelegramParser
 
-    async def ping(self) -> TelegramPingResponse:
+    async def ping(self) -> PingResponse:
         url = f"{self.url}/telegram"
         response = await self.client.get(url)
         response.raise_for_status()
 
-        return TelegramPingResponse()
+        return PingResponse()
 
     async def get_newest_message_id(self, channel_username: str) -> int | None:
         url = f"{self.url}/s/{channel_username}"
@@ -39,7 +39,7 @@ class _TelegramClient(BaseClient):
         return TelegramParser.parse_message_id(response.text)
 
     @limit_requests(25)
-    async def get_detailed_message(self, channel_username: str, message_id: int) -> ChannelMessageSchema | None:
+    async def get_detailed_message(self, channel_username: str, message_id: int) -> TelegramChannelMessageSchema | None:
         url = f"{self.url}/s/{channel_username}/{message_id}"
 
         # +1 т.к. надо подгрузить до переданного message_id
@@ -52,13 +52,13 @@ class _TelegramClient(BaseClient):
 
     async def get_detailed_messages_by_message_ids(
         self, channel_username: str, message_ids: list[int]
-    ) -> list[ChannelMessageSchema]:
+    ) -> list[TelegramChannelMessageSchema]:
         tasks = [self.get_detailed_message(channel_username, message_id) for message_id in message_ids]
-        results: list[ChannelMessageSchema | BaseException | None] = await asyncio.gather(
+        results: list[TelegramChannelMessageSchema | BaseException | None] = await asyncio.gather(
             *tasks, return_exceptions=True
         )
 
-        messages: list[ChannelMessageSchema] = []
+        messages: list[TelegramChannelMessageSchema] = []
         for result in results:
             if isinstance(result, BaseException):
                 logger.error("Failed to get message", exc_info=result)

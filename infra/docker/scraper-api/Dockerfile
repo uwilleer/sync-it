@@ -1,7 +1,7 @@
 FROM python:3.13.4-alpine AS base
 
 ARG APP_PATH=/app
-ARG SERVICE_NAME=telegram-api
+ARG SERVICE_NAME=scraper-api
 ARG SERVICE_PATH=services/$SERVICE_NAME
 
 ENV PYTHONDONTWRITEBYTECODE=1 \

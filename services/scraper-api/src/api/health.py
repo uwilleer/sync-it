@@ -1,3 +1,5 @@
+import asyncio
+
 from api.schemas import HealthResponse
 from clients import telegram_client
 from common.logger import get_logger
@@ -15,7 +17,9 @@ logger = get_logger(__name__)
 @router.get("")
 async def healthcheck() -> HealthResponse:
     try:
-        await telegram_client.ping()
+        tasks = [telegram_client.ping()]
+        for task in asyncio.as_completed(tasks):
+            await task
 
         return HealthResponse(status="Healthy")
     except Exception as e:

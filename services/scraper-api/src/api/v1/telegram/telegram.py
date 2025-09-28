@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from api.v1.schemas import ChannelMessagesResponse
+from api.v1.telegram.schemas import TelegramChannelMessagesResponse
 from clients import telegram_client
 from common.logger import get_logger
 from fastapi import APIRouter, HTTPException, Query
@@ -10,16 +10,16 @@ __all__ = ["router"]
 
 logger = get_logger(__name__)
 
-router = APIRouter()
+router = APIRouter(prefix="/telegram")
 
 
 @router.get("/channel/{channel_username}/messages")
 async def channel_messages(
     channel_username: str, after_message_id: Annotated[int | None, Query()] = None
-) -> ChannelMessagesResponse:
+) -> TelegramChannelMessagesResponse:
     newest_message_id = await telegram_client.get_newest_message_id(channel_username)
     if not newest_message_id:
-        return ChannelMessagesResponse(messages=[])
+        return TelegramChannelMessagesResponse(messages=[])
 
     if after_message_id is None:
         # Парсим offset_last_message последних сообщений для актуализации вакансий
@@ -36,4 +36,4 @@ async def channel_messages(
     message_ids_to_parse = list(range(after_message_id + 1, newest_message_id + 1))
     messages = await telegram_client.get_detailed_messages_by_message_ids(channel_username, message_ids_to_parse)
 
-    return ChannelMessagesResponse(messages=messages)
+    return TelegramChannelMessagesResponse(messages=messages)

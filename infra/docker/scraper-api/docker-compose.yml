@@ -1,0 +1,14 @@
+services:
+  scraper-api:
+    container_name: scraper-api
+    image: ${ENV_DOCKER_USERNAME}/${ENV_PROJECT_NAME}-scraper-api:latest
+    env_file: ${SERVICE_PROJECT_ROOT}/infra/.env
+    networks:
+      - app-network
+    healthcheck:
+      test: [ "CMD", "wget", "-q", "--spider", "http://scraper-api:${ENV_SERVICE_INTERNAL_PORT}/health" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 7s
+      start_interval: 1s

@@ -2,12 +2,12 @@ from pydantic import BaseModel
 
 
 __all__ = [
+    "PingResponse",
     "TelegramDetailedMessageParams",
-    "TelegramPingResponse",
 ]
 
 
-class TelegramPingResponse(BaseModel):
+class PingResponse(BaseModel):
     status: str = "pong"
 
 
