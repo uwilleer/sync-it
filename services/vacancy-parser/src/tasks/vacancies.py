@@ -33,6 +33,7 @@ async def run_all_parsers() -> None:
     results = await asyncio.gather(
         parse_telegram_vacancies(),
         parse_head_hunter_vacancies(),
+        parse_habr_vacancies(),
         return_exceptions=True,
     )
 
