@@ -54,6 +54,8 @@ class TelegramParser(BaseParser[TelegramVacancyService]):
         for message in newest_messages:
             if len(message.text) < self.MIN_VACANCY_TEXT_LENGTH:
                 continue
+            if "#резюме" in message.text.lower():
+                continue
 
             fingerprint = generate_fingerprint(message.text)
             duplicate = await self.service.find_duplicate_vacancy_by_fingerprint(fingerprint)
