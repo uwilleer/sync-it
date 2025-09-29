@@ -3,12 +3,14 @@ import re
 
 from common.logger import get_logger
 from constants.fingerprint import FINGERPRINT_STOPWORDS
+from database.models.enums import SourceEnum
 
 
 __all__ = [
     "clear_html",
     "generate_fingerprint",
     "generate_hash",
+    "generate_vacancy_hash",
 ]
 
 
@@ -23,6 +25,12 @@ def generate_hash(value: str | int, algorithm: str = "md5") -> str:
     hasher.update(value.encode("utf-8"))
 
     return hasher.hexdigest()
+
+
+def generate_vacancy_hash(value: str | int, source: SourceEnum) -> str:
+    """Генерирует хеш на основе переданного значения и источника,
+    чтобы избежать возможный конфликт дублирования значений."""
+    return generate_hash(f"{source.value}_{value}")
 
 
 def truncate_by_bytes(s: str, max_bytes: int) -> str:

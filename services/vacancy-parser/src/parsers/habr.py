@@ -1,11 +1,13 @@
+import asyncio
 from typing import TYPE_CHECKING
 
 from clients import habr_client
 from common.logger import get_logger
 from common.shared.schemas import HttpsUrl
+from database.models.enums import SourceEnum
 from parsers.base import BaseParser
 from schemas.vacancies import HabrVacancyCreate
-from utils import generate_fingerprint, generate_hash
+from utils import generate_fingerprint, generate_vacancy_hash
 
 
 if TYPE_CHECKING:
@@ -26,17 +28,25 @@ class HabrParser(BaseParser["HabrVacancyService"]):
         last_vacancy = await self.service.get_last_vacancy()
         last_vacancy_date = last_vacancy.published_at if last_vacancy else None
         newest_vacancy_ids = await habr_client.get_newest_vacancies_ids(last_vacancy_date)
-        vacancy_hashes = [generate_hash(vacancy_id) for vacancy_id in newest_vacancy_ids]
+        vacancy_hashes = [generate_vacancy_hash(v_id, SourceEnum.HABR) for v_id in newest_vacancy_ids]
         existing_hashes = await self.service.get_existing_hashes(vacancy_hashes)
-        new_vacancies_ids = [v_id for v_id in newest_vacancy_ids if generate_hash(v_id) not in existing_hashes]
+        new_vacancies_ids = [
+            v_id for v_id in newest_vacancy_ids if generate_vacancy_hash(v_id, SourceEnum.HABR) not in existing_hashes
+        ]
 
         logger.debug("Found %s new vacancies", len(new_vacancies_ids))
 
-        for vacancy_id in new_vacancies_ids:
+        tasks = [habr_client.get_vacancy_by_id(vacancy_id) for vacancy_id in new_vacancies_ids]
+
+        for coro in asyncio.as_completed(tasks):
             try:
-                vacancy_detail = await habr_client.get_vacancy_by_id(vacancy_id)
+                vacancy_detail = await coro
             except Exception as e:
-                logger.exception("Error processing vacancy with id %s", vacancy_id, exc_info=e)
+                logger.exception("Error processing vacancy", exc_info=e)
+                continue
+
+            if not vacancy_detail:
+                logger.debug("Skipping not founded vacancy")
                 continue
 
             fingerprint = generate_fingerprint(vacancy_detail.text)

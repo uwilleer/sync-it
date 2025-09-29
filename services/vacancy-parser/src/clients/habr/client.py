@@ -10,6 +10,7 @@ from common.gateway.enums import ServiceEnum
 from common.gateway.utils import build_service_url
 from common.logger import get_logger
 from common.shared.clients import BaseClient
+from httpx import codes
 
 
 __all__ = ["habr_client"]
@@ -35,13 +36,17 @@ class _HabrClient(BaseClient):
 
         return model_response.vacancies
 
-    async def get_vacancy_by_id(self, vacancy_id: int) -> HabrVacancySchema:
+    async def get_vacancy_by_id(self, vacancy_id: int) -> HabrVacancySchema | None:
         url = f"{self.url}/{vacancy_id}"
 
         response = await self.client.get(url)
-        response.raise_for_status()
 
+        if response.status_code == codes.NOT_FOUND:
+            return None
+
+        response.raise_for_status()
         data = response.json()
+
         model_response = HabrVacanciesDetailedResponse.model_validate(data)
 
         return model_response.vacancy
