@@ -11,13 +11,9 @@ __all__ = [
 ]
 
 
-# 2025-09-27T00:00:00Z
-_date_gte_default = (datetime.now(UTC)).replace(hour=0, minute=0, second=0, microsecond=0)
-
-
 class HabrVacanciesQuery(BaseModel):
-    date_gte: datetime = Field(
-        _date_gte_default,
+    date_gte: datetime | None = Field(
+        None,
         description="Datetime in UTC, format: YYYY-MM-DDTHH:MM:SSZ or +00:00",
     )
 

@@ -22,9 +22,8 @@ class HabrParser(BaseParser):
         if company_name_block is None:
             raise ParserBlockNotFoundError
 
+        # Не у каждой компании есть этот блок
         company_description_block = soup.select_one("div.company_about")
-        if company_description_block is None:
-            raise ParserBlockNotFoundError
 
         description_block = soup.select_one("article.vacancy-show")
         if description_block is None:
@@ -53,10 +52,10 @@ class HabrParser(BaseParser):
         dt_local = datetime.fromisoformat(iso_str)
         dt_utc = dt_local.astimezone(UTC)
 
-        text = (
-            f"Название компании: {company_name_block.get_text(strip=True)}\n"
-            f"Информация о компании: {company_description_block.get_text(strip=True)}\n"
-            f"Описание вакансии: {description_block.get_text(strip=True, separator='\n')}"
-        )
+        text = f"Название компании: {company_name_block.get_text(strip=True)}\n"
+        if company_description_block:
+            text += f"Информация о компании: {company_description_block.get_text(strip=True)}\n"
+
+        text += f"Описание вакансии: {description_block.get_text(strip=True, separator='\n')}"
 
         return HabrDetailedVacancySchema(id=vacancy_id, text=text, datetime=dt_utc)

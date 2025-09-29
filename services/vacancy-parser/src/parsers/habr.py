@@ -28,6 +28,7 @@ class HabrParser(BaseParser["HabrVacancyService"]):
         last_vacancy = await self.service.get_last_vacancy()
         last_vacancy_date = last_vacancy.published_at if last_vacancy else None
         newest_vacancy_ids = await habr_client.get_newest_vacancies_ids(last_vacancy_date)
+        logger.debug("Found %s actual vacancies", len(newest_vacancy_ids))
         vacancy_hashes = [generate_vacancy_hash(v_id, SourceEnum.HABR) for v_id in newest_vacancy_ids]
         existing_hashes = await self.service.get_existing_hashes(vacancy_hashes)
         new_vacancies_ids = [

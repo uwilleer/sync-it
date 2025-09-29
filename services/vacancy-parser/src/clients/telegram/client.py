@@ -5,10 +5,14 @@ from clients.telegram.schemas import (
 )
 from common.gateway.enums import ServiceEnum
 from common.gateway.utils import build_service_url
+from common.logger import get_logger
 from common.shared.clients import BaseClient
 
 
 __all__ = ["telegram_client"]
+
+
+logger = get_logger(__name__)
 
 
 class _TelegramClient(BaseClient):
@@ -21,6 +25,7 @@ class _TelegramClient(BaseClient):
     async def get_newest_messages(
         self, channel_username: str, after_message_id: int | None = None
     ) -> list[TelegramChannelMessageSchema]:
+        logger.debug("Getting telegram newest messages from %s after %s message_id", channel_username, after_message_id)
         url = f"{self.url}/{channel_username}/messages"
         params = TelegramNewestMessagesRequest(after_message_id=after_message_id)
 
@@ -29,6 +34,8 @@ class _TelegramClient(BaseClient):
 
         data = response.json()
         model_response = TelegramChannelMessagesResponse.model_validate(data)
+
+        logger.debug("Got %s new messages for channel %s", len(model_response.messages), channel_username)
 
         return model_response.messages
 

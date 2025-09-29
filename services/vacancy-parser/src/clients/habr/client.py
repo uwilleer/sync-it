@@ -10,6 +10,7 @@ from common.gateway.enums import ServiceEnum
 from common.gateway.utils import build_service_url
 from common.logger import get_logger
 from common.shared.clients import BaseClient
+from common.shared.decorators.concurency import limit_requests
 from httpx import codes
 
 
@@ -27,6 +28,7 @@ class _HabrClient(BaseClient):
         self.client.timeout = 30
 
     async def get_newest_vacancies_ids(self, date_gte: datetime | None) -> list[int]:
+        logger.debug("Getting habr newest vacancies ids after %s", date_gte)
         params = HabrVacanciesRequest(date_gte=date_gte)
         response = await self.client.get(self.url, params=params.model_dump(exclude_none=True))
         response.raise_for_status()
@@ -36,7 +38,9 @@ class _HabrClient(BaseClient):
 
         return model_response.vacancies
 
+    @limit_requests(10)
     async def get_vacancy_by_id(self, vacancy_id: int) -> HabrVacancySchema | None:
+        logger.debug("Getting habr vacancies by id %s", vacancy_id)
         url = f"{self.url}/{vacancy_id}"
 
         response = await self.client.get(url)

@@ -51,3 +51,5 @@ def _configure_base_logger() -> None:
         format=LOG_FORMAT,
         datefmt=LOG_DATE_FORMAT,
     )
+
+    logging.getLogger("httpcore").setLevel(logging.WARNING)

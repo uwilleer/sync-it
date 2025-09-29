@@ -64,6 +64,7 @@ class _HeadHunterClient(BaseClient):
 
     async def get_newest_vacancies_ids(self) -> list[int]:
         """Асинхронно получает id актуальных вакансиий."""
+        logger.debug("Getting hh newest vacancies ids after %s")
         professions = await profession_client.get_all()
         text_query = " OR ".join([p.name for p in professions])
 
@@ -79,11 +80,14 @@ class _HeadHunterClient(BaseClient):
                 page_data = await coro
                 all_vacancy_ids.extend(vacancy.id for vacancy in page_data.items)
 
+        logger.debug("Found %s hh new vacancies", len(all_vacancy_ids))
+
         return all_vacancy_ids
 
     @limit_requests(20)
     async def get_vacancy_by_id(self, vacancy_id: int) -> HeadHunterVacancyDetailResponse | None:
         """Загружает и валидирует одну детальную вакансию по ее ID."""
+        logger.debug("Getting hh vacancies by id %s", vacancy_id)
         detailed_url = f"{self.url}/{vacancy_id}"
         response = await self.client.get(detailed_url)
 
