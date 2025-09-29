@@ -25,7 +25,7 @@ class _HabrClient(BaseClient):
 
     def configure_client(self) -> None:
         super().configure_client()
-        self.client.timeout = 30
+        self.client.timeout = 60
 
     async def get_newest_vacancies_ids(self, date_gte: datetime | None) -> list[int]:
         logger.debug("Getting habr newest vacancies ids after %s", date_gte)
