@@ -26,6 +26,7 @@ class SkillEnum(BaseAliasEnum):
     ARGOCD = "ArgoCD"
     ASP_NET = "ASP.NET"
     ASP_NET_CORE = "ASP.NET Core"
+    ASYNC = "Асинхронное программирование", ("coroutines",)
     ASYNCIO = "asyncio"
     AXIOS = "Axios"
     AZURE = "Azure", ("azure devops",)
@@ -49,6 +50,7 @@ class SkillEnum(BaseAliasEnum):
     CSS = "CSS", ("css3",)
     CYPRESS = "Cypress"
     DART = "DART"
+    DATABASES = "Базы данных"
     DAX = "DAX"
     DEVOPS = "DevOps", ("dev/ops",)
     DHCP = "DHCP"
@@ -68,6 +70,7 @@ class SkillEnum(BaseAliasEnum):
     FIGMA = "Figma"
     FLASK = "Flask"
     FLUTTER = "Flutter"
+    GBP = "BGP"
     GCP = "GCP", ("google cloud platform", "google cloud")
     GIT = "Git", ("github", "gitlab")
     GO = "Go", ("golang",)
@@ -85,7 +88,7 @@ class SkillEnum(BaseAliasEnum):
     HIBERNATE = "Hibernate"
     HIVE = "Hive"
     HTML = "HTML", ("html5",)
-    HTTP = "HTTP", ("https", "http/https")
+    HTTP = "HTTP", ("https", "http/https", "сетевые технологии")
     HYPER_V = "Hyper-V"
     IOS = "iOS"
     JAVA = "Java"
@@ -131,11 +134,13 @@ class SkillEnum(BaseAliasEnum):
     ONE_C = "1С", ("1c", "1с: предприятие", "1c: предприятие", "1c: erp", "1с:erp", "1с программирование")
     OOP = "ООП", ("oop",)
     OPENAI = "OpenAI", ("openai api",)
+    OPENAPI = "OpenAPI"
     OPENSHIFT = "OpenShift"
     OPENSTACK = "OpenStack"
     ORACLE = "Oracle"
     PANDAS = "pandas"
     PHP = "PHP"
+    PL_SQL = "PL/SQL"
     PLAYWRIGHT = "Playwright"
     POSTGIS = "PostGIS"
     POSTGRES = "PostgreSQL", ("postgres", "postgress")
@@ -172,12 +177,13 @@ class SkillEnum(BaseAliasEnum):
     SOAP = "SOAP"
     SOLID = "SOLID"
     SPA = "SPA"
-    SPRING = "Spring", ("spring framework",)
+    SPRING = "Spring", ("spring framework", "java spring framework")
     SPRING_BOOT = "Spring Boot", ("java spring boot",)
     SQL = "SQL", ("реляционные базы данных",)
     SQLALCHEMY = "SQLAlchemy"
+    SQLITE = "SQLite"
     STL = "STL"
-    SWIFT = "Swift"
+    SWIFT = "Swift", ("swiftui",)
     SYMFONY = "Symfony"
     TABLEAU = "Tableau"
     TAILWIND = "Tailwind"
@@ -187,9 +193,10 @@ class SkillEnum(BaseAliasEnum):
     TENSORFLOW = "TensorFlow"
     TERRAFORM = "Terraform"
     TYPESCRIPT = "TypeScript", ("ts",)
+    UI_KIT = "UIKit"
     UML = "UML"
     UNITTEST = "unittest", ("unit testing", "unit test")
-    UX_UI = "UX/UI", ("ui/ux", "ui", "ux")
+    UX_UI = "UX/UI", ("ui/ux", "ui", "ux", "ui-дизайн", "ux-дизайн")
     VITE = "Vite"
     VLAN = "VLAN"
     VMWARE = "VMware"
@@ -203,7 +210,7 @@ class SkillEnum(BaseAliasEnum):
     WINDOWS_SERVER = "Windows Server"
     XML = "XML"
     YANDEX_CLOUD = "Yandex Cloud"
-    YII2 = "Yii2", ("yii",)
+    YII = "Yii", ("yii2", "yii framework")
     ZABBIX = "Zabbix"
     ZUSTAND = "Zustand"
 
