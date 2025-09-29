@@ -27,6 +27,8 @@ class _VacancyClient(BaseClient):
         data = response.json()
         model_response = VacancyListResponse(**data)
 
+        logger.info("Received %d vacancies from vacancy parser", len(model_response.vacancies))
+
         return model_response.vacancies
 
     async def delete(self, vacancy: VacancySchema) -> bool:
