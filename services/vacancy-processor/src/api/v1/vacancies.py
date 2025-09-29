@@ -5,12 +5,12 @@ from api.v1.schemas import (
     VacanciesSummaryResponse,
     VacancyListQuery,
     VacancyListResponse,
-    VacancyWithNeighborsQuery,
+    VacancyWithNeighborsBody,
     VacancyWithNeighborsResponse,
     VacancyWithNeighborsSchema,
 )
 from common.logger import get_logger
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Body, Depends, Query
 
 from services import VacancyService
 
@@ -33,19 +33,12 @@ async def get_vacancies(
     return VacancyListResponse(vacancies=vacancies)
 
 
-@router.get("/match")
+@router.post("/match")
 async def get_vacancy_with_neighbors(
     service: Annotated[VacancyService, Depends(get_vacancy_service)],
-    query: Annotated[VacancyWithNeighborsQuery, Query()],
+    data: Annotated[VacancyWithNeighborsBody, Body()],
 ) -> VacancyWithNeighborsResponse:
-    prev_id, vacancy, next_id = await service.get_vacancy_with_neighbors(
-        query.current_vacancy_id,
-        query.professions,
-        query.grades,
-        query.work_formats,
-        query.skills,
-        query.sources,
-    )
+    prev_id, vacancy, next_id = await service.get_vacancy_with_neighbors(data)
 
     result = VacancyWithNeighborsSchema(
         prev_id=prev_id,

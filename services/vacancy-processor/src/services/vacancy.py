@@ -1,5 +1,6 @@
 from collections.abc import Iterable
 
+from api.v1.schemas import VacancyWithNeighborsBody
 from common.redis.decorators.cache import build_key, cache
 from common.shared.serializers.pickle import PickleSerializer
 from common.shared.services import BaseUOWService
@@ -63,31 +64,25 @@ class VacancyService(BaseUOWService[UnitOfWork]):
         return [VacancyRead.model_validate(v) for v in vacancies]
 
     async def get_vacancy_with_neighbors(
-        self,
-        current_vacancy_id: int | None,
-        professions: list[ProfessionEnum],
-        grades: list[GradeEnum],
-        work_formats: list[WorkFormatEnum],
-        skills: list[SkillEnum],
-        sources: list[SourceEnum],
+        self, data: VacancyWithNeighborsBody
     ) -> tuple[int | None, VacancyRead | None, int | None]:
-        if not skills:
+        if not data.skills:
             return None, None, None
 
         vacancies = await self._get_relevant_vacancies(
-            professions=professions,
-            grades=grades,
-            work_formats=work_formats,
-            skills=skills,
-            sources=sources,
+            professions=data.professions,
+            grades=data.grades,
+            work_formats=data.work_formats,
+            skills=data.skills,
+            sources=data.sources,
         )
 
         if not vacancies:
             return None, None, None
 
-        if current_vacancy_id:
+        if data.current_vacancy_id:
             try:
-                index = next(i for i, v in enumerate(vacancies) if v.id == current_vacancy_id)
+                index = next(i for i, v in enumerate(vacancies) if v.id == data.current_vacancy_id)
             except StopIteration:
                 return None, None, None
         else:

@@ -17,7 +17,7 @@ __all__ = [
     "VacanciesSummaryResponse",
     "VacancyListQuery",
     "VacancyListResponse",
-    "VacancyWithNeighborsQuery",
+    "VacancyWithNeighborsBody",
     "VacancyWithNeighborsResponse",
     "VacancyWithNeighborsSchema",
     "WorkFormatListResponse",
@@ -60,7 +60,7 @@ class VacancyListQuery(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
 
-class VacancyWithNeighborsQuery(BaseModel):
+class VacancyWithNeighborsBody(BaseModel):
     current_vacancy_id: int | None = Field(None)
     professions: list[ProfessionEnum] = Field([])
     grades: list[GradeEnum] = Field([])

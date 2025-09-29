@@ -47,9 +47,9 @@ class _VacancyClient(BaseClient):
             sources=sources,
         )
         url = f"{self.url}/match"
-        response = await self.client.get(
+        response = await self.client.post(
             url,
-            params=params_model.model_dump(exclude_none=True),
+            json=params_model.model_dump(exclude_none=True),
         )
         data = response.json()
         model_response = VacancyWithNeighborsResponse.model_validate(data)

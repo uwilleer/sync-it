@@ -56,6 +56,9 @@ class _HeadHunterClient(BaseClient):
             }
         )
 
+        if len(str(params)) > 2000:  # noqa: PLR2004
+            logger.warning("Possible long query")
+
         response = await self.client.get(self.url, params=params)
         response.raise_for_status()
         data = response.json()
