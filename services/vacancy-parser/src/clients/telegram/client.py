@@ -22,7 +22,7 @@ class _TelegramClient(BaseClient):
 
     def configure_client(self) -> None:
         super().configure_client()
-        self.client.timeout = 30
+        self.client.timeout = 60
 
     async def get_newest_messages(
         self, channel_username: str, date_gte: datetime | None = None
