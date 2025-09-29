@@ -17,7 +17,6 @@ class SkillService(BaseUOWService[UnitOfWork]):
 
     @alru_cache
     async def get_skill_by_name(self, name: SkillEnum, *, by_enum: bool = False) -> SkillRead:
-        # 'Мягкое' получения скилла используя его возможные вариации
         if by_enum:
             enum = SkillEnum.get_safe(name)
             if not enum:

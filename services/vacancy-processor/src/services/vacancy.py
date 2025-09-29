@@ -1,6 +1,6 @@
 from collections.abc import Iterable
+from typing import TYPE_CHECKING
 
-from api.v1.schemas import VacancyWithNeighborsBody
 from common.redis.decorators.cache import build_key, cache
 from common.shared.serializers.pickle import PickleSerializer
 from common.shared.services import BaseUOWService
@@ -12,6 +12,9 @@ from schemas.vacancy import VacanciesSummarySchema, VacancyCreate, VacancyRead
 from schemas.work_format import WorkFormatRead
 from unitofwork import UnitOfWork
 
+
+if TYPE_CHECKING:
+    from api.v1.schemas import VacancyWithNeighborsBody
 
 __all__ = ["VacancyService"]
 
@@ -64,7 +67,7 @@ class VacancyService(BaseUOWService[UnitOfWork]):
         return [VacancyRead.model_validate(v) for v in vacancies]
 
     async def get_vacancy_with_neighbors(
-        self, data: VacancyWithNeighborsBody
+        self, data: "VacancyWithNeighborsBody"
     ) -> tuple[int | None, VacancyRead | None, int | None]:
         if not data.skills:
             return None, None, None
