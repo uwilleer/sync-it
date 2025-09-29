@@ -95,7 +95,7 @@ async def show_vacancies(  # noqa: C901 PLR0912 PLR0914 PLR0915
             "Пожалуйста, добавьте навыки, чтобы мы могли подобрать для вас вакансии 😉",
         )
         await asyncio.sleep(2)
-        await update_skills(message, state, need_edit=False)
+        await update_skills(message, state, need_edit=False, is_first_start=True)
         return
 
     sources = [str(SourceEnum.from_human(s)) for s in categorized_prefs[PreferencesCategoryCodeEnum.SOURCE]]

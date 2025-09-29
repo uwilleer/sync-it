@@ -36,14 +36,20 @@ MAX_FILE_SIZE = 5 * 1024 * 1024  # 5 MB
 MAX_MESSAGE_LENGTH = 4096
 
 
-update_preferences_text = (
-    "Пришлите информацию, где есть ваши навыки одним из способов:\n"
-    "— Текстом (до 4096 символов)\n"
-    f"— Файлом в формате: {', '.join(SupportedReaderExtensionsEnum)} (до {MAX_FILE_SIZE // 1024 // 1024} МБ)\n\n"
-    f"ℹ️ Все ваши прошлые навыки будут удалены.\n"
-    f"ℹ️ Для лучшего результата можете использовать своё резюме.\n"
-    f"ℹ️ Старайтесь избегать случаев, когда текст в файле представлен в виде картинок (например, конвертация png в pdf), иначе точность извлечения навыков будет ниже."  # noqa: E501
-)
+def get_update_preferences_text(*, text_to_insert: str | None = None, show_old_skills: bool = True) -> str:
+    text = (
+        "Пришлите информацию, где есть ваши навыки одним из способов:\n"
+        "— Текстом (до 4096 символов)\n"
+        f"— Файлом в формате: {', '.join(SupportedReaderExtensionsEnum)} (до {MAX_FILE_SIZE // 1024 // 1024} МБ)\n\n"
+        f"ℹ️ Для лучшего результата можете использовать своё резюме.\n"
+        f"ℹ️ Старайтесь избегать случаев, когда текст в файле представлен в виде картинок (например, конвертация png в pdf), иначе точность извлечения навыков будет ниже.\n"  # noqa: E501
+    )
+    if text_to_insert:
+        text += text_to_insert
+    if show_old_skills:
+        text += "⚠️ Обратите внимание: предыдущие навыки будут заменены новыми."
+
+    return text
 
 
 @router.message(Command(BotCommandEnum.UPDATE_SKILLS))
@@ -92,7 +98,7 @@ async def handle_resume_input(message: Message, state: FSMContext, user: UserRea
     if text := message.text:
         if len(text) > MAX_MESSAGE_LENGTH:
             await message.reply(
-                f"⚠️ Текст слишком длинный, попробуйте сократить его.\n\n{update_preferences_text}",
+                f"⚠️ Текст слишком длинный, попробуйте сократить его.\n\n{get_update_preferences_text()}",
                 reply_markup=main_menu_keyboard(),
             )
             return
@@ -101,14 +107,14 @@ async def handle_resume_input(message: Message, state: FSMContext, user: UserRea
         file_suffix = Path(document.file_name or "").suffix
         if not file_suffix:
             await message.reply(
-                f"⚠️ Не удалось определить формат файла.\n\n{update_preferences_text}",
+                f"⚠️ Не удалось определить формат файла.\n\n{get_update_preferences_text()}",
                 reply_markup=main_menu_keyboard(),
             )
             return
 
         if file_suffix not in SupportedReaderExtensionsEnum:
             await message.reply(
-                f"⚠️ Неподдерживаемый формат: {file_suffix}\n\n{update_preferences_text}",
+                f"⚠️ Неподдерживаемый формат: {file_suffix}\n\n{get_update_preferences_text()}",
                 reply_markup=main_menu_keyboard(),
             )
             return
@@ -119,7 +125,7 @@ async def handle_resume_input(message: Message, state: FSMContext, user: UserRea
                 message.model_dump(exclude_none=True),
             )
             await message.reply(
-                f"❌ Произошла ошибка. Попробуйте позже.\n\n{update_preferences_text}",
+                f"❌ Произошла ошибка. Попробуйте позже.\n\n{get_update_preferences_text()}",
                 reply_markup=main_menu_keyboard(),
             )
             return
@@ -138,7 +144,7 @@ async def handle_resume_input(message: Message, state: FSMContext, user: UserRea
                 message.model_dump(exclude_none=True),
             )
             await message.reply(
-                f"❌ Произошла ошибка. Попробуйте позже.\n\n{update_preferences_text}",
+                f"❌ Произошла ошибка. Попробуйте позже.\n\n{get_update_preferences_text()}",
                 reply_markup=main_menu_keyboard(),
             )
             return
@@ -146,7 +152,7 @@ async def handle_resume_input(message: Message, state: FSMContext, user: UserRea
         resume_payload = FileResumePayloadSchema(file_path=file.file_path, suffix=file_suffix)
     else:
         await message.reply(
-            f"🤔 Вы прислали что-то не понятное.\n\n{update_preferences_text}",
+            f"🤔 Вы прислали что-то не понятное.\n\n{get_update_preferences_text()}",
             reply_markup=main_menu_keyboard(),
         )
         return
@@ -160,15 +166,25 @@ async def handle_resume_input(message: Message, state: FSMContext, user: UserRea
     await state.clear()
 
 
-async def update_skills(entity: CallbackQuery | Message, state: FSMContext, *, need_edit: bool = True) -> None:
+async def update_skills(
+    entity: CallbackQuery | Message, state: FSMContext, *, need_edit: bool = True, is_first_start: bool = False
+) -> None:
     if need_edit:
         await safe_edit_message(
             entity,
-            text=update_preferences_text,
+            text=get_update_preferences_text(),
             reply_markup=update_skills_keyboard(),
         )
     else:
+        text_to_insert = (
+            "ℹ️ Если не хотите присылать резюме — просто перечислите навыки через запятую "
+            "(например: <code>Python, FastAPI, JavaScript</code>)."
+        )
+        text = get_update_preferences_text(
+            text_to_insert=text_to_insert if is_first_start else None,
+            show_old_skills=not is_first_start,
+        )
         message = await get_message(entity)
-        await message.answer(update_preferences_text, reply_markup=update_skills_keyboard())
+        await message.answer(text, reply_markup=update_skills_keyboard(), parse_mode=ParseMode.HTML)
 
     await state.set_state(PreferencesState.waiting_for_data)
