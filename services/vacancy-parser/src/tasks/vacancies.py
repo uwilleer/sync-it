@@ -30,17 +30,16 @@ async def run_all_parsers() -> None:
     """Запускает все парсеры параллельно и обрабатывает результаты."""
     logger.info("Run all parsers")
 
-    tasks = [
+    results = await asyncio.gather(
         parse_telegram_vacancies(),
         parse_head_hunter_vacancies(),
         parse_habr_vacancies(),
-    ]
+        return_exceptions=True,
+    )
 
-    for coro in tasks:
-        try:
-            await coro
-        except Exception as e:
-            logger.exception("Error running parser", exc_info=e)
+    for result in results:
+        if isinstance(result, Exception):
+            logger.error("Error running parser", exc_info=result)
 
 
 async def parse_telegram_vacancies() -> None:
