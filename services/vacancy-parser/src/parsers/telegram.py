@@ -48,8 +48,6 @@ class TelegramParser(BaseParser["TelegramVacancyService", "TelegramVacancyCreate
             logger.debug("No new messages for channel '%s'", channel_link)
             return
 
-        logger.debug("Got %s new messages", len(newest_messages))
-
         vacancies: list[TelegramVacancyCreate] = []
         for message in newest_messages:
             if len(message.text) < self.MIN_VACANCY_TEXT_LENGTH:

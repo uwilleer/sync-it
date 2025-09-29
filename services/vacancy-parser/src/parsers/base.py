@@ -35,7 +35,5 @@ class BaseParser[VacancyServiceType, VacancyCreateType](ABC):
             return
 
         await self.service.add_vacancies_bulk(self._vacancies_batch)  # type: ignore[attr-defined]
-        logger.info(
-            "Committed batch of %d vacancies for parser %s", len(self._vacancies_batch), self.__class__.__name__
-        )
+        logger.info("Commited batch of %d vacancies for parser %s", len(self._vacancies_batch), self.__class__.__name__)
         self._vacancies_batch = []
