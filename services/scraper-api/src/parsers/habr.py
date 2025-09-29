@@ -41,7 +41,7 @@ class HabrParser(BaseParser):
             if item:
                 item.decompose()
             else:
-                logger.warning("Block %s not found", block)
+                logger.info("Block %s not found", block)
 
         time_tag = soup.select_one("div.vacancy-header__date time")
         if time_tag is None:

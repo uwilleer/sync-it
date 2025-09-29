@@ -20,7 +20,7 @@ __all__ = ["HeadHunterParser"]
 logger = get_logger(__name__)
 
 
-class HeadHunterParser(BaseParser["HeadHunterVacancyService"]):
+class HeadHunterParser(BaseParser["HeadHunterVacancyService", "HeadHunterVacancyCreate"]):
     def __init__(self, uow: UnitOfWork, service: "HeadHunterVacancyService") -> None:
         super().__init__(uow, service)
         self.service = service
@@ -78,6 +78,4 @@ class HeadHunterParser(BaseParser["HeadHunterVacancyService"]):
                 key_skills=[ks.name for ks in vacancy_detail.key_skills],
                 published_at=vacancy_detail.published_at,
             )
-
-            await self.service.add_vacancy(vacancy, with_refresh=False)
-            logger.debug("Added vacancy %s", vacancy.link)
+            await self.add_vacancy(vacancy)

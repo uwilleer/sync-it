@@ -19,7 +19,7 @@ __all__ = ["HabrParser"]
 logger = get_logger(__name__)
 
 
-class HabrParser(BaseParser["HabrVacancyService"]):
+class HabrParser(BaseParser["HabrVacancyService", "HabrVacancyCreate"]):
     service: "HabrVacancyService"
 
     async def parse(self) -> None:
@@ -67,5 +67,4 @@ class HabrParser(BaseParser["HabrVacancyService"]):
                 published_at=vacancy_detail.datetime,
                 data=vacancy_detail.text,
             )
-            await self.service.add_vacancy(vacancy_create, with_refresh=False)
-            logger.debug("Added vacancy %s", vacancy_create.link)
+            await self.add_vacancy(vacancy_create)

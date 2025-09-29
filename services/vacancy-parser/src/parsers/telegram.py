@@ -18,7 +18,7 @@ __all__ = ["TelegramParser"]
 logger = get_logger(__name__)
 
 
-class TelegramParser(BaseParser[TelegramVacancyService]):
+class TelegramParser(BaseParser["TelegramVacancyService", "TelegramVacancyCreate"]):
     MIN_VACANCY_TEXT_LENGTH = 600
 
     def __init__(
@@ -78,18 +78,12 @@ class TelegramParser(BaseParser[TelegramVacancyService]):
             )
             vacancies.append(vacancy_create)
 
-        new_vacancies = await self._get_new_vacancies(vacancies)
+        existing_hashes = await self.service.get_existing_hashes([v.hash for v in vacancies])
+        new_vacancies = [v for v in vacancies if v.hash not in existing_hashes]
 
         if not vacancies or not new_vacancies:
             logger.debug("No new vacancies for channel '%s'", channel_link)
             return
 
         for new_vacancy in new_vacancies:
-            await self.service.add_vacancy(new_vacancy, with_refresh=False)
-            logger.debug("Added vacancy: %s", new_vacancy.link)
-
-    async def _get_new_vacancies(self, vacancies: list[TelegramVacancyCreate]) -> list[TelegramVacancyCreate]:
-        vacancy_hashes = [v.hash for v in vacancies]
-        existing_hashes = await self.service.get_existing_hashes(vacancy_hashes)
-
-        return [v for v in vacancies if v.hash not in existing_hashes]
+            await self.add_vacancy(new_vacancy)
