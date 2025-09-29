@@ -1,15 +1,8 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
-__all__ = [
-    "HealthResponse",
-    "VacanciesListQuery",
-]
+__all__ = ["HealthResponse"]
 
 
 class HealthResponse(BaseModel):
     status: str
-
-
-class VacanciesListQuery(BaseModel):
-    limit: int = Field(default=100, ge=1, le=1000, description="Лимит вакансий")

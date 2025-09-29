@@ -1,8 +1,7 @@
 from typing import Annotated
 
 from api.dependencies import get_vacancy_service
-from api.schemas import VacanciesListQuery
-from api.v1.schemas import VacancyListResponse, VacancyProcessedResponse
+from api.v1.schemas import VacanciesListQuery, VacancyListResponse, VacancyProcessedResponse
 from fastapi import APIRouter, Depends, Query
 
 from services import VacancyService
