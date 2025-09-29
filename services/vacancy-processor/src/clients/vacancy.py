@@ -3,6 +3,7 @@ from common.gateway.enums import ServiceEnum
 from common.gateway.utils import build_service_url
 from common.logger import get_logger
 from common.shared.clients import BaseClient
+from common.shared.decorators.concurency import limit_requests
 
 
 __all__ = ["vacancy_client"]
@@ -30,6 +31,7 @@ class _VacancyClient(BaseClient):
 
         return model_response.vacancies
 
+    @limit_requests(16)
     async def delete(self, vacancy: VacancySchema) -> bool:
         detail_vacancy_url = f"{self.url}/{vacancy.hash}"
 

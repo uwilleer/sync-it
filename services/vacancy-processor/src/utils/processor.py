@@ -75,6 +75,9 @@ class VacancyProcessor:
                 logger.warning("Duplicate vacancy: %s", processed_vacancy.link, exc_info=e)
                 vacancies_to_delete.append(processed_vacancy)
 
+        # Сохраним вакансии, перед их удалением
+        await self.uow.commit()
+
         if vacancies_to_delete:
             logger.debug("Deleting %s vacancies", len(vacancies_to_delete))
             delete_vacancies_tasks = [vacancy_client.delete(vacancy) for vacancy in vacancies_to_delete]
