@@ -79,7 +79,7 @@ class VacancyProcessor:
         await self.uow.commit()
 
         if vacancy_hashes_to_mark_as_processed:
-            await vacancy_client.mark_as_processed_bulk(vacancy_hashes_to_mark_as_processed)
+            await vacancy_client.mark_vacancies_as_processed(vacancy_hashes_to_mark_as_processed)
             logger.debug("Deleting %s vacancies", len(vacancy_hashes_to_mark_as_processed))
 
     async def _process_prompt(

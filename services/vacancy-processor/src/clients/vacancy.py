@@ -36,7 +36,7 @@ class _VacancyClient(BaseClient):
 
         return model_response.vacancies
 
-    async def mark_as_processed_bulk(self, hashes: list[str]) -> int:
+    async def mark_vacancies_as_processed(self, hashes: list[str]) -> int:
         url = f"{self.url}/mark-processed"
 
         body = VacancyProcessedBody(hashes=hashes)
