@@ -29,4 +29,5 @@ class VacancyProcessedBody(BaseModel):
 
 
 class VacancyProcessedResponse(BaseModel):
-    updated_count: int
+    status: str
+    count: int

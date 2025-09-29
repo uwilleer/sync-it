@@ -45,6 +45,7 @@ class BaseVacancyRepository[VacancyType: Vacancy](BaseRepository):
             .limit(1)
         )
         result = await self._session.execute(stmt)
+
         return result.scalar_one_or_none()
 
     async def add_bulk(self, vacancies: Sequence[VacancyType]) -> None:
@@ -61,26 +62,16 @@ class BaseVacancyRepository[VacancyType: Vacancy](BaseRepository):
         )
         result = await self._session.execute(stmt)
         updated = result.scalar_one_or_none()
+
         return updated is not None
 
-    async def mark_as_processed_bulk(self, vacancy_hashes: list[str]) -> int:
+    async def mark_as_processed_bulk(self, vacancy_hashes: list[str]) -> None:
         """
         Помечает сразу несколько вакансий как обработанные.
         Возвращает количество обновленных строк.
         """
         if not vacancy_hashes:
-            return 0
+            return
 
-        stmt = (
-            update(Vacancy)
-            .where(Vacancy.hash.in_(vacancy_hashes))
-            .values(processed_at=datetime.now(tz=UTC))
-            .returning(Vacancy.id)
-        )
-        result = await self._session.execute(stmt)
-        updated_count = len(result.scalars().all())
-
-        if len(vacancy_hashes) != updated_count:
-            logger.warning("Hashes count != updated count: %s/%s", len(vacancy_hashes), updated_count)
-
-        return updated_count
+        stmt = update(Vacancy).where(Vacancy.hash.in_(vacancy_hashes)).values(processed_at=datetime.now(tz=UTC))
+        await self._session.execute(stmt)

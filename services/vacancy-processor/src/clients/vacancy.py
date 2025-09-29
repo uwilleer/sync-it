@@ -2,7 +2,6 @@ from clients.schemas import (
     VacanciesListRequest,
     VacancyListResponse,
     VacancyProcessedBody,
-    VacancyProcessedResponse,
     VacancySchema,
 )
 from common.gateway.enums import ServiceEnum
@@ -36,17 +35,12 @@ class _VacancyClient(BaseClient):
 
         return model_response.vacancies
 
-    async def mark_vacancies_as_processed(self, hashes: list[str]) -> int:
+    async def mark_vacancies_as_processed(self, hashes: list[str]) -> None:
         url = f"{self.url}/mark-processed"
 
         body = VacancyProcessedBody(hashes=hashes)
         response = await self.client.post(url, json=body.model_dump())
         response.raise_for_status()
-
-        data = response.json()
-        model_response = VacancyProcessedResponse(**data)
-
-        return model_response.updated_count
 
 
 vacancy_client = _VacancyClient()

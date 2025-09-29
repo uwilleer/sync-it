@@ -9,7 +9,6 @@ __all__ = [
     "CompletionResponse",
     "VacanciesListRequest",
     "VacancyListResponse",
-    "VacancyProcessedResponse",
     "VacancySchema",
 ]
 
@@ -39,7 +38,3 @@ class VacancyListResponse(BaseModel):
 # FIXME Дубляж
 class VacancyProcessedBody(BaseModel):
     hashes: list[str]
-
-
-class VacancyProcessedResponse(BaseModel):
-    updated_count: int

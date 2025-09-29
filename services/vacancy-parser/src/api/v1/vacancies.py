@@ -29,6 +29,6 @@ async def mark_vacancies_as_processed(
     data: Annotated[VacancyProcessedBody, Body()],
     service: Annotated[VacancyService, Depends(get_vacancy_service)],
 ) -> VacancyProcessedResponse:
-    updated_count = await service.mark_vacancies_as_processed(data.hashes)
+    await service.mark_vacancies_as_processed(data.hashes)
 
-    return VacancyProcessedResponse(updated_count=updated_count)
+    return VacancyProcessedResponse(status="completed", count=len(data.hashes))

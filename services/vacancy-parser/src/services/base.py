@@ -50,15 +50,10 @@ class BaseVacancyService[
         """Обновляет дату публикации вакансии по её хэшу."""
         return await self.repo.update_published_at(vacancy_hash, published_at)
 
-    async def mark_vacancies_as_processed(self, vacancy_hashes: list[str]) -> int:
-        """
-        Bulk mark as processed.
-        Возвращает количество обновленных вакансий.
-        """
-        updated_count = await self.repo.mark_as_processed_bulk(vacancy_hashes)
+    async def mark_vacancies_as_processed(self, vacancy_hashes: list[str]) -> None:
+        """Bulk mark as processed."""
+        await self.repo.mark_as_processed_bulk(vacancy_hashes)
         await self.commit()
-
-        return updated_count
 
     async def add_vacancies_bulk(self, vacancies: list[VacancyCreateType]) -> None:
         """
@@ -71,5 +66,3 @@ class BaseVacancyService[
         vacancies = [self.repo.model(**v.model_dump()) for v in vacancies]
         await self.repo.add_bulk(vacancies)
         await self.commit()
-
-        return
