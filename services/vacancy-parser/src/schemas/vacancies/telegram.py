@@ -13,7 +13,6 @@ __all__ = [
 class BaseTelegramVacancy(BaseVacancy):
     source: SourceEnum = SourceEnum.TELEGRAM
     channel_username: str
-    message_id: int
 
 
 class TelegramVacancyCreate(BaseTelegramVacancy, BaseVacancyCreate):
@@ -22,7 +21,7 @@ class TelegramVacancyCreate(BaseTelegramVacancy, BaseVacancyCreate):
     @computed_field  # type: ignore[prop-decorator]
     @property
     def hash(self) -> str:
-        return generate_vacancy_hash(f"{self.link}:{self.message_id}", SourceEnum.TELEGRAM)
+        return generate_vacancy_hash(str(self.link), SourceEnum.TELEGRAM)
 
 
 class TelegramVacancyRead(BaseTelegramVacancy, BaseVacancyRead):

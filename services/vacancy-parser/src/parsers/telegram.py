@@ -72,7 +72,6 @@ class TelegramParser(BaseParser["TelegramVacancyService", "TelegramVacancyCreate
                 fingerprint=fingerprint,
                 link=HttpsUrl(f"{channel_link}/{message.id}"),
                 channel_username=channel_link.channel_username,
-                message_id=message.id,
                 published_at=message.datetime,
                 data=message.text,
             )

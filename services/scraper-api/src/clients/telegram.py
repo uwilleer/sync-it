@@ -1,5 +1,3 @@
-import asyncio
-
 from clients.base import BaseParserClient
 from clients.schemas import PingResponse, TelegramDetailedMessageParams
 from common.logger import get_logger
@@ -49,25 +47,6 @@ class _TelegramClient(BaseParserClient):
         response.raise_for_status()
 
         return self.parser.parse_detailed_message(response.text, channel_username, message_id)
-
-    async def get_detailed_messages_by_message_ids(
-        self, channel_username: str, message_ids: list[int]
-    ) -> list[TelegramChannelMessageSchema]:
-        tasks = [self.get_detailed_message(channel_username, message_id) for message_id in message_ids]
-        results: list[TelegramChannelMessageSchema | BaseException | None] = await asyncio.gather(
-            *tasks, return_exceptions=True
-        )
-
-        messages: list[TelegramChannelMessageSchema] = []
-        for result in results:
-            if isinstance(result, BaseException):
-                logger.error("Failed to get message", exc_info=result)
-                continue
-
-            if result:
-                messages.append(result)
-
-        return messages
 
 
 telegram_client = _TelegramClient()

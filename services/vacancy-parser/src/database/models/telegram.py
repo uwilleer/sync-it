@@ -12,7 +12,6 @@ class TelegramVacancy(Vacancy):
     id: Mapped[int] = mapped_column(ForeignKey("vacancies.id"), primary_key=True)
 
     channel_username: Mapped[str] = mapped_column(String(32))
-    message_id: Mapped[int] = mapped_column()
 
     __mapper_args__ = {  # noqa: RUF012
         "polymorphic_identity": "telegram",
