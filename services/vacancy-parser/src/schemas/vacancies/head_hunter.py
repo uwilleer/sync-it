@@ -1,7 +1,7 @@
 from database.models.enums import SourceEnum
 from pydantic import Field, computed_field
 from schemas.vacancies import BaseVacancy, BaseVacancyCreate, BaseVacancyRead
-from utils import generate_hash
+from utils import generate_vacancy_hash
 
 
 __all__ = [
@@ -29,7 +29,7 @@ class HeadHunterVacancyCreate(BaseHeadHunterVacancy, BaseVacancyCreate):
     @computed_field  # type: ignore[prop-decorator]
     @property
     def hash(self) -> str:
-        return generate_hash(self.vacancy_id)
+        return generate_vacancy_hash(self.vacancy_id, SourceEnum.HEAD_HUNTER)
 
     @computed_field  # type: ignore[prop-decorator]
     @property

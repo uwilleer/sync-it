@@ -30,7 +30,9 @@ class _HabrClient(BaseClient):
     async def get_newest_vacancies_ids(self, date_gte: datetime | None) -> list[int]:
         logger.debug("Getting habr newest vacancies ids after %s", date_gte)
         params = HabrVacanciesRequest(date_gte=date_gte)
-        response = await self.client.get(self.url, params=params.model_dump(exclude_none=True), timeout=120)
+
+        timeout = 360 if date_gte else self.client.timeout
+        response = await self.client.get(self.url, params=params.model_dump(exclude_none=True), timeout=timeout)
         response.raise_for_status()
 
         data = response.json()
