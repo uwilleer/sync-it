@@ -28,7 +28,3 @@ class Vacancy(Base):
     }
 
     __table_args__ = (Index("idx_vacancies_not_processed", "processed_at", postgresql_where="processed_at IS NULL"),)
-
-    @property
-    def is_processed(self) -> bool:
-        return self.processed_at is not None

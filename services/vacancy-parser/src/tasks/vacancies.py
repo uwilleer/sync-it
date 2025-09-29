@@ -36,7 +36,7 @@ async def run_all_parsers() -> None:
         parse_habr_vacancies(),
     ]
 
-    for coro in asyncio.as_completed(tasks):
+    for coro in tasks:
         try:
             await coro
         except Exception as e:

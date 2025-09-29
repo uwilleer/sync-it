@@ -54,7 +54,7 @@ class VacancyProcessor:
         prompts = [make_vacancy_prompt(vacancy.data) for vacancy in vacancies_to_process]
         process_prompts_task = list(starmap(self._process_prompt, zip(prompts, vacancies_to_process, strict=True)))
 
-        vacancies_to_delete: list[VacancySchema] = []
+        vacancy_hashes_to_mark_as_processed: list[str] = []
 
         results = await asyncio.gather(*process_prompts_task, return_exceptions=True)
         for processed_vacancy, result in zip(vacancies_to_process, results, strict=True):
@@ -63,25 +63,24 @@ class VacancyProcessor:
                 continue
             if result is None:
                 logger.debug("Not a vacancy: %s", processed_vacancy.link)
-                vacancies_to_delete.append(processed_vacancy)
+                vacancy_hashes_to_mark_as_processed.append(processed_vacancy.hash)
                 continue
 
             extracted_vacancy, vacancy = result
 
             try:
                 await self._process_vacancy(extracted_vacancy, vacancy)
-                vacancies_to_delete.append(processed_vacancy)
+                vacancy_hashes_to_mark_as_processed.append(processed_vacancy.hash)
             except IntegrityError as e:
                 logger.warning("Duplicate vacancy: %s", processed_vacancy.link, exc_info=e)
-                vacancies_to_delete.append(processed_vacancy)
+                vacancy_hashes_to_mark_as_processed.append(processed_vacancy.hash)
 
         # Сохраним вакансии, перед их удалением
         await self.uow.commit()
 
-        if vacancies_to_delete:
-            logger.debug("Deleting %s vacancies", len(vacancies_to_delete))
-            delete_vacancies_tasks = [vacancy_client.delete(vacancy) for vacancy in vacancies_to_delete]
-            await asyncio.gather(*delete_vacancies_tasks)
+        if vacancy_hashes_to_mark_as_processed:
+            await vacancy_client.mark_as_processed_bulk(vacancy_hashes_to_mark_as_processed)
+            logger.debug("Deleting %s vacancies", len(vacancy_hashes_to_mark_as_processed))
 
     async def _process_prompt(
         self, prompt: str, vacancy: VacancySchema

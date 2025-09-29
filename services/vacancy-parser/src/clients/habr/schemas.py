@@ -13,10 +13,6 @@ __all__ = [
 ]
 
 
-class HabrVacancyPublishedDateSchema(BaseModel):
-    date: datetime
-
-
 class HabrVacancyMetaSchema(BaseModel):
     total_pages: int = Field(alias="totalPages")
 

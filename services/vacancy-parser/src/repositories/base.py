@@ -1,6 +1,7 @@
 from collections.abc import Iterable, Sequence
 from datetime import UTC, datetime
 
+from common.logger import get_logger
 from common.shared.repositories import BaseRepository
 from constants.fingerprint import FINGERPRINT_SIMILARITY_THRESHOLD
 from database.models import Vacancy
@@ -8,6 +9,9 @@ from sqlalchemy import func, select, update
 
 
 __all__ = ["BaseVacancyRepository"]
+
+
+logger = get_logger(__name__)
 
 
 class BaseVacancyRepository[VacancyType: Vacancy](BaseRepository):
@@ -33,13 +37,6 @@ class BaseVacancyRepository[VacancyType: Vacancy](BaseRepository):
 
         return set(result.scalars().all())
 
-    async def get_last_vacancy(self) -> VacancyType | None:
-        """Возвращает последнюю вакансию."""
-        stmt = select(self.model).order_by(self.model.published_at.desc()).limit(1)
-        result = await self._session.execute(stmt)
-
-        return result.scalar_one_or_none()
-
     async def find_duplicate_vacancy_hash_by_fingerprint(self, fingerprint: str) -> str | None:
         """Найти дубликат вакансии по содержимому."""
         stmt = (
@@ -50,15 +47,12 @@ class BaseVacancyRepository[VacancyType: Vacancy](BaseRepository):
         result = await self._session.execute(stmt)
         return result.scalar_one_or_none()
 
-    async def add(self, vacancy: VacancyType, *, with_refresh: bool) -> VacancyType | None:
-        self._session.add(vacancy)
-        await self._session.flush()
-
-        if with_refresh:
-            await self._session.refresh(vacancy)
-            return vacancy
-
-        return None
+    async def add_bulk(self, vacancies: Sequence[VacancyType]) -> None:
+        """
+        Добавляет сразу несколько вакансий.
+        Возвращает количество реально вставленных строк.
+        """
+        self._session.add_all(vacancies)
 
     async def update_published_at(self, vacancy_hash: str, published_at: datetime) -> bool:
         """Обновляет дату публикации вакансии напрямую через UPDATE."""
@@ -69,24 +63,24 @@ class BaseVacancyRepository[VacancyType: Vacancy](BaseRepository):
         updated = result.scalar_one_or_none()
         return updated is not None
 
-    async def mark_as_processed(self, vacancy_hash: str) -> bool:
+    async def mark_as_processed_bulk(self, vacancy_hashes: list[str]) -> int:
         """
-        Помечает вакансию обработанной из первой подходящей таблицы по хешу.
+        Помечает сразу несколько вакансий как обработанные.
+        Возвращает количество обновленных строк.
+        """
+        if not vacancy_hashes:
+            return 0
 
-        True - вакансия помечена как удаленная
-        False - вакансия не найдена
-        """
-        # Только для удаления. Используем Vacancy, а не self._model
         stmt = (
             update(Vacancy)
-            .where(Vacancy.hash == vacancy_hash)
+            .where(Vacancy.hash.in_(vacancy_hashes))
             .values(processed_at=datetime.now(tz=UTC))
-            .returning(Vacancy.processed_at)
+            .returning(Vacancy.id)
         )
         result = await self._session.execute(stmt)
-        processed_at = result.scalar_one_or_none()
+        updated_count = len(result.scalars().all())
 
-        if processed_at is None:
-            return False
+        if len(vacancy_hashes) != updated_count:
+            logger.warning("Hashes count != updated count: %s/%s", len(vacancy_hashes), updated_count)
 
-        return processed_at is not None
+        return updated_count

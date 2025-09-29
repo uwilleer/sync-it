@@ -20,16 +20,18 @@ class BaseVacancy(BaseModel):
 
 
 class BaseVacancyCreate(BaseVacancy):
-    model_config = ConfigDict(json_encoders={HttpsUrl: str})
-
     @computed_field  # type: ignore[prop-decorator]
     @property
     def hash(self) -> str:
         raise NotImplementedError("Define hash in child class")
 
     @field_serializer("link")
-    def serialize_url(self, link: HttpsUrl) -> str:  # noqa: PLR6301
+    def serialize_link(self, link: HttpsUrl) -> str:  # noqa: PLR6301
         return str(link)
+
+    @field_serializer("source")
+    def serialize_source(self, source: SourceEnum) -> str:  # noqa: PLR6301
+        return str(source)
 
 
 class BaseVacancyRead(BaseVacancy):

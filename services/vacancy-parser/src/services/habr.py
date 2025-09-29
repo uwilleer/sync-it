@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from repositories.habr import HabrVacancyRepository
 from schemas.vacancies import HabrVacancyCreate, HabrVacancyRead
 
@@ -14,7 +16,5 @@ class HabrVacancyService(BaseVacancyService[HabrVacancyRead, HabrVacancyCreate, 
     def _get_repo(self) -> "HabrVacancyRepository":
         return self._uow.habr_vacancies
 
-    async def get_last_vacancy(self) -> HabrVacancyRead | None:
-        vacancy = await self.repo.get_last_vacancy()
-
-        return self.read_schema.model_validate(vacancy) if vacancy else None
+    async def get_last_vacancy_published_at(self) -> datetime | None:
+        return await self.repo.get_last_published_at()

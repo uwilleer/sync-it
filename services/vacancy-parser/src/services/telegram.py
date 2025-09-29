@@ -1,13 +1,9 @@
-from typing import TYPE_CHECKING
+from datetime import datetime
 
 from repositories import TelegramVacancyRepository
 from schemas.vacancies import TelegramVacancyCreate, TelegramVacancyRead
 
 from services import BaseVacancyService
-
-
-if TYPE_CHECKING:
-    from parsers.schemas import TelegramChannelUrl
 
 
 __all__ = ["TelegramVacancyService"]
@@ -23,5 +19,5 @@ class TelegramVacancyService(BaseVacancyService[TelegramVacancyRead, TelegramVac
     def _get_repo(self) -> "TelegramVacancyRepository":
         return self._uow.tg_vacancies
 
-    async def get_last_message_id(self, link: "TelegramChannelUrl") -> int | None:
-        return await self.repo.get_last_message_id(link)
+    async def get_last_vacancy_published_at(self, username: str) -> datetime | None:
+        return await self.repo.get_last_published_at(username)

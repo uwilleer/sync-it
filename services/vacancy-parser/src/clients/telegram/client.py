@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from clients.telegram.schemas import (
     TelegramChannelMessageSchema,
     TelegramChannelMessagesResponse,
@@ -16,20 +18,21 @@ logger = get_logger(__name__)
 
 
 class _TelegramClient(BaseClient):
-    url = build_service_url(ServiceEnum.SCRAPER_API, "/api/v1/telegram/channel")
+    url = build_service_url(ServiceEnum.SCRAPER_API, "/api/v1/telegram/messages")
 
     def configure_client(self) -> None:
         super().configure_client()
         self.client.timeout = 30
 
     async def get_newest_messages(
-        self, channel_username: str, after_message_id: int | None = None
+        self, channel_username: str, date_gte: datetime | None = None
     ) -> list[TelegramChannelMessageSchema]:
-        logger.debug("Getting telegram newest messages from %s after %s message_id", channel_username, after_message_id)
-        url = f"{self.url}/{channel_username}/messages"
-        params = TelegramNewestMessagesRequest(after_message_id=after_message_id)
+        params = TelegramNewestMessagesRequest(
+            channel_username=channel_username,
+            date_gte=date_gte,
+        )
 
-        response = await self.client.get(url, params=params.model_dump(exclude_none=True))
+        response = await self.client.get(self.url, params=params.model_dump(exclude_none=True))
         response.raise_for_status()
 
         data = response.json()

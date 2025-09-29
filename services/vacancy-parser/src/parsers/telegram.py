@@ -39,10 +39,10 @@ class TelegramParser(BaseParser["TelegramVacancyService", "TelegramVacancyCreate
     async def _process_channel(self, channel_link: TelegramChannelUrl) -> None:
         logger.debug("Start parsing channel '%s'", channel_link)
 
-        last_message_id = await self.service.get_last_message_id(channel_link)
-        logger.debug("Last message id for channel '%s' is %s", channel_link, last_message_id)
+        last_published_at = await self.service.get_last_vacancy_published_at(channel_link.channel_username)
+        logger.debug("Last message published at for channel '%s' is %s", channel_link, last_published_at)
 
-        newest_messages = await telegram_client.get_newest_messages(channel_link.channel_username, last_message_id)
+        newest_messages = await telegram_client.get_newest_messages(channel_link.channel_username, last_published_at)
 
         if not newest_messages:
             logger.debug("No new messages for channel '%s'", channel_link)

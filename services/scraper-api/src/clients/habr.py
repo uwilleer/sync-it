@@ -1,4 +1,4 @@
-from datetime import UTC, datetime, timedelta
+from datetime import datetime
 
 from clients.base import BaseParserClient
 from clients.schemas import HabrVacancyListResponse, PingResponse
@@ -19,8 +19,6 @@ class _HabrClient(BaseParserClient):
     _api_url = URL("https://career.habr.com/api/frontend/vacancies")
     parser = HabrParser
 
-    _vacancies_date_period = timedelta(days=30)  # Количество дней, в пределах которых производится поиск по вакансиям
-
     async def ping(self) -> PingResponse:
         response = await self.client.get(self.url)
         response.raise_for_status()
@@ -35,11 +33,8 @@ class _HabrClient(BaseParserClient):
 
         return self.parser.parse_detailed_vacancy(response.text, vacancy_id)
 
-    async def get_newest_vacancies_ids(self, date_gte: datetime | None) -> list[int]:
+    async def get_newest_vacancies_ids(self, date_gte: datetime) -> list[int]:
         newest_vacancy_ids: list[int] = []
-
-        if not date_gte:
-            date_gte = datetime.now(UTC) - self._vacancies_date_period
 
         logger.info("Getting newest vacancies ids after %s", date_gte)
 

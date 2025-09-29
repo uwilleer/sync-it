@@ -36,5 +36,10 @@ class VacancyListResponse(BaseModel):
     vacancies: list[VacancySchema]
 
 
+# FIXME Дубляж
+class VacancyProcessedBody(BaseModel):
+    hashes: list[str]
+
+
 class VacancyProcessedResponse(BaseModel):
-    is_processed: bool
+    updated_count: int

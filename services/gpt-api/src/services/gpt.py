@@ -19,7 +19,7 @@ RETRY_DELAY = 3
 client = AsyncClient()
 
 
-@limit_requests(256)
+@limit_requests(128)
 async def get_gpt_response(prompt: str) -> str | None:
     message = Message(role="user", content=prompt)
 

@@ -11,7 +11,8 @@ __all__ = [
 
 
 class TelegramNewestMessagesRequest(BaseModel):
-    after_message_id: int | None
+    channel_username: str
+    date_gte: datetime | None
 
 
 class TelegramChannelMessageSchema(BaseModel):

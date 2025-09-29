@@ -17,18 +17,25 @@ class BaseParser[VacancyServiceType, VacancyCreateType](ABC):
     def __init__(self, uow: UnitOfWork, service: VacancyServiceType) -> None:
         self.uow = uow
         self.service = service
-        self.current_batch = 0
+        self._vacancies_batch: list[VacancyCreateType] = []
 
     @abstractmethod
     async def parse(self) -> None:
         """Основной метод парсинга каналов."""
 
     async def add_vacancy(self, new_vacancy: VacancyCreateType) -> None:
-        self.current_batch += 1
-        await self.service.add_vacancy(new_vacancy, with_refresh=False)  # type: ignore[attr-defined]
+        self._vacancies_batch.append(new_vacancy)
         logger.debug("Added vacancy %s", new_vacancy.link)  # type: ignore[attr-defined]
 
-        if self.current_batch >= self.BATCH_SIZE:
-            await self.uow.commit()
-            self.current_batch = 0
-            logger.debug("Commited batch for parser %", self.__class__.__name__)
+        if len(self._vacancies_batch) >= self.BATCH_SIZE:
+            await self.save_vacancies()
+
+    async def save_vacancies(self) -> None:
+        if not self._vacancies_batch:
+            return
+
+        await self.service.add_vacancies_bulk(self._vacancies_batch)  # type: ignore[attr-defined]
+        logger.info(
+            "Committed batch of %d vacancies for parser %s", len(self._vacancies_batch), self.__class__.__name__
+        )
+        self._vacancies_batch = []

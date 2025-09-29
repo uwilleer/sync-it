@@ -1,9 +1,14 @@
-from clients.schemas import VacanciesListRequest, VacancyListResponse, VacancyProcessedResponse, VacancySchema
+from clients.schemas import (
+    VacanciesListRequest,
+    VacancyListResponse,
+    VacancyProcessedBody,
+    VacancyProcessedResponse,
+    VacancySchema,
+)
 from common.gateway.enums import ServiceEnum
 from common.gateway.utils import build_service_url
 from common.logger import get_logger
 from common.shared.clients import BaseClient
-from common.shared.decorators.concurency import limit_requests
 
 
 __all__ = ["vacancy_client"]
@@ -31,21 +36,17 @@ class _VacancyClient(BaseClient):
 
         return model_response.vacancies
 
-    @limit_requests(16)
-    async def delete(self, vacancy: VacancySchema) -> bool:
-        detail_vacancy_url = f"{self.url}/{vacancy.hash}"
+    async def mark_as_processed_bulk(self, hashes: list[str]) -> int:
+        url = f"{self.url}/mark-processed"
 
-        response = await self.client.post(detail_vacancy_url)
+        body = VacancyProcessedBody(hashes=hashes)
+        response = await self.client.post(url, json=body.model_dump())
         response.raise_for_status()
 
         data = response.json()
         model_response = VacancyProcessedResponse(**data)
 
-        if not model_response.is_processed:
-            logger.error("Failed to mark vacancy as processed: %s", vacancy.link)
-            return False
-
-        return True
+        return model_response.updated_count
 
 
 vacancy_client = _VacancyClient()

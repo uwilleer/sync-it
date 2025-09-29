@@ -26,15 +26,21 @@ class TelegramParser(BaseParser):
         html_content: str, channel_username: str, message_id: int
     ) -> TelegramChannelMessageSchema | None:
         soup = BeautifulSoup(html_content, "html.parser")
-        data_post_value = f"{channel_username}/{message_id}"
+        data_post_value = f"{channel_username}/{message_id}".lower()
 
-        message_block = soup.select_one(f'div.tgme_widget_message[data-post="{data_post_value}"]')
+        message_block = soup.find(
+            "div",
+            class_="tgme_widget_message",
+            attrs={
+                "data-post": lambda v: bool(v) and str(v).lower() == data_post_value,
+            },
+        )
         if message_block is None:
             # Если сообщение удалено
             logger.debug("Message with id %s was deleted", message_id)
             return None
 
-        data_post = message_block.attrs.get("data-post")
+        data_post = str(message_block.attrs.get("data-post")).lower()
         if data_post != data_post_value:
             logger.error(
                 "Data-post value mismatch for message with id %s. Expected %s, got %s",

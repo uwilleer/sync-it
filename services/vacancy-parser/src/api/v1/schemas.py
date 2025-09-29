@@ -5,6 +5,7 @@ from schemas.vacancies.vacancy import VacancyRead
 __all__ = [
     "VacanciesListQuery",
     "VacancyListResponse",
+    "VacancyProcessedBody",
     "VacancyProcessedResponse",
 ]
 
@@ -23,5 +24,9 @@ class VacancyListResponse(BaseModel):
     vacancies: list[VacancySchema]
 
 
+class VacancyProcessedBody(BaseModel):
+    hashes: list[str] = Field(description="Хеши вакансий")
+
+
 class VacancyProcessedResponse(BaseModel):
-    is_processed: bool
+    updated_count: int

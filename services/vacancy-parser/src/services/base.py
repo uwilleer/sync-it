@@ -3,6 +3,7 @@ from collections.abc import Iterable
 from datetime import datetime
 from typing import TYPE_CHECKING, Any
 
+from common.logger import get_logger
 from common.shared.services import BaseUOWService
 from schemas.vacancies import BaseVacancyCreate, BaseVacancyRead
 from unitofwork import UnitOfWork
@@ -13,6 +14,8 @@ if TYPE_CHECKING:
 
 
 __all__ = ["BaseVacancyService"]
+
+logger = get_logger(__name__)
 
 
 class BaseVacancyService[
@@ -47,15 +50,26 @@ class BaseVacancyService[
         """Обновляет дату публикации вакансии по её хэшу."""
         return await self.repo.update_published_at(vacancy_hash, published_at)
 
-    async def mark_as_processed(self, vacancy_hash: str) -> bool:
-        """Помечает вакансию как обработанную по её хешу."""
-        return await self.repo.mark_as_processed(vacancy_hash=vacancy_hash)
+    async def mark_vacancies_as_processed(self, vacancy_hashes: list[str]) -> int:
+        """
+        Bulk mark as processed.
+        Возвращает количество обновленных вакансий.
+        """
+        updated_count = await self.repo.mark_as_processed_bulk(vacancy_hashes)
+        await self.commit()
 
-    async def add_vacancy(self, vacancy: VacancyCreateType, *, with_refresh: bool) -> VacancyReadType | None:
-        vacancy_model = self.repo.model(**vacancy.model_dump())
-        created_vacancy = await self.repo.add(vacancy_model, with_refresh=with_refresh)
+        return updated_count
 
-        if with_refresh and created_vacancy:
-            return self.read_schema.model_validate(created_vacancy)
+    async def add_vacancies_bulk(self, vacancies: list[VacancyCreateType]) -> None:
+        """
+        Добавляет сразу несколько вакансий пачкой.
+        Возвращает количество реально добавленных вакансий.
+        """
+        if not vacancies:
+            return
 
-        return None
+        vacancies = [self.repo.model(**v.model_dump()) for v in vacancies]
+        await self.repo.add_bulk(vacancies)
+        await self.commit()
+
+        return

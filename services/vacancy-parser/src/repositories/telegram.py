@@ -1,12 +1,8 @@
-from typing import TYPE_CHECKING
+from datetime import datetime
 
 from database.models import TelegramVacancy
 from repositories import BaseVacancyRepository
 from sqlalchemy import func, select
-
-
-if TYPE_CHECKING:
-    from parsers.schemas import TelegramChannelUrl
 
 
 __all__ = ["TelegramVacancyRepository"]
@@ -15,8 +11,9 @@ __all__ = ["TelegramVacancyRepository"]
 class TelegramVacancyRepository(BaseVacancyRepository[TelegramVacancy]):
     model = TelegramVacancy
 
-    async def get_last_message_id(self, link: "TelegramChannelUrl") -> int | None:
+    async def get_last_published_at(self, channel_username: str) -> datetime | None:
         """Получить последний message_id для заданного Telegram канала."""
-        smtp = select(func.max(self.model.message_id)).where(self.model.channel_username == link.channel_username)
-        result = await self._session.execute(smtp)
+        stmt = select(func.max(self.model.published_at)).where(self.model.channel_username == channel_username)
+        result = await self._session.execute(stmt)
+
         return result.scalar_one_or_none()

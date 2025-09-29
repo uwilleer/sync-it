@@ -1,8 +1,8 @@
 from typing import Annotated
 
 from api.dependencies import get_vacancy_service
-from api.v1.schemas import VacanciesListQuery, VacancyListResponse, VacancyProcessedResponse
-from fastapi import APIRouter, Depends, Query
+from api.v1.schemas import VacanciesListQuery, VacancyListResponse, VacancyProcessedBody, VacancyProcessedResponse
+from fastapi import APIRouter, Body, Depends, Query
 
 from services import VacancyService
 
@@ -24,13 +24,11 @@ async def get_vacancies(
     return VacancyListResponse(vacancies=vacancies)
 
 
-@router.post("/vacancies/{vacancy_hash}")
-async def mark_vacancy_as_processed(
-    vacancy_hash: str,
+@router.post("/vacancies/mark-processed")
+async def mark_vacancies_as_processed(
+    data: Annotated[VacancyProcessedBody, Body()],
     service: Annotated[VacancyService, Depends(get_vacancy_service)],
 ) -> VacancyProcessedResponse:
-    is_processed = await service.mark_as_processed(vacancy_hash)
+    updated_count = await service.mark_vacancies_as_processed(data.hashes)
 
-    await service.commit()
-
-    return VacancyProcessedResponse(is_processed=is_processed)
+    return VacancyProcessedResponse(updated_count=updated_count)
