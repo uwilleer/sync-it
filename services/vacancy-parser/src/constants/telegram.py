@@ -6,7 +6,6 @@ __all__ = ["channel_links"]
 
 channel_usernames: set[str] = {
     "ai_rabota",
-    "cppjobs",
     "csharpdevjob",
     "datajobschannel",
     "datascienceml_jobs",
@@ -25,10 +24,8 @@ channel_usernames: set[str] = {
     "job_react",
     "python_djangojobs",
     "qa_chillout_jobs",
-    "qa_vacancies",
     "rabotaj_razrabotchik",
     "uzdev_jobs",
-    "vacancy_it_ulbitv",
     "workayte",
     "yotolabpython",
 }
