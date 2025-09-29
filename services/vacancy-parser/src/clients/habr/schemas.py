@@ -8,17 +8,12 @@ __all__ = [
     "HabrVacanciesListResponse",
     "HabrVacanciesListResponse",
     "HabrVacanciesRequest",
-    "HabrVacancyDetailResponse",
     "HabrVacancySchema",
 ]
 
 
 class HabrVacancyMetaSchema(BaseModel):
     total_pages: int = Field(alias="totalPages")
-
-
-class HabrVacancyDetailResponse(BaseModel):
-    pass
 
 
 class HabrVacanciesRequest(BaseModel):

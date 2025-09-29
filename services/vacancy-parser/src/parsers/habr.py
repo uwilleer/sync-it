@@ -11,6 +11,8 @@ from utils import generate_fingerprint, generate_vacancy_hash
 
 
 if TYPE_CHECKING:
+    from clients.habr.schemas import HabrVacancySchema
+
     from services import HabrVacancyService
 
 __all__ = ["HabrParser"]
@@ -37,16 +39,15 @@ class HabrParser(BaseParser["HabrVacancyService", "HabrVacancyCreate"]):
         logger.debug("Found %s new vacancies", len(new_vacancies_ids))
 
         tasks = [habr_client.get_vacancy_by_id(vacancy_id) for vacancy_id in new_vacancies_ids]
+        vacancy_details: list[HabrVacancySchema | BaseException | None] = await asyncio.gather(
+            *tasks, return_exceptions=True
+        )
 
-        for coro in asyncio.as_completed(tasks):
-            try:
-                vacancy_detail = await coro
-            except Exception as e:
-                logger.exception("Error processing vacancy", exc_info=e)
+        for vacancy_detail in vacancy_details:
+            if isinstance(vacancy_detail, BaseException):
+                logger.error("Error fetching vacancy", exc_info=vacancy_detail)
                 continue
-
             if not vacancy_detail:
-                logger.debug("Skipping not founded vacancy")
                 continue
 
             fingerprint = generate_fingerprint(vacancy_detail.text)

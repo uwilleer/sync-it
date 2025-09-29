@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 
 from clients import head_hunter_client
 from common.logger import get_logger
+from common.shared.schemas import HttpsUrl
 from database.models.enums import SourceEnum
 from parsers.base import BaseParser
 from schemas.vacancies import HeadHunterVacancyCreate
@@ -11,6 +12,8 @@ from utils import clear_html, generate_fingerprint, generate_vacancy_hash
 
 
 if TYPE_CHECKING:
+    from clients.head_hunter.schemas import HeadHunterVacancyDetailResponse
+
     from services import HeadHunterVacancyService
 
 
@@ -40,16 +43,15 @@ class HeadHunterParser(BaseParser["HeadHunterVacancyService", "HeadHunterVacancy
         logger.debug("Found %s new vacancies", len(new_vacancies_ids))
 
         tasks = [head_hunter_client.get_vacancy_by_id(vacancy_id) for vacancy_id in new_vacancies_ids]
+        vacancy_details: list[HeadHunterVacancyDetailResponse | BaseException | None] = await asyncio.gather(
+            *tasks, return_exceptions=True
+        )
 
-        for coro in asyncio.as_completed(tasks):
-            try:
-                vacancy_detail = await coro
-            except Exception as e:
-                logger.exception("Error processing vacancy", exc_info=e)
+        for vacancy_detail in vacancy_details:
+            if isinstance(vacancy_detail, BaseException):
+                logger.error("Error fetching vacancy", exc_info=vacancy_detail)
                 continue
-
             if not vacancy_detail:
-                logger.debug("Skipping not founded vacancy")
                 continue
 
             vacancy_description = clear_html(vacancy_detail.description)
@@ -67,7 +69,7 @@ class HeadHunterParser(BaseParser["HeadHunterVacancyService", "HeadHunterVacancy
             vacancy = HeadHunterVacancyCreate(
                 fingerprint=fingerprint,
                 vacancy_id=vacancy_detail.id,
-                link=vacancy_detail.alternate_url,
+                link=HttpsUrl(vacancy_detail.alternate_url),
                 employer=vacancy_detail.employer.name,
                 name=vacancy_detail.name,
                 description=clear_html(vacancy_detail.description),

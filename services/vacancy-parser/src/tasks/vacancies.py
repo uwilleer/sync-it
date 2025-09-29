@@ -48,6 +48,7 @@ async def parse_telegram_vacancies() -> None:
         service = TelegramVacancyService(uow)
         parser = TelegramParser(uow, service, channel_links)
         await parser.parse()
+        await parser.save_vacancies()
         await uow.commit()
 
 
@@ -56,6 +57,7 @@ async def parse_head_hunter_vacancies() -> None:
         service = HeadHunterVacancyService(uow)
         parser = HeadHunterParser(uow, service)
         await parser.parse()
+        await parser.save_vacancies()
         await uow.commit()
 
 
@@ -64,4 +66,5 @@ async def parse_habr_vacancies() -> None:
         service = HabrVacancyService(uow)
         parser = HabrParser(uow, service)
         await parser.parse()
+        await parser.save_vacancies()
         await uow.commit()
