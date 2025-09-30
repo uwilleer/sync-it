@@ -5,7 +5,7 @@ from aiogram import F, Router
 from aiogram.enums import ParseMode
 from aiogram.types import CallbackQuery
 from callbacks.preferences import PreferencesActionEnum, PreferencesCallback
-from clients import profession_client, work_format_client
+from clients import grade_client, profession_client, work_format_client
 from clients.vacancy import vacancy_client
 from common.logger import get_logger
 from database.models.enums import PreferencesCategoryCodeEnum
@@ -76,7 +76,7 @@ async def handle_grade(query: CallbackQuery, user_service: UserService) -> None:
         query,
         user_service,
         PreferencesCategoryCodeEnum.GRADE,
-        vacancy_client.get_sources,
+        grade_client.get_all,
         "Выберите грейд.\n\nℹ️ <i>Неизвестно — вакансии, у которых не удалось определить формат работы.</i>",
     )
 
