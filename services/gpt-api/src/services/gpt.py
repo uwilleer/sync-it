@@ -1,6 +1,7 @@
 import asyncio
 from typing import cast
 
+from aiohttp import ClientResponseError
 from common.logger import get_logger
 from common.shared.decorators.concurency import limit_requests
 from g4f.Provider import Startnest  # type: ignore[import-untyped]
@@ -32,7 +33,7 @@ async def get_gpt_response(prompt: str) -> str | None:
             )
             return cast("str", response.choices[0].message.content)
 
-        except Exception as e:
+        except ClientResponseError as e:
             logger.exception("Failed to get GPT response on attempt %s", attempt, exc_info=e)
             if attempt == MAX_RETRIES:
                 return None
