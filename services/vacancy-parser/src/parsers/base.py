@@ -12,7 +12,7 @@ logger = get_logger(__name__)
 
 class BaseParser[VacancyServiceType, VacancyCreateType](ABC):
     # Размер батча для загрузки вакансий
-    BATCH_SIZE = 100
+    BATCH_SIZE = 20
 
     def __init__(self, uow: UnitOfWork, service: VacancyServiceType) -> None:
         self.uow = uow
