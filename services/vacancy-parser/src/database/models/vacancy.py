@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from database.models import Base
-from sqlalchemy import DateTime, Index, String, Text
+from sqlalchemy import DateTime, Index, String, Text, desc
 from sqlalchemy.orm import Mapped, mapped_column
 
 
@@ -20,11 +20,20 @@ class Vacancy(Base):
     data: Mapped[str] = mapped_column(Text)
 
     published_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
-    processed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), index=True)
+    processed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
     __mapper_args__ = {  # noqa: RUF012
         "polymorphic_on": source,
         "polymorphic_identity": "base",
     }
 
-    __table_args__ = (Index("idx_vacancies_not_processed", "processed_at", postgresql_where="processed_at IS NULL"),)
+    __table_args__ = (
+        Index("idx_vacancies_published_at_desc", desc("published_at")),
+        Index("idx_vacancies_not_processed", "processed_at", postgresql_where="processed_at IS NULL"),
+        Index(
+            "idx_vacancies_fingerprint_trgm",
+            "fingerprint",
+            postgresql_using="gin",
+            postgresql_ops={"fingerprint": "gin_trgm_ops"},
+        ),
+    )
