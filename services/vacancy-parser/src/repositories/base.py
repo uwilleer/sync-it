@@ -74,5 +74,9 @@ class BaseVacancyRepository[VacancyType: Vacancy](BaseRepository):
         if not vacancy_hashes:
             return
 
-        stmt = update(Vacancy).where(Vacancy.hash.in_(vacancy_hashes)).values(processed_at=datetime.now(tz=UTC))
+        stmt = (
+            update(Vacancy)
+            .where(Vacancy.processed_at.is_(None), Vacancy.hash.in_(vacancy_hashes))
+            .values(processed_at=datetime.now(tz=UTC))
+        )
         await self._session.execute(stmt)

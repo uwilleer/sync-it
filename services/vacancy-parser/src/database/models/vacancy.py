@@ -14,7 +14,7 @@ class Vacancy(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     source: Mapped[str] = mapped_column(String(16), index=True)
 
-    hash: Mapped[str] = mapped_column(String(64), index=True, unique=True)
+    hash: Mapped[str] = mapped_column(String(64), unique=True)
     fingerprint: Mapped[str] = mapped_column(Text)
     link: Mapped[str] = mapped_column(String(256), unique=True)
     data: Mapped[str] = mapped_column(Text)
@@ -29,11 +29,12 @@ class Vacancy(Base):
 
     __table_args__ = (
         Index("idx_vacancies_published_at_desc", desc("published_at")),
+        Index("idx_vacancies_hash_not_processed", "hash", postgresql_where="processed_at IS NULL"),
         Index("idx_vacancies_not_processed", "processed_at", postgresql_where="processed_at IS NULL"),
         Index(
             "idx_vacancies_fingerprint_trgm",
             "fingerprint",
-            postgresql_using="gin",
-            postgresql_ops={"fingerprint": "gin_trgm_ops"},
+            postgresql_using="gist",
+            postgresql_ops={"fingerprint": "gist_trgm_ops"},
         ),
     )
