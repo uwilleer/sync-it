@@ -8,12 +8,12 @@ __all__ = ["db_config"]
 
 class DatabaseConfig(BaseSettings):
     host: str
-    name: str
     port: int = Field(ge=1, le=65535)
+    db: str
     user: str
     password: SecretStr
 
-    model_config = SettingsConfigDict(env_prefix="DB_")
+    model_config = SettingsConfigDict(env_prefix="DATABASE_")
 
     @property
     def url(self) -> URL:
@@ -23,7 +23,7 @@ class DatabaseConfig(BaseSettings):
             password=self.password.get_secret_value(),
             host=self.host,
             port=self.port,
-            database=self.name,
+            database=self.db,
         )
 
 

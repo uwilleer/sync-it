@@ -4,14 +4,22 @@ services:
     container_name: pgbouncer
     env_file: ${SERVICE_PROJECT_ROOT}/infra/.env
     environment:
+      - DB_HOST=${POSTGRES_HOST}
+      - DB_NAME=${POSTGRES_DB}
+      - DB_USER=${POSTGRES_USER}
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+      - DB_PORT=${POSTGRES_PORT}
+      - LISTEN_PORT=${PGBOUNCER_PORT}
+
+      - MAX_CLIENT_CONN=${PGBOUNCER_MAX_CLIENT_CONN}
+      - POOL_MODE=transaction
       - AUTH_TYPE=scram-sha-256
-      - LISTEN_PORT=${DB_PORT}
     ports:
-      - "${DB_PORT}:${DB_PORT}"
+      - "${PGBOUNCER_PORT}:${PGBOUNCER_PORT}"
     networks:
       - app-network
     healthcheck:
-      test: [ "CMD", "pg_isready", "-h", "${DB_HOST}", "-p", "${DB_PORT}" ]
+      test: [ "CMD", "pg_isready", "-h", "${PGBOUNCER_HOST}", "-p", "${PGBOUNCER_PORT}", "-d", "${PGBOUNCER_DB}", "-U", "${PGBOUNCER_USER}"]
       interval: 10s
       timeout: 1s
       retries: 3
