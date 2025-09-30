@@ -41,6 +41,7 @@ class BaseVacancyRepository[VacancyType: Vacancy](BaseRepository):
         """Найти дубликат вакансии по содержимому."""
         stmt = (
             select(self.model.hash)
+            .where(Vacancy.fingerprint.op("%")(fingerprint))
             .where(func.similarity(self.model.fingerprint, fingerprint) > FINGERPRINT_SIMILARITY_THRESHOLD)
             .limit(1)
         )
