@@ -1,4 +1,4 @@
-from collections.abc import Iterable
+from collections.abc import Iterable, Sequence
 from typing import TYPE_CHECKING
 
 from common.redis.decorators.cache import build_key, cache
@@ -108,7 +108,7 @@ class VacancyService(BaseUOWService[UnitOfWork]):
         work_formats: list[WorkFormatEnum],
         skills: list[SkillEnum],
         sources: list[SourceEnum],
-    ) -> list[Vacancy]:
+    ) -> Sequence[Vacancy]:
         """Возвращает только релевантные вакансии (для кеша)."""
         return await self._uow.vacancies.get_relevant(
             professions=professions,
