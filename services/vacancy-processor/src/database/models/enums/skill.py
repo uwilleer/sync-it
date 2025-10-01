@@ -130,7 +130,7 @@ class SkillEnum(BaseAliasEnum):
     NODE_JS = "Node.js", ("nodejs",)
     NOSQL = "NoSQL"
     NUMPY = "Numpy"
-    NUXT_JS = "Nuxt.js", ("nuxt",)
+    NUXT_JS = "Nuxt.js", ("nuxt", "nuxtjs", "nuxt 3")
     ONE_C = "1С", ("1c", "1с: предприятие", "1c: предприятие", "1c: erp", "1с:erp", "1с программирование")
     OOP = "ООП", ("oop",)
     OPENAI = "OpenAI", ("openai api",)
@@ -201,7 +201,7 @@ class SkillEnum(BaseAliasEnum):
     VLAN = "VLAN"
     VMWARE = "VMware"
     VPN = "VPN"
-    VUE_JS = "Vue.js", ("vue", "vuejs")
+    VUE_JS = "Vue.js", ("vue", "vuejs", "vue3", "vue2", "vue 3")
     VUEX = "Vuex"
     WATERFALL = "Waterfall"
     WEBPACK = "Webpack"
