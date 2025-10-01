@@ -3,13 +3,15 @@ from typing import Any
 
 from aiogram import F, Router
 from aiogram.enums import ParseMode
-from aiogram.types import CallbackQuery
+from aiogram.types import CallbackQuery, Message
+from callbacks.main import MenuActionEnum, MenuCallback
 from callbacks.preferences import PreferencesActionEnum, PreferencesCallback
 from clients import grade_client, profession_client, work_format_client
 from clients.vacancy import vacancy_client
 from common.logger import get_logger
 from database.models.enums import PreferencesCategoryCodeEnum
-from keyboard.inline.preferences import options_keyboard
+from keyboard.inline.preferences import options_keyboard, preferences_keyboard
+from keyboard.reply.buttons import PreferencesChangeKeyboardButton
 from schemas.user import UserRead
 from schemas.user_preference import UserPreferenceCreate
 from services.user import UserService
@@ -27,6 +29,16 @@ logger = get_logger(__name__)
 
 
 router = Router(name=PreferencesCallback.__prefix__)
+
+
+@router.callback_query(MenuCallback.filter(F.action == MenuActionEnum.SHOW_PREFERENCES))
+async def handle_preferences(callback: CallbackQuery) -> None:
+    await safe_edit_message(callback, text="⚙️ Выберите предпочтения:", reply_markup=preferences_keyboard())
+
+
+@router.message(F.text == PreferencesChangeKeyboardButton().text)
+async def handle_preferences_message(message: Message) -> None:
+    await safe_edit_message(message, text="⚙️ Выберите предпочтения:", reply_markup=preferences_keyboard())
 
 
 async def handle_show_options(

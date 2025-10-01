@@ -10,7 +10,6 @@ from commands import BotCommandEnum
 from common.logger import get_logger
 from database.models.enums import PreferencesCategoryCodeEnum
 from keyboard.inline.main import main_keyboard
-from keyboard.inline.preferences import preferences_keyboard
 from schemas.user import UserRead
 from utils.message import make_linked, safe_edit_message
 
@@ -42,11 +41,6 @@ async def handle_main_callback(
     user = await user_service.get_by_telegram_id(callback.from_user.id)
 
     await send_welcome_message(callback, user, user_preferences_service, state)
-
-
-@router.callback_query(MenuCallback.filter(F.action == MenuActionEnum.SHOW_PREFERENCES))
-async def handle_preferences(callback: CallbackQuery) -> None:
-    await safe_edit_message(callback, text="⚙️ Выберите предпочтения:", reply_markup=preferences_keyboard())
 
 
 async def send_welcome_message(

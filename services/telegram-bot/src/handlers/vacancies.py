@@ -5,19 +5,18 @@ from typing import cast
 
 from aiogram import F, Router
 from aiogram.enums import ParseMode
-from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message, User
 from callbacks.vacancy import VacancyActionEnum, VacancyCallback
 from clients.schemas import SkillWithMatchSchema, SourceEnum
 from clients.vacancy import vacancy_client
-from commands import BotCommandEnum
 from common.logger import get_logger
 from database.models.enums import PreferencesCategoryCodeEnum
 from exceptions import MessageNotModifiedError
 from handlers.skills import update_skills
 from keyboard.inline.main import main_menu_keyboard
 from keyboard.inline.vacancies import vacancies_keyboard
+from keyboard.reply.buttons import VacanciesKeyboardButton
 from schemas.user import UserRead
 from schemas.user_preference import UserPreferenceCreate
 from unitofwork import UnitOfWork
@@ -35,16 +34,16 @@ logger = get_logger(__name__)
 router = Router(name=VacancyCallback.__prefix__)
 
 
-@router.message(Command(BotCommandEnum.VACANCIES))
-async def handle_vacancies_command(message: Message, user_service: UserService, state: FSMContext) -> None:
-    await show_vacancies(message, None, user_service, state)
-
-
 @router.callback_query(VacancyCallback.filter(F.action == VacancyActionEnum.SHOW_VACANCIES))
 async def handle_vacancies_callback(
     callback: CallbackQuery, callback_data: VacancyCallback, user_service: UserService, state: FSMContext
 ) -> None:
     await show_vacancies(callback, callback_data.vacancy_id, user_service, state)
+
+
+@router.message(F.text == VacanciesKeyboardButton().text)
+async def handle_vacancies_message(message: Message, user_service: UserService, state: FSMContext) -> None:
+    await show_vacancies(message, None, user_service, state)
 
 
 @router.callback_query(VacancyCallback.filter(F.action == VacancyActionEnum.SELECT_SKILLS))
@@ -113,7 +112,7 @@ async def show_vacancies(  # noqa: C901 PLR0912 PLR0914 PLR0915
     if not vacancy:
         await safe_edit_message(
             message,
-            text="К сожалению, доступных вакансий нет.\n"
+            text="К сожалению, доступных вакансий нет.\n\n"
             "ℹ️ Скорее всего вы задали слишком строгие требования "
             "или у вас небольшое количество навыков. Проверьте ваши фильтры.\n\n",
             reply_markup=main_menu_keyboard(),

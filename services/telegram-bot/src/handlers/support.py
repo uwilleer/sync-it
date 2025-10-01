@@ -12,7 +12,7 @@ __all__ = ()
 router = Router(name=BotCommandEnum.SUPPORT)
 
 
-@router.message(Command("support"))
+@router.message(Command(BotCommandEnum.SUPPORT))
 async def handle_support(message: Message) -> None:
     await message.reply(
         f"Вопросы, предложения, обратная связь - @{service_config.support_username}", reply_markup=main_menu_keyboard()
