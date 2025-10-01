@@ -24,12 +24,12 @@ TSelect = TypeVar("TSelect", bound=Select[Any])
 class VacancyRepository(BaseRepository):
     """Репозиторий для управления вакансиями."""
 
-    MIN_SIMILARITY_PERCENT = 25  # Минимальное соотношение совпадающих навыков
-    MIN_SKILLS_COUNT = 5
-    BONUS_MIN_SKILL = 5  # Бонус за каждый навык сверх MIN_SKILLS_COUNT
-    BEST_SKILLS_COUNT_BONUS = 10
-    DAYS_INTERVAL = timedelta(days=30)
-    DAYS_RELEVANCE_BONUS = 4
+    MIN_SIMILARITY_PERCENT = 60  # Минимальное соотношение совпадающих навыков
+    MIN_SKILLS_COUNT = 3
+    BONUS_MIN_SKILL = 3  # Бонус за каждый навык сверх MIN_SKILLS_COUNT
+    BEST_SKILLS_COUNT_BONUS = 15
+    DAYS_INTERVAL = timedelta(days=21)
+    DAYS_RELEVANCE_BONUS = 5
 
     async def add(self, vacancy: Vacancy) -> Vacancy:
         """Добавляет экземпляр вакансии в сессию."""
@@ -116,7 +116,7 @@ class VacancyRepository(BaseRepository):
 
             # Бонус за идеальное совпадение (все навыки пользователя есть в вакансии)
             if user_skills_set.issubset(vacancy_skills_set):
-                similarity += 10
+                similarity += 20
 
             # Бонус за актуальность вакансии
             days_since_published = (datetime.now(UTC) - vacancy.published_at).days

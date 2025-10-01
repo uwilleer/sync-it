@@ -112,7 +112,7 @@ class VacancyExtractor:
         return profession
 
     @staticmethod
-    def extract_salary(text: str) -> str | None:
+    def extract_salary(text: str) -> str | None:  # noqa: PLR0911
         """Извлекает зарплату из сообщения."""
         pattern = r"Зарплата:\s(.*)"
         match = re.search(pattern, text)
@@ -123,9 +123,11 @@ class VacancyExtractor:
         salary_str = match.group(1).strip()
         if not salary_str:
             return None
-        if salary_str == "Неизвестно":
+        if salary_str.lower() == "неизвестно":
             return None
-        if "обсуждается" in salary_str.lower():
+        if salary_str.lower() == "не указан":
+            return None
+        if "обсужд" in salary_str.lower():
             return None
         if "собеседов" in salary_str.lower():
             return None
