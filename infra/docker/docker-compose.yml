@@ -162,6 +162,14 @@ services:
       redis:
         condition: service_healthy
 
+  vacancy-matcher:
+    extends:
+      service: vacancy-matcher
+      file: vacancy-matcher/docker-compose.yml
+    depends_on:
+      pgbouncer:
+        condition: service_healthy
+
 networks:
   app-network:
     driver: bridge

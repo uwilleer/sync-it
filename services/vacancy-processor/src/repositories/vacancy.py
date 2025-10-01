@@ -73,63 +73,38 @@ class VacancyRepository(BaseRepository):
         sources: Sequence[SourceEnum],
     ) -> list[Vacancy]:
         """
-        Находит вакансию по ID и ее соседей в списке, отсортированном по релевантности,
-        выполняя все вычисления на стороне БД.
+        Делегирует вычисление релевантности в сервис vacancy-matcher (Go) и возвращает объекты вакансий.
         """
-        stmt = (
-            select(Vacancy).where(Vacancy.published_at >= (datetime.now(UTC) - self.DAYS_INTERVAL)).order_by(Vacancy.id)
+        from clients import matcher_client  # Ленивая загрузка, чтобы избежать циклов
+
+        if not skills:
+            return []
+
+        vacancy_ids = await matcher_client.match(
+            professions=[p.value for p in professions],
+            grades=[g.value for g in grades],
+            work_formats=[wf.value for wf in work_formats],
+            skills=[s.value for s in skills],
+            sources=[src.value for src in sources],
         )
+
+        if not vacancy_ids:
+            return []
+
+        # Получаем вакансии по списку ID и сохраняем порядок как в vacancy_ids
+        vacancies = await self._get_by_ids_preserve_order(vacancy_ids)
+        return vacancies
+
+    async def _get_by_ids_preserve_order(self, ids: Sequence[int]) -> list[Vacancy]:
+        stmt = select(Vacancy).where(Vacancy.id.in_(ids))
         stmt = self._apply_vacancy_prefetch_details_to_stmt(stmt)
-
-        if professions:
-            stmt = stmt.join(Profession).filter(Profession.name.in_(professions))
-        if grades:
-            stmt = stmt.join(Vacancy.grades).filter(Grade.name.in_(grades))
-        if work_formats:
-            stmt = stmt.join(Vacancy.work_formats).filter(WorkFormat.name.in_(work_formats))
-        if sources:
-            stmt = stmt.filter(Vacancy.source.in_(sources))
-
         result = await self._session.execute(stmt)
-        vacancies = result.scalars().unique().all()
+        rows = result.scalars().unique().all()
 
-        scored_vacancies: list[tuple[float, Vacancy]] = []
-        user_skills_set = set(skills)
-
-        for vacancy in vacancies:
-            vacancy_skills_set = {skill.name for skill in vacancy.skills}
-
-            common_skills = user_skills_set & vacancy_skills_set
-            if not common_skills:
-                continue
-
-            common_count = len(common_skills)
-
-            similarity = (common_count / len(vacancy_skills_set)) * 100
-            if similarity < self.MIN_SIMILARITY_PERCENT:
-                continue
-
-            # Бонус за превышение минимального количества навыков
-            if common_count > self.MIN_SKILLS_COUNT:
-                bonus = (common_count - self.MIN_SKILLS_COUNT) * self.BONUS_MIN_SKILL
-                similarity += bonus
-
-            # Бонус за идеальное совпадение (все навыки пользователя есть в вакансии)
-            if user_skills_set.issubset(vacancy_skills_set):
-                similarity += 20
-
-            # Бонус за актуальность вакансии
-            days_since_published = (datetime.now(UTC) - vacancy.published_at).days
-            relevance_bonus = max(0, 7 - days_since_published) * self.DAYS_RELEVANCE_BONUS
-            similarity += relevance_bonus
-
-            if similarity >= self.MIN_SIMILARITY_PERCENT:
-                scored_vacancies.append((similarity, vacancy))
-
-        scored_vacancies_sorted = sorted(scored_vacancies, key=operator.itemgetter(0), reverse=True)
-        scored_vacancies_with_limit = scored_vacancies_sorted[:50]
-
-        return [v for _score, v in scored_vacancies_with_limit]
+        # Сохраняем порядок
+        index = {id_: i for i, id_ in enumerate(ids)}
+        rows.sort(key=lambda v: index.get(v.id, 10**9))
+        return rows
 
     async def get_summary(self) -> VacanciesSummarySchema:  # noqa: PLR0914
         """Возвращает агрегированную статистику по вакансиям."""

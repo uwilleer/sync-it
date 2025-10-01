@@ -1,0 +1,21 @@
+services:
+  vacancy-matcher:
+    image: ${ENV_DOCKER_USERNAME}/${ENV_PROJECT_NAME}-vacancy-matcher:latest
+    container_name: vacancy-matcher
+    env_file: ${SERVICE_PROJECT_ROOT}/infra/.env
+    environment:
+      - DATABASE_HOST=${POSTGRES_HOST}
+      - DATABASE_DB=${POSTGRES_DB}
+      - DATABASE_USER=${POSTGRES_USER}
+      - DATABASE_PASSWORD=${POSTGRES_PASSWORD}
+      - DATABASE_PORT=${POSTGRES_PORT}
+      - ENV_SERVICE_INTERNAL_HOST
+      - ENV_SERVICE_INTERNAL_PORT
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://vacancy-matcher:${ENV_SERVICE_INTERNAL_PORT}/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 5s

@@ -85,6 +85,17 @@ services:
       <<: *build-common
     <<: *service-common
 
+  vacancy-matcher:
+    build:
+      dockerfile: infra/docker/vacancy-matcher/Dockerfile
+      <<: *build-common
+    ports:
+      - "${VACANCY_MATCHER_PORT}:${ENV_SERVICE_INTERNAL_PORT}"
+    volumes:
+      - ${MAIN_COMPOSE_PROJECT_ROOT}/services:/app/services
+    networks:
+      - default
+
   telegram-bot:
     build:
       dockerfile: infra/docker/telegram-bot/Dockerfile
