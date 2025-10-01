@@ -43,4 +43,6 @@ class Vacancy(Base):
     __table_args__ = (
         Index("idx_vacancy_published_at_id", "published_at", "id"),
         Index("idx_vacancy_source_link", "source", "link", unique=True),
+        Index("idx_vacancy_profession_id", "profession_id"),
+        Index("idx_vacancy_source_published_at", "source", "published_at"),
     )
