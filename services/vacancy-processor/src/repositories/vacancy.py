@@ -81,8 +81,7 @@ class VacancyRepository(BaseRepository):
         выполняя все вычисления на стороне БД.
         """
         # Если навык не передан, результат пуст как и в прежней логике
-        user_skill_names: list[str] = [s.value for s in skills]
-        if not user_skill_names:
+        if not skills:
             return []
 
         since_dt = datetime.now(UTC) - self.DAYS_INTERVAL
@@ -101,12 +100,12 @@ class VacancyRepository(BaseRepository):
         common_skills_count = (
             select(func.count())
             .select_from(vs.join(Skill, vs.c.skill_id == Skill.id))
-            .where(vs.c.vacancy_id == Vacancy.id, Skill.name.in_(user_skill_names))
+            .where(vs.c.vacancy_id == Vacancy.id, Skill.name.in_(skills))
             .correlate(Vacancy)
             .scalar_subquery()
         )
 
-        user_skills_count = literal(len(user_skill_names))
+        user_skills_count = literal(len(skills))
 
         # Базовое сходство без бонусов
         base_similarity = (common_skills_count * literal(100.0)) / func.nullif(total_skills_count, 0)
@@ -136,11 +135,11 @@ class VacancyRepository(BaseRepository):
 
         # Источник
         if sources:
-            filters.append(Vacancy.source.in_(s.value for s in sources))
+            filters.append(Vacancy.source.in_(sources))
 
         # Профессии (один-к-одному) — фильтруем по связанному объекту без множителя строк
         if professions:
-            filters.append(Vacancy.profession.has(Profession.name.in_(p.value for p in professions)))
+            filters.append(Vacancy.profession.has(Profession.name.in_(professions)))
 
         # Грейды — EXISTS, чтобы избежать дублирования строк
         if grades:
@@ -149,19 +148,18 @@ class VacancyRepository(BaseRepository):
                 exists(
                     select(1)
                     .select_from(vg.join(Grade, vg.c.grade_id == Grade.id))
-                    .where(vg.c.vacancy_id == Vacancy.id, Grade.name.in_(g.value for g in grades))
+                    .where(vg.c.vacancy_id == Vacancy.id, Grade.name.in_(grades))
                 )
             )
 
         # Форматы работы — EXISTS
         if work_formats:
-            wf_values = [getattr(w, "value", str(w)) for w in work_formats]
             vwf = vacancy_work_formats_table.alias("vwf")
             filters.append(
                 exists(
                     select(1)
                     .select_from(vwf.join(WorkFormat, vwf.c.work_format_id == WorkFormat.id))
-                    .where(vwf.c.vacancy_id == Vacancy.id, WorkFormat.name.in_(wf_values))
+                    .where(vwf.c.vacancy_id == Vacancy.id, WorkFormat.name.in_(work_formats))
                 )
             )
 
