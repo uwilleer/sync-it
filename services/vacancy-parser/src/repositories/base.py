@@ -5,8 +5,7 @@ from common.logger import get_logger
 from common.shared.repositories import BaseRepository
 from constants.fingerprint import FINGERPRINT_SIMILARITY_THRESHOLD
 from database.models import Vacancy
-from sqlalchemy import Text, cast, func, select, update
-
+from sqlalchemy import func, select, update, cast, Text
 
 __all__ = ["BaseVacancyRepository"]
 
