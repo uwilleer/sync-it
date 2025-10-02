@@ -5,7 +5,7 @@ from common.logger import get_logger
 from common.shared.repositories import BaseRepository
 from constants.fingerprint import FINGERPRINT_SIMILARITY_THRESHOLD
 from database.models import Vacancy
-from sqlalchemy import func, select, update
+from sqlalchemy import Text, cast, func, select, update
 
 
 __all__ = ["BaseVacancyRepository"]
@@ -41,8 +41,8 @@ class BaseVacancyRepository[VacancyType: Vacancy](BaseRepository):
         """Найти дубликат вакансии по содержимому."""
         stmt = (
             select(self.model.hash)
-            .where(Vacancy.fingerprint.op("%")(fingerprint))
-            .where(func.similarity(self.model.fingerprint, fingerprint) > FINGERPRINT_SIMILARITY_THRESHOLD)
+            .where(self.model.fingerprint.op("%")(cast(fingerprint, Text)))
+            .where(func.similarity(self.model.fingerprint, cast(fingerprint, Text)) > FINGERPRINT_SIMILARITY_THRESHOLD)
             .limit(1)
         )
         result = await self._session.execute(stmt)
