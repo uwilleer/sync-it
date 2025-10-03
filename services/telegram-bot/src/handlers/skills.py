@@ -177,8 +177,10 @@ async def update_skills(
         )
     else:
         text_to_insert = (
-            "ℹ️ Если не хотите присылать резюме — просто перечислите хотя бы несколько навыков "
-            "(например: <code>Python, React, Docker</code>), иначе я не смогу подобрать для вас вакансии"
+            "ℹ️ Если не хотите присылать резюме — просто перечислите хотя бы несколько навыков, "
+            "фреймворков или библиотек "
+            "(например: <code>Python, FastAPI, aiogram, React, Docker</code>), "
+            "иначе я не смогу подобрать для вас вакансии"
         )
         text = get_update_preferences_text(
             text_to_insert=text_to_insert if is_first_start else None,
