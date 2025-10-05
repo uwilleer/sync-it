@@ -48,7 +48,8 @@ async def send_welcome_message(
 ) -> None:
     await state.clear()
 
-    linked_full_name = make_linked(user.full_name, user.username)
+    name = user.username or user.full_name
+    linked_full_name = make_linked(name, user.username)
 
     summary = await vacancy_client.get_summary_vacancies()
     preferences = await user_preferences_service.get_by_user_id(user.id)

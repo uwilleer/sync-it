@@ -35,3 +35,7 @@ class UserService(BaseUOWService[UnitOfWork]):
         created_user = await self._uow.users.add(user_model)
 
         return UserRead.model_validate(created_user)
+
+    async def update_activity(self, user_id: int) -> None:
+        """Обновляет время последней активности пользователя"""
+        await self._uow.users.update_activity(user_id)

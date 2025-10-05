@@ -3,10 +3,14 @@ from types import TracebackType
 from typing import Self
 
 from common.database.engine import async_session_factory
+from common.logger import get_logger
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 
 __all__ = ["BaseUnitOfWork"]
+
+
+logger = get_logger(__name__)
 
 
 class BaseUnitOfWork(ABC):
@@ -49,7 +53,9 @@ class BaseUnitOfWork(ABC):
     async def commit(self) -> None:
         """Сохраняет все изменения в рамках текущей транзакции."""
         await self._session.commit()
+        logger.debug("Session commited")
 
     async def rollback(self) -> None:
         """Откатывает все изменения в рамках текущей транзакции."""
         await self._session.rollback()
+        logger.debug("Session rolled back")

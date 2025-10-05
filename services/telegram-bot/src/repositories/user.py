@@ -1,7 +1,9 @@
+from datetime import UTC, datetime
+
 from common.logger import get_logger
 from common.shared.repositories import BaseRepository
 from database.models import User
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.orm import selectinload
 
 
@@ -25,7 +27,13 @@ class UserRepository(BaseRepository):
 
     async def add(self, user: User) -> User:
         self._session.add(user)
-        await self._session.commit()
+
+        await self._session.flush()
         await self._session.refresh(user)
 
         return user
+
+    async def update_activity(self, user_id: int) -> None:
+        """Обновляет время последней активности пользователя"""
+        stmt = update(User).where(User.id == user_id).values(last_active_at=datetime.now(UTC))
+        await self._session.execute(stmt)

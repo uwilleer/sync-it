@@ -38,6 +38,7 @@ class AuthMiddleware(BaseMiddleware):
 
         try:
             user = await user_service.get_by_telegram_id(telegram_user.id)
+            await user_service.update_activity(user.id)
         except NoResultFound:
             user_create = UserCreate(
                 telegram_id=telegram_user.id,
@@ -48,6 +49,7 @@ class AuthMiddleware(BaseMiddleware):
             user = await user_service.add_user(user_create)
             is_new = True
 
+        await data["uow"].commit()
         data["user"] = user
 
         if is_new and isinstance(event, Message):

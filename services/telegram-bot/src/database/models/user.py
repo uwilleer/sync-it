@@ -25,6 +25,7 @@ class User(Base):
     last_name: Mapped[str | None] = mapped_column(String(64))
 
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+    last_active_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow, onupdate=_utcnow)
 
     preferences: Mapped[list["UserPreference"]] = relationship(
         back_populates="user",
