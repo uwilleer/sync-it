@@ -29,11 +29,11 @@ class VacancyRepository(BaseRepository):
     """Репозиторий для управления вакансиями."""
 
     MIN_SIMILARITY_PERCENT = 60  # Минимальное соотношение совпадающих навыков
-    MIN_SKILLS_COUNT = 3
-    BONUS_MIN_SKILL = 3  # Бонус за каждый навык сверх MIN_SKILLS_COUNT
+    MIN_SKILLS_COUNT = 5
+    BONUS_MIN_SKILL = 5  # Бонус за каждый навык сверх MIN_SKILLS_COUNT
     BEST_SKILLS_COUNT_BONUS = 15
     DAYS_INTERVAL = timedelta(days=21)
-    DAYS_RELEVANCE_BONUS = 5
+    DAYS_RELEVANCE_BONUS = 10
 
     async def add(self, vacancy: Vacancy) -> Vacancy:
         """Добавляет экземпляр вакансии в сессию."""
