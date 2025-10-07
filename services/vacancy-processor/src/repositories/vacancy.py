@@ -30,8 +30,8 @@ class VacancyRepository(BaseRepository):
 
     MIN_SIMILARITY_PERCENT = 60  # Минимальное соотношение совпадающих навыков
     MIN_SKILLS_COUNT = 5
-    BONUS_MIN_SKILL = 5  # Бонус за каждый навык сверх MIN_SKILLS_COUNT
-    BEST_SKILLS_COUNT_BONUS = 15
+    BONUS_MIN_SKILL = 7  # Бонус за каждый навык сверх MIN_SKILLS_COUNT
+    BEST_SKILLS_COUNT_BONUS = 25
     DAYS_INTERVAL = timedelta(days=21)
     DAYS_RELEVANCE_BONUS = 10
 
@@ -116,7 +116,9 @@ class VacancyRepository(BaseRepository):
         )
 
         # Бонус за идеальное совпадение (все навыки пользователя есть в вакансии)
-        subset_bonus = case((common_skills_count == user_skills_count, literal(20)), else_=literal(0))
+        subset_bonus = case(
+            (common_skills_count == user_skills_count, literal(self.BEST_SKILLS_COUNT_BONUS)), else_=literal(0)
+        )
 
         # Бонус за актуальность вакансии
         days_since_published = func.floor(func.extract("epoch", func.now() - Vacancy.published_at) / literal(86400.0))
