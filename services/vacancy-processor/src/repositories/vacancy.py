@@ -31,6 +31,7 @@ class VacancyRepository(BaseRepository):
     MIN_SIMILARITY_PERCENT = 60  # Минимальное соотношение совпадающих навыков
     MIN_SKILLS_COUNT = 5
     BONUS_MIN_SKILL = 7  # Бонус за каждый навык сверх MIN_SKILLS_COUNT
+    PENALTY_MISSING_SKILL = 5  # Штраф за каждый отсутствующий навык
     BEST_SKILLS_COUNT_BONUS = 25
     DAYS_INTERVAL = timedelta(days=21)
     DAYS_RELEVANCE_BONUS = 10
@@ -126,7 +127,11 @@ class VacancyRepository(BaseRepository):
             self.DAYS_RELEVANCE_BONUS
         )
 
-        total_score = base_similarity + bonus_min_skills + subset_bonus + relevance_bonus
+        missing_skills_penalty = func.greatest(user_skills_count - common_skills_count, 0) * literal(
+            self.PENALTY_MISSING_SKILL
+        )
+
+        total_score = base_similarity + bonus_min_skills + subset_bonus + relevance_bonus - missing_skills_penalty
 
         filters = [
             Vacancy.published_at >= since_dt,
