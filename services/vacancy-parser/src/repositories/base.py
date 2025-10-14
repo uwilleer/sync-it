@@ -5,7 +5,7 @@ from common.logger import get_logger
 from common.shared.repositories import BaseRepository
 from constants.fingerprint import FINGERPRINT_SIMILARITY_THRESHOLD
 from database.models import Vacancy
-from sqlalchemy import Text, cast, func, select, update
+from sqlalchemy import Text, cast, func, select, text, update
 
 
 __all__ = ["BaseVacancyRepository"]
@@ -39,6 +39,9 @@ class BaseVacancyRepository[VacancyType: Vacancy](BaseRepository):
 
     async def find_duplicate_vacancy_hash_by_fingerprint(self, fingerprint: str) -> str | None:
         """Найти дубликат вакансии по содержимому."""
+        # Костылище, чтобы гарантировать индексацию
+        await self._session.execute(text(f"SET pg_trgm.similarity_threshold = {FINGERPRINT_SIMILARITY_THRESHOLD};"))
+
         stmt = (
             select(self.model.hash)
             .where(self.model.fingerprint.op("%")(cast(fingerprint, Text)))

@@ -34,7 +34,7 @@ class Vacancy(Base):
         Index(
             "idx_vacancies_fingerprint_trgm",
             "fingerprint",
-            postgresql_using="gist",
-            postgresql_ops={"fingerprint": "gist_trgm_ops"},
+            postgresql_using="gin",
+            postgresql_ops={"fingerprint": "gin_trgm_ops"},
         ),
     )
