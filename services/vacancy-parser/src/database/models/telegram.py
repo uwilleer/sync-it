@@ -9,8 +9,7 @@ __all__ = ["TelegramVacancy"]
 class TelegramVacancy(Vacancy):
     __tablename__ = "telegram_vacancies"
 
-    id: Mapped[int] = mapped_column(ForeignKey("vacancies.id"), primary_key=True)
-
+    id: Mapped[int] = mapped_column(ForeignKey("vacancies.id", ondelete="CASCADE"), primary_key=True)
     channel_username: Mapped[str] = mapped_column(String(32))
 
     __mapper_args__ = {  # noqa: RUF012

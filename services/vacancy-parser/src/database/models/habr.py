@@ -9,7 +9,7 @@ __all__ = ["HabrVacancy"]
 class HabrVacancy(Vacancy):
     __tablename__ = "habr_vacancies"
 
-    id: Mapped[int] = mapped_column(ForeignKey("vacancies.id"), primary_key=True)
+    id: Mapped[int] = mapped_column(ForeignKey("vacancies.id", ondelete="CASCADE"), primary_key=True)
     external_id: Mapped[int] = mapped_column(Integer)
 
     __mapper_args__ = {  # noqa: RUF012

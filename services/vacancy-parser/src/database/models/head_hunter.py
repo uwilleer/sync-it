@@ -9,8 +9,7 @@ __all__ = ["HeadHunterVacancy"]
 class HeadHunterVacancy(Vacancy):
     __tablename__ = "head_hunter_vacancies"
 
-    id: Mapped[int] = mapped_column(ForeignKey("vacancies.id"), primary_key=True)
-
+    id: Mapped[int] = mapped_column(ForeignKey("vacancies.id", ondelete="CASCADE"), primary_key=True)
     vacancy_id: Mapped[int] = mapped_column()
 
     __mapper_args__ = {  # noqa: RUF012
