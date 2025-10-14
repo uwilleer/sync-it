@@ -9,7 +9,7 @@ from parsers import HeadHunterParser, TelegramParser
 from parsers.habr import HabrParser
 from unitofwork import UnitOfWork
 
-from services import HabrVacancyService, HeadHunterVacancyService, TelegramVacancyService
+from services import HabrVacancyService, HeadHunterVacancyService, TelegramVacancyService, VacancyService
 
 
 __all__ = ["parse_vacancies"]
@@ -67,3 +67,25 @@ async def parse_habr_vacancies() -> None:
         await parser.parse()
         await parser.save_vacancies()
         await uow.commit()
+
+
+@app.task(name="cleanup_duplicate_vacancies")
+def cleanup_duplicate_vacancies() -> int:
+    """Ежедневная задача по удалению дублей вакансий по fingerprint.
+
+    Возвращает количество удалённых записей.
+    """
+    logger.info("Cleanup duplicate vacancies by fingerprint started")
+
+    loop = asyncio.get_event_loop()
+
+    async def _run() -> int:
+        async with UnitOfWork() as uow:
+            service = VacancyService(uow)
+            deleted = await service.cleanup_duplicates_by_fingerprint()
+            await uow.commit()
+            return deleted
+
+    deleted = loop.run_until_complete(_run())
+    logger.info("Cleanup duplicate vacancies finished. Deleted: %s", deleted)
+    return deleted

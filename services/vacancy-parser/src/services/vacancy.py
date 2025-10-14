@@ -15,3 +15,9 @@ class VacancyService(BaseVacancyService[VacancyRead, VacancyCreate, VacancyRepos
 
     def _get_repo(self) -> "VacancyRepository":
         return self._uow.vacancies
+
+    async def cleanup_duplicates_by_fingerprint(self, limit: int | None = None) -> int:
+        """Удаляет дубли вакансий по fingerprint и фиксирует транзакцию."""
+        deleted = await self.repo.cleanup_duplicates_by_fingerprint(limit=limit)
+        await self.commit()
+        return deleted
