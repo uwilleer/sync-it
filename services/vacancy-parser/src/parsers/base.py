@@ -18,12 +18,18 @@ class BaseParser[VacancyServiceType, VacancyCreateType](ABC):
         self.uow = uow
         self.service = service
         self._vacancies_batch: list[VacancyCreateType] = []
+        self._processed_fingerprints: set[str] = set()
 
     @abstractmethod
     async def parse(self) -> None:
         """Основной метод парсинга каналов."""
 
     async def add_vacancy(self, new_vacancy: VacancyCreateType) -> None:
+        if new_vacancy.fingerprint in self._processed_fingerprints:  # type: ignore[attr-defined]
+            logger.debug("Fingerprint already processed")
+            return
+        self._processed_fingerprints.add(new_vacancy.fingerprint)  # type: ignore[attr-defined]
+
         self._vacancies_batch.append(new_vacancy)
         logger.debug("Added vacancy %s", new_vacancy.link)  # type: ignore[attr-defined]
 
