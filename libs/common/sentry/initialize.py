@@ -4,6 +4,7 @@ from common.environment.config import env_config
 from common.logger import get_logger
 from common.sentry.config import sentry_config
 import sentry_sdk
+from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.logging import LoggingIntegration
 
 
@@ -21,7 +22,7 @@ def init_sentry() -> None:
 
     sentry_sdk.init(
         dsn=str(sentry_config.dsn_url),
-        integrations=[LoggingIntegration(event_level=logging.WARNING)],
+        integrations=[LoggingIntegration(event_level=logging.WARNING), CeleryIntegration()],
         environment=env_config.mode,
         traces_sample_rate=sentry_config.traces_sample_rate,
         profile_lifecycle=sentry_config.profile_lifecycle.value,
