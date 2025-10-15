@@ -4,12 +4,13 @@ from celery import Celery
 from celery_app.beat import beat_schedule
 from common.redis.config import redis_config
 from common.sentry.initialize import init_sentry
+from sentry_sdk.integrations.celery import CeleryIntegration
 
 
 __all__ = ["app"]
 
 
-init_sentry()
+init_sentry([CeleryIntegration()])
 
 _loop = asyncio.new_event_loop()
 asyncio.set_event_loop(_loop)
