@@ -26,7 +26,6 @@ class SkillEnum(BaseAliasEnum):
     ARGOCD = "ArgoCD"
     ASP_NET = "ASP.NET"
     ASP_NET_CORE = "ASP.NET Core"
-    ASYNC = "Асинхронное программирование", ("coroutines",)
     ASYNCIO = "asyncio"
     AXIOS = "Axios"
     AZURE = "Azure", ("azure devops",)
