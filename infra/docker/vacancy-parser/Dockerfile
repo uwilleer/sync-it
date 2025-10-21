@@ -31,7 +31,7 @@ FROM builder AS deps-dev
 
 RUN uv sync --frozen --dev --package $SERVICE_NAME
 
-FROM builderbase AS deps-prod
+FROM builder AS deps-prod
 
 RUN uv sync --frozen --no-dev --package $SERVICE_NAME
 
