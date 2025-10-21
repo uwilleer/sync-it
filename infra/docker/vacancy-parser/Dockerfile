@@ -12,27 +12,26 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR ${APP_PATH}
 
-RUN apk update
-
+# ============================ #
+#            BUILDER           #
+# ============================ #
 FROM base AS builder
 
-RUN apk add --no-cache uv
-
-
-# ============================ #
-#         DEPS INSTALLING      #
-# ============================ #
-FROM builder AS deps-base
+RUN apk update && \
+    apk add --no-cache uv
 
 COPY ./pyproject.toml ./uv.lock ./
 COPY ./${SERVICE_PATH}/pyproject.toml ${SERVICE_PATH}/pyproject.toml
 COPY ./libs/common ./libs/common
 
-FROM deps-base AS deps-dev
+# ============================ #
+#         DEPS INSTALLING      #
+# ============================ #
+FROM builder AS deps-dev
 
 RUN uv sync --frozen --dev --package $SERVICE_NAME
 
-FROM deps-base AS deps-prod
+FROM builderbase AS deps-prod
 
 RUN uv sync --frozen --no-dev --package $SERVICE_NAME
 

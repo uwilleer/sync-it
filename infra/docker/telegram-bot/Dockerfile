@@ -12,28 +12,32 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR ${APP_PATH}
 
-RUN apk update \
-    && apk add --no-cache poppler-utils tesseract-ocr tesseract-ocr-data-rus
 
+# ============================ #
+#            BUILDER           #
+# ============================ #
 FROM base AS builder
 
-RUN apk add --no-cache uv
-
-
-# ============================ #
-#         DEPS INSTALLING      #
-# ============================ #
-FROM builder AS deps-base
+RUN apk update && \
+    apk add --no-cache \
+    uv \
+    poppler-utils \
+    tesseract-ocr \
+    tesseract-ocr-data-rus
 
 COPY ./pyproject.toml ./uv.lock ./
 COPY ./${SERVICE_PATH}/pyproject.toml ${SERVICE_PATH}/pyproject.toml
 COPY ./libs/common ./libs/common
 
-FROM deps-base AS deps-dev
+
+# ============================ #
+#         DEPS INSTALLING      #
+# ============================ #
+FROM builder AS deps-dev
 
 RUN uv sync --frozen --dev --package $SERVICE_NAME
 
-FROM deps-base AS deps-prod
+FROM builder AS deps-prod
 
 RUN uv sync --frozen --no-dev --package $SERVICE_NAME
 
