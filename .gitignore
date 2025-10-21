@@ -1,11 +1,38 @@
+### Go template
+# If you prefer the allow list template instead of the deny list, see community template:
+# https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
+#
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Dependency directories (remove the comment below to include it)
+# vendor/
+
+# Go workspace file
+go.work
+go.work.sum
+
+# env file
+.env
+
 ### Python template
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+tmp/
 
 # C extensions
-*.so
 
 # Distribution / packaging
 .Python
@@ -26,8 +53,6 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
-*.iml
-.DS_Store
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -118,14 +143,13 @@ ipython_config.py
 __pypackages__/
 
 # Celery stuff
-celerybeat-schedule*
+celerybeat-schedule
 celerybeat.pid
 
 # SageMath parsed files
 *.sage.py
 
 # Environments
-.env
 .venv
 env/
 venv/

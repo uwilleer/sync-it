@@ -1,0 +1,13 @@
+services:
+  vacancy-matcher:
+    image: ${ENV_DOCKER_USERNAME}/${ENV_PROJECT_NAME}-vacancy-matcher:latest
+    container_name: vacancy-matcher
+    env_file: ${SERVICE_PROJECT_ROOT}/infra/.env
+    networks:
+      - app-network
+    healthcheck:
+      test: [ "CMD", "wget", "-q", "--spider", "http://vacancy-matcher:${ENV_SERVICE_INTERNAL_PORT}/health" ]
+      interval: 5s
+      timeout: 1s
+      retries: 3
+      start_period: 3s
