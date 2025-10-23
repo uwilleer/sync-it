@@ -11,9 +11,6 @@ __all__ = ["app"]
 
 init_sentry([CeleryIntegration()])
 
-_loop = asyncio.new_event_loop()
-asyncio.set_event_loop(_loop)
-
 app = Celery(
     "telegram-bot",
     broker=str(redis_config.celery_broker_dsn),

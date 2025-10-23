@@ -6,6 +6,7 @@ from aiogram.enums import ParseMode
 from celery_app import app
 from clients import skill_client
 from common.logger import get_logger
+from common.shared.utils import get_or_create_event_loop
 from core import service_config
 from core.loader import bot
 from database.models.enums import PreferencesCategoryCodeEnum
@@ -34,7 +35,7 @@ logger = get_logger(__name__)
 def process_resume(
     self: "Task[Any, Any]", user_id: int, chat_id: int, data: dict[str, Any], *, toggle: bool = False
 ) -> None:
-    loop = asyncio.get_event_loop()
+    loop = get_or_create_event_loop()
 
     data_type = data.get("type")
 
