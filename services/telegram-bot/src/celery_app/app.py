@@ -1,5 +1,3 @@
-import asyncio
-
 from celery import Celery
 from common.redis.config import redis_config
 from common.sentry.initialize import init_sentry

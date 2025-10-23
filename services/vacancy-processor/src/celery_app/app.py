@@ -1,5 +1,3 @@
-import asyncio
-
 from celery import Celery
 from celery_app.beat import beat_schedule
 from common.redis.config import redis_config
