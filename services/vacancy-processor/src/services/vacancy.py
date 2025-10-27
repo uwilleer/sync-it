@@ -80,6 +80,13 @@ class VacancyService(BaseUOWService[UnitOfWork]):
             sources=data.sources,
         )
 
+        filtered_vacancies = await self._filter_vacancies(
+                    professions=data.professions,
+                    grades=data.grades,
+                    work_formats=data.work_formats,
+                    sources=data.sources,
+        )
+
         if not vacancies:
             return None, None, None
 
@@ -116,4 +123,15 @@ class VacancyService(BaseUOWService[UnitOfWork]):
             work_formats=work_formats,
             skills=skills,
             sources=sources,
+        )
+
+    async def _filter_vacancies(
+        self,
+        professions: list[ProfessionEnum],
+        grades: list[GradeEnum],
+        work_formats: list[WorkFormatEnum],
+        sources: list[SourceEnum],
+    ):
+        return await self._uow.vacancies.get_filtered(
+            professions=professions, grades=grades, work_formats=work_formats, sources=sources,
         )

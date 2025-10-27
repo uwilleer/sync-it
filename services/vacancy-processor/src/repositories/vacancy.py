@@ -59,14 +59,32 @@ class VacancyRepository(BaseRepository):
 
         return result.unique().scalar_one_or_none()
 
-    async def get_filtered(self, limit: int) -> Sequence[Vacancy]:
+    async def get_filtered(self, *,
+                           limit: int | None = None,
+                           professions: list[ProfessionEnum] | None = None,
+            grades: list[GradeEnum] | None = None,
+            work_formats: list[WorkFormatEnum] | None = None,
+            sources: list[SourceEnum] | None = None,
+                           ) -> Sequence[Vacancy]:
         """Получает отфильтрованный список вакансий."""
         stmt = select(Vacancy)
         stmt = self._apply_vacancy_prefetch_details_to_stmt(stmt)
-        stmt = stmt.order_by(Vacancy.published_at.desc()).limit(limit)
+        stmt = stmt.order_by(Vacancy.published_at.desc())
+
+        if limit:
+            stmt = stmt.limit(limit)
+        if professions:
+            stmt = stmt.where(Vacancy.profession.has(Profession.name.in_(professions)))
+        if grades:
+            stmt = stmt.where(Vacancy.grades.in_(grades))
+        if work_formats:
+            stmt = stmt.where(Vacancy.work_formats.in_(work_formats))
+        if sources:
+            stmt = stmt.where(Vacancy.source.in_(sources))
 
         result = await self._session.execute(stmt)
 
+        # FIXME МБ без unique?
         return result.scalars().unique().all()
 
     async def get_relevant(  # noqa: PLR0914

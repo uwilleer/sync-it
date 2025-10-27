@@ -4,21 +4,27 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"vacancy-matcher/internal/handlers"
+	"vacancy-matcher/internal/repositories"
+	"vacancy-matcher/internal/services"
+	"vacancy-matcher/pkg/db"
 )
 
 func main() {
-	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("OK"))
-	})
+	dbConn := db.MustInit()
+	repo := repositories.NewVacancyRepository(dbConn)
+	svc := services.NewVacancyService(repo)
+	h := handlers.NewVacancyHandler(svc)
+
+	http.HandleFunc("/health", handlers.Healthcheck)
+	http.HandleFunc("/api/v1/vacancies", h.ListVacancies)
 
 	port := os.Getenv("ENV_SERVICE_INTERNAL_PORT")
 	if port == "" {
-		log.Fatal("environment variable ENV_SERVICE_INTERNAL_PORT is required but not set")
+		log.Fatal("ENV_SERVICE_INTERNAL_PORT env variable must be set")
 	}
 
-	log.Printf("Starting server on :%s\n", port)
-	if err := http.ListenAndServe(":"+port, nil); err != nil {
-		log.Fatal(err)
-	}
+	addr := ":" + port
+	log.Printf("Starting server on %s...\n", addr)
+	log.Fatal(http.ListenAndServe(addr, nil))
 }
