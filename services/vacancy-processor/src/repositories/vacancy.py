@@ -1,18 +1,13 @@
-from collections.abc import Iterable, Sequence
+from collections.abc import Iterable
 from datetime import UTC, datetime, timedelta
 from typing import Any, TypeVar
 
 from common.logger import get_logger
 from common.shared.repositories import BaseRepository
-from database.models import Grade, Profession, Skill, Vacancy, WorkFormat
-from database.models.enums import GradeEnum, ProfessionEnum, SkillEnum, SourceEnum, WorkFormatEnum
-from database.models.tables import (
-    vacancy_grades_table,
-    vacancy_skills_table,
-    vacancy_work_formats_table,
-)
+from database.models import Vacancy
+from database.models.enums import SourceEnum
 from schemas.vacancy import VacanciesSummarySchema
-from sqlalchemy import Select, case, exists, func, literal, select
+from sqlalchemy import Select, func, select
 from sqlalchemy.orm import joinedload, selectinload
 
 
@@ -58,123 +53,6 @@ class VacancyRepository(BaseRepository):
         result = await self._session.execute(stmt)
 
         return result.unique().scalar_one_or_none()
-
-    async def get_filtered(self, limit: int) -> Sequence[Vacancy]:
-        """Получает отфильтрованный список вакансий."""
-        stmt = select(Vacancy)
-        stmt = self._apply_vacancy_prefetch_details_to_stmt(stmt)
-        stmt = stmt.order_by(Vacancy.published_at.desc()).limit(limit)
-
-        result = await self._session.execute(stmt)
-
-        return result.scalars().unique().all()
-
-    async def get_relevant(  # noqa: PLR0914
-        self,
-        professions: Sequence[ProfessionEnum],
-        grades: Sequence[GradeEnum],
-        work_formats: Sequence[WorkFormatEnum],
-        skills: Sequence[SkillEnum],
-        sources: Sequence[SourceEnum],
-    ) -> Sequence[Vacancy]:
-        """
-        Находит вакансию по ID и ее соседей в списке, отсортированном по релевантности,
-        выполняя все вычисления на стороне БД.
-        """
-        # Если навык не передан, результат пуст как и в прежней логике
-        if not skills:
-            return []
-
-        since_dt = datetime.now(UTC) - self.DAYS_INTERVAL
-
-        # Коррелированные подзапросы для подсчета количества навыков у вакансии и количества совпадающих
-        vs = vacancy_skills_table.alias("vs")
-
-        total_skills_count = (
-            select(func.count())
-            .select_from(vs.join(Skill, vs.c.skill_id == Skill.id))
-            .where(vs.c.vacancy_id == Vacancy.id)
-            .correlate(Vacancy)
-            .scalar_subquery()
-        )
-
-        common_skills_count = (
-            select(func.count())
-            .select_from(vs.join(Skill, vs.c.skill_id == Skill.id))
-            .where(vs.c.vacancy_id == Vacancy.id, Skill.name.in_(skills))
-            .correlate(Vacancy)
-            .scalar_subquery()
-        )
-
-        user_skills_count = literal(len(skills))
-
-        # Базовое сходство без бонусов
-        base_similarity = (common_skills_count * literal(100.0)) / func.nullif(total_skills_count, 0)
-
-        # Бонус за превышение минимального количества навыков
-        bonus_min_skills = func.greatest(common_skills_count - literal(self.MIN_SKILLS_COUNT), 0) * literal(
-            self.BONUS_MIN_SKILL
-        )
-
-        # Бонус за идеальное совпадение (все навыки пользователя есть в вакансии)
-        subset_bonus = case(
-            (common_skills_count == user_skills_count, literal(self.BEST_SKILLS_COUNT_BONUS)), else_=literal(0)
-        )
-
-        # Бонус за актуальность вакансии
-        days_since_published = func.floor(func.extract("epoch", func.now() - Vacancy.published_at) / literal(86400.0))
-        relevance_bonus = func.greatest(literal(0), literal(7) - days_since_published) * literal(
-            self.DAYS_RELEVANCE_BONUS
-        )
-
-        missing_skills_penalty = func.greatest(user_skills_count - common_skills_count, 0) * literal(
-            self.PENALTY_MISSING_SKILL
-        )
-
-        total_score = base_similarity + bonus_min_skills + subset_bonus + relevance_bonus - missing_skills_penalty
-
-        filters = [
-            Vacancy.published_at >= since_dt,
-            total_skills_count > 0,
-            common_skills_count > 0,
-            base_similarity >= literal(self.MIN_SIMILARITY_PERCENT),
-        ]
-
-        # Источник
-        if sources:
-            filters.append(Vacancy.source.in_(sources))
-
-        # Профессии (один-к-одному) — фильтруем по связанному объекту без множителя строк
-        if professions:
-            filters.append(Vacancy.profession.has(Profession.name.in_(professions)))
-
-        # Грейды — EXISTS, чтобы избежать дублирования строк
-        if grades:
-            vg = vacancy_grades_table.alias("vg")
-            filters.append(
-                exists(
-                    select(1)
-                    .select_from(vg.join(Grade, vg.c.grade_id == Grade.id))
-                    .where(vg.c.vacancy_id == Vacancy.id, Grade.name.in_(grades))
-                )
-            )
-
-        # Форматы работы — EXISTS
-        if work_formats:
-            vwf = vacancy_work_formats_table.alias("vwf")
-            filters.append(
-                exists(
-                    select(1)
-                    .select_from(vwf.join(WorkFormat, vwf.c.work_format_id == WorkFormat.id))
-                    .where(vwf.c.vacancy_id == Vacancy.id, WorkFormat.name.in_(work_formats))
-                )
-            )
-
-        stmt = select(Vacancy, total_score.label("score")).where(*filters).order_by(total_score.desc()).limit(50)
-        stmt = self._apply_vacancy_prefetch_details_to_stmt(stmt)
-
-        result = await self._session.execute(stmt)
-        return result.scalars().all()
 
     async def get_summary(self) -> VacanciesSummarySchema:  # noqa: PLR0914
         """Возвращает агрегированную статистику по вакансиям."""

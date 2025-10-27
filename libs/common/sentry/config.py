@@ -17,5 +17,9 @@ class SentryConfig(BaseSettings):
 
     model_config = SettingsConfigDict(env_prefix="SENTRY_")
 
+    @property
+    def slow_api_threshold(self) -> float:
+        return self.slow_sql_threshold
+
 
 sentry_config = SentryConfig()

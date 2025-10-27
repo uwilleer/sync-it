@@ -3,10 +3,11 @@ from common.environment.config import env_config
 from common.gateway.config import gateway_config
 from common.gateway.enums import ServiceEnum
 from common.logger import get_logger
-from common.logger.config import log_config
 from common.sentry.initialize import init_sentry
+from common.shared.api.exceptions import http_exception_custom_handler
+from common.shared.api.middlewares import LoggingMiddleware
 from dependencies import validate_api_key
-from fastapi import Depends, FastAPI, Request, Response
+from fastapi import Depends, FastAPI, HTTPException, Request, Response
 from schemas import HealthResponse
 import uvicorn
 
@@ -20,6 +21,10 @@ app = FastAPI(
     docs_url="/docs" if env_config.debug else None,
     redoc_url="/redoc" if env_config.debug else None,
 )
+
+app.add_exception_handler(HTTPException, http_exception_custom_handler)
+
+app.add_middleware(LoggingMiddleware)
 
 
 @app.get("/{service}/{path:path}", dependencies=[Depends(validate_api_key)])
@@ -49,7 +54,7 @@ def main() -> None:
         "main:app",
         host=gateway_config.host,
         port=gateway_config.port,
-        log_level=log_config.level.lower(),
+        log_config=None,
     )
 
 

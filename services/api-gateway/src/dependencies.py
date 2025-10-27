@@ -22,7 +22,6 @@ async def validate_api_key(request: Request, x_api_key: Annotated[str | None, He
     - Для всех остальных запросов требует валидный X-API-Key.
     """
     if env_config.debug:
-        logger.info("Debug mode, skipping API key check")
         return
 
     if request.url.path.startswith("/telegram-bot/webhook"):

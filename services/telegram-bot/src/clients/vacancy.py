@@ -28,6 +28,7 @@ class _SourceSchema:
 
 class _VacancyClient(BaseClient):
     url = build_service_url(ServiceEnum.VACANCY_PROCESSOR, "api/v1/vacancies")
+    url_matcher = build_service_url(ServiceEnum.VACANCY_MATCHER, "api/v1/vacancies")
 
     async def get_by_id_with_cursor_pagination(
         self,
@@ -46,7 +47,7 @@ class _VacancyClient(BaseClient):
             skills=skills,
             sources=sources,
         )
-        url = f"{self.url}/match"
+        url = f"{self.url_matcher}/match"
         response = await self.client.post(
             url,
             json=params_model.model_dump(exclude_none=True),

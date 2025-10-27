@@ -29,8 +29,6 @@ RUN go build -o /app/matcher ./cmd/matcher/main.go
 # ============================ #
 FROM base AS development
 
-WORKDIR ${APP_PATH}/${SERVICE_PATH}/cmd/matcher
-
 RUN go install github.com/air-verse/air@latest
 
 CMD ["air"]
