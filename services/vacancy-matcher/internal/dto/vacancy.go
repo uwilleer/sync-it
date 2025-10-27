@@ -40,7 +40,7 @@ const (
 	MinSkillsCount       = 5
 	BonusMinSkill        = 7 // Бонус за каждый навык сверх MIN_SKILLS_COUNT
 	PenaltyMissingSkill  = 5 // Штраф за каждый отсутствующий навык
-	BestSkillsCountBonus = 25
+	BestSkillsCountBonus = 15
 	DaysInterval         = 21
-	DaysRelevanceBonus   = 10
+	DaysRelevanceBonus   = 15
 )
