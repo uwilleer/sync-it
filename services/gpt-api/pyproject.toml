@@ -8,7 +8,7 @@ dependencies = [
     "logger-lib",
     "environment-lib",
     "sentry-lib",
-    "g4f>=0.6.3.0",
+    "g4f>=0.6.4.3",
 ]
 
 [dependency-groups]
