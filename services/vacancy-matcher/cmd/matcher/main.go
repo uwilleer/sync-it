@@ -17,7 +17,7 @@ func main() {
 	h := handlers.NewVacancyHandler(svc)
 
 	http.HandleFunc("/health", handlers.Healthcheck)
-	http.HandleFunc("/api/v1/vacancies", h.ListVacancies)
+	http.HandleFunc("/api/v1/vacancies/match", h.GetRelevant)
 
 	port := os.Getenv("ENV_SERVICE_INTERNAL_PORT")
 	if port == "" {

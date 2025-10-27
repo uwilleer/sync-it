@@ -3,7 +3,6 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
-	"strconv"
 	"vacancy-matcher/internal/dto"
 
 	"vacancy-matcher/internal/services"
@@ -17,28 +16,24 @@ func NewVacancyHandler(svc services.VacancyService) *VacancyHandler {
 	return &VacancyHandler{service: svc}
 }
 
-// GET /api/vacancies?source=xxx&limit=10... (параметры фильтра из query)
-func (h *VacancyHandler) ListVacancies(w http.ResponseWriter, r *http.Request) {
-	query := r.URL.Query()
-	filter := dto.VacancyFilter{}
+func (h *VacancyHandler) GetRelevant(w http.ResponseWriter, r *http.Request) {
+	var filter dto.RelevantVacancyFilter
 
-	if limitStr := query.Get("limit"); limitStr != "" {
-		limit, err := strconv.Atoi(limitStr)
-		if err != nil || limit <= 0 {
-			http.Error(w, "limit must be positive integer", http.StatusBadRequest)
-			return
-		}
-		filter.Limit = &limit
+	if err := json.NewDecoder(r.Body).Decode(&filter); err != nil {
+		http.Error(w, "invalid request body", http.StatusBadRequest)
+		return
 	}
 
-	result, err := h.service.ListVacancies(r.Context(), filter)
+	result, err := h.service.GetRelevant(r.Context(), filter)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(result)
-}
+	response := dto.VacancyWithNeighborsResponse{
+		Result: result,
+	}
 
-// FIXME https://www.perplexity.ai/search/privedi-primer-best-practices-FIpyNHdASXKJQhseSeng.g
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
+}

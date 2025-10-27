@@ -10,3 +10,4 @@ class ServiceEnum(StrEnum):
     GPT_API = "gpt-api"
     VACANCY_PARSER = "vacancy-parser"
     VACANCY_PROCESSOR = "vacancy-processor"
+    VACANCY_MATCHER = "vacancy-matcher"
