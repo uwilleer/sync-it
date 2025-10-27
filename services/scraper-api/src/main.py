@@ -2,15 +2,25 @@ from api import router as api_router
 from api.v1 import router as v1_router
 from common.environment.config import env_config
 from common.logger import get_logger
-from common.logger.config import log_config
 from common.sentry.initialize import init_sentry
-from fastapi import FastAPI
+from common.shared.api.exceptions import http_exception_custom_handler
+from common.shared.api.middlewares import LoggingMiddleware
+from fastapi import FastAPI, HTTPException
 import uvicorn
 
 
 logger = get_logger(__name__)
 
-app = FastAPI(title="Scraper API Service")
+app = FastAPI(
+    title="Scraper API Service",
+    openapi_url="/openapi.json" if env_config.debug else None,
+    docs_url="/docs" if env_config.debug else None,
+    redoc_url="/redoc" if env_config.debug else None,
+)
+
+app.add_exception_handler(HTTPException, http_exception_custom_handler)
+
+app.add_middleware(LoggingMiddleware)
 
 app.include_router(api_router)
 app.include_router(v1_router, prefix="/api/v1")
@@ -23,7 +33,7 @@ def main() -> None:
         "main:app",
         host=env_config.service_internal_host,
         port=env_config.service_internal_port,
-        log_level=log_config.level.lower(),
+        log_config=None,
     )
 
 
