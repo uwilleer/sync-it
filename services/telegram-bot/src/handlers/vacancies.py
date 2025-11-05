@@ -137,10 +137,11 @@ async def show_vacancies(  # noqa: C901 PLR0912 PLR0914 PLR0915
         work_format_names = [work_format.name for work_format in vacancy.work_formats]
         vacancy_text += f"<b>Формат работы:</b> {', '.join(work_format_names)}\n"
     if vacancy.skills:
-        matched = ", ".join(f"<code>{s.name}</code>" for s in matched_skills)
-        unmatched = ", ".join(f"<s>{s.name}</s>" for s in unmatched_skills)
+        matched = [f"<code>{s.name}</code>" for s in matched_skills]
+        unmatched = [f"<s>{s.name}</s>" for s in unmatched_skills]
+        joined = ", ".join(matched + unmatched)
 
-        vacancy_text += f"<b>Ключевые навыки:</b> {matched}, {unmatched}\n"
+        vacancy_text += f"<b>Ключевые навыки:</b> {joined}\n"
     if vacancy.workplace_description:
         vacancy_text += f"\n<b>О месте работы:</b>\n{vacancy.workplace_description}\n"
     if vacancy.responsibilities:
