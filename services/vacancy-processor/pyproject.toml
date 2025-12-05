@@ -14,11 +14,6 @@ dependencies = [
     "sentry-lib",
 ]
 
-[dependency-groups]
-dev = [
-    "hupper>=1.12.1",
-]
-
 [tool.uv.sources]
 syncit-core = { workspace = true }
 logger-lib = { workspace = true }

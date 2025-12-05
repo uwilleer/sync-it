@@ -1,12 +1,6 @@
 from enum import StrEnum
 
 
-__all__ = [
-    "SalaryCurrency",
-    "SalaryMode",
-]
-
-
 class SalaryCurrency(StrEnum):
     RUR = "RUR"  # российский рубль
     EUR = "EUR"  # евро

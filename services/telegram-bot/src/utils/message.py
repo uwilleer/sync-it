@@ -8,12 +8,6 @@ from common.logger import get_logger
 from exceptions import MessageNotAvailableError, MessageNotModifiedError
 
 
-__all__ = [
-    "get_message",
-    "make_linked",
-    "safe_edit_message",
-]
-
 logger = get_logger(__name__)
 
 
@@ -24,12 +18,18 @@ class EditMessageKwargs(TypedDict):
     disable_web_page_preview: NotRequired[bool | None]
 
 
-def make_linked(text: str, link: str | None, *, use_quotes: bool = True) -> str:
-    """Возвращает bold текст обернутый в ссылку по возможности"""
+def make_linked(
+    text: str, *, telegram_username: str | None = None, external_link: str | None = None, use_quotes: bool = True
+) -> str:
+    """Возвращает жирный текст, по возможности обёрнутый в ссылку."""
+
     bold_text = f"<b>{text}</b>"
 
-    if link:
-        return f'<a href="https://t.me/{link}">{bold_text}</a>'
+    if telegram_username:
+        return f'<a href="https://t.me/{telegram_username}">{bold_text}</a>'
+
+    if external_link:
+        return f'<a href="{external_link}">{bold_text}</a>'
 
     return f'"{bold_text}"' if use_quotes else bold_text
 

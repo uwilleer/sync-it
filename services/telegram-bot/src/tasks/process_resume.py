@@ -9,11 +9,10 @@ from common.shared.utils import get_or_create_event_loop
 from core import service_config
 from core.loader import bot
 from database.models.enums import PreferencesCategoryCodeEnum
+from handlers.skills.schemas import FileResumePayloadSchema, ResumeTypeEnum, TextResumePayloadSchema
 from keyboard.inline.main import main_menu_keyboard
 from keyboard.inline.skills import process_update_skills_keyboard
 from schemas.user_preference import UserPreferenceCreate
-from tasks.enums import ResumeTypeEnum
-from tasks.schemas import FileResumePayloadSchema, TextResumePayloadSchema
 from unitofwork import UnitOfWork
 from utils.text_extractor import TextExtractor
 
@@ -40,10 +39,10 @@ def process_resume(
 
     try:
         if data_type == ResumeTypeEnum.TEXT:
-            text_schema = TextResumePayloadSchema(**data)
+            text_schema = TextResumePayloadSchema.model_validate(data)
             text = text_schema.text
         elif data_type == ResumeTypeEnum.FILE:
-            file_schema = FileResumePayloadSchema(**data)
+            file_schema = FileResumePayloadSchema.model_validate(data)
             with NamedTemporaryFile(suffix=file_schema.suffix) as tmp:
                 loop.run_until_complete(bot.download_file(file_schema.file_path, destination=tmp.name))
                 extractor = TextExtractor()

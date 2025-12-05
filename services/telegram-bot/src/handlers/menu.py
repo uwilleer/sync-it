@@ -49,7 +49,7 @@ async def send_welcome_message(
     await state.clear()
 
     name = user.username or user.full_name
-    linked_full_name = make_linked(name, user.username)
+    linked_full_name = make_linked(name, telegram_username=user.username)
 
     summary = await vacancy_client.get_summary_vacancies()
     preferences = await user_preferences_service.get_by_user_id(user.id)

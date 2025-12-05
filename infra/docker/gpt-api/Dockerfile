@@ -58,7 +58,7 @@ COPY --from=source ${APP_PATH} .
 
 WORKDIR ${APP_PATH}/${SERVICE_PATH}/src
 
-CMD ["hupper", "-q", "-m", "main"]
+CMD ["python", "main.py"]
 
 
 # ============================ #

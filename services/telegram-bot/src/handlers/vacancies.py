@@ -13,7 +13,7 @@ from clients.vacancy import vacancy_client
 from common.logger import get_logger
 from database.models.enums import PreferencesCategoryCodeEnum
 from exceptions import MessageNotModifiedError
-from handlers.skills import update_skills
+from handlers.skills.helpers import update_skills
 from keyboard.inline.main import main_menu_keyboard
 from keyboard.inline.vacancies import vacancies_keyboard
 from keyboard.reply.buttons import VacanciesKeyboardButton

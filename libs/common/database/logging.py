@@ -9,7 +9,7 @@ from sqlalchemy import ClauseElement, Compiled, Connection, event
 from sqlalchemy.dialects.postgresql.asyncpg import PGExecutionContext_asyncpg
 from sqlalchemy.engine import Engine
 from sqlalchemy.exc import SAWarning
-import sqlparse  # type: ignore[import-untyped]
+import sqlparse
 
 
 __all__ = ["setup_alchemy_logging"]

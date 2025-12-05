@@ -1,5 +1,6 @@
 from aiogram.types import InlineKeyboardButton
 from callbacks.main import MenuActionEnum, MenuCallback
+from callbacks.noop import NoopActionEnum, NoopCallback
 from callbacks.preferences import PreferencesActionEnum, PreferencesCallback
 from callbacks.skill import SkillActionEnum, SkillCallback
 from callbacks.vacancy import VacancyActionEnum, VacancyCallback
@@ -9,6 +10,7 @@ __all__ = [
     "BackToPreferencesInlineKeyboardButton",
     "BackToSkillsInlineKeyboardButton",
     "ChangePreferencesInlineKeyboardButton",
+    "EmptyDashedKeyboardButton",
     "ImportSkillsInlineKeyboardButton",
     "MainMenuInlineKeyboardButton",
     "ProfessionInlineKeyboardButton",
@@ -16,6 +18,13 @@ __all__ = [
 ]
 
 # TODO: Дублируется текст в inline/buttons и reply/buttons. Можно сделать один Enum
+
+
+def EmptyDashedKeyboardButton() -> InlineKeyboardButton:  # noqa: N802
+    return InlineKeyboardButton(
+        text="—————————",
+        callback_data=NoopCallback(action=NoopActionEnum.DO_NOTHING).pack(),
+    )
 
 
 def MainMenuInlineKeyboardButton() -> InlineKeyboardButton:  # noqa: N802

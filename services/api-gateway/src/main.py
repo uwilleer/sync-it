@@ -55,6 +55,7 @@ def main() -> None:
         host=gateway_config.host,
         port=gateway_config.port,
         log_config=None,
+        reload=env_config.debug,
     )
 
 

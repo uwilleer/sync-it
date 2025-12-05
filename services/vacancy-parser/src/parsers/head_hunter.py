@@ -1,8 +1,9 @@
 import asyncio
 from typing import TYPE_CHECKING
 
-from clients import head_hunter_client
+from clients.profession import profession_client
 from common.logger import get_logger
+from common.shared.clients.head_hunter import head_hunter_client
 from common.shared.schemas import HttpsUrl
 from database.models.enums import SourceEnum
 from parsers.base import BaseParser
@@ -12,7 +13,7 @@ from utils import clear_html, generate_fingerprint, generate_vacancy_hash
 
 
 if TYPE_CHECKING:
-    from clients.head_hunter.schemas import HeadHunterVacancyDetailResponse
+    from common.shared.clients.head_hunter.schemas import HeadHunterVacancyDetailResponse
 
     from services import HeadHunterVacancyService
 
@@ -31,7 +32,8 @@ class HeadHunterParser(BaseParser["HeadHunterVacancyService", "HeadHunterVacancy
     async def parse(self) -> None:
         logger.info("Starting HeadHunter parser")
 
-        newest_vacancy_ids = await head_hunter_client.get_newest_vacancies_ids()
+        professions = (p.name for p in await profession_client.get_all())
+        newest_vacancy_ids = await head_hunter_client.get_newest_vacancies_ids(professions)
         vacancy_hashes = [generate_vacancy_hash(v_id, SourceEnum.HEAD_HUNTER) for v_id in newest_vacancy_ids]
         existing_hashes = await self.service.get_existing_hashes(vacancy_hashes)
         new_vacancies_ids = {

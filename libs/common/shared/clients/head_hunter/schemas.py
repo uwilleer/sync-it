@@ -1,7 +1,7 @@
 from datetime import datetime
 
-from clients.head_hunter.enums import SalaryCurrency, SalaryMode
 from common.logger import get_logger
+from common.shared.clients.head_hunter.enums import SalaryCurrency, SalaryMode
 from pydantic import BaseModel, Field, field_validator
 
 

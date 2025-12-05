@@ -31,4 +31,4 @@ async def mark_vacancies_as_processed(
 ) -> VacancyProcessedResponse:
     await service.mark_vacancies_as_processed(data.hashes)
 
-    return VacancyProcessedResponse(status="completed", count=len(data.hashes))
+    return VacancyProcessedResponse(count=len(data.hashes))

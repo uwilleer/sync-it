@@ -49,6 +49,8 @@ services:
       service: telegram-bot
       file: telegram-bot/docker-compose.yml
     depends_on:
+      redis:
+        condition: service_healthy
       pgbouncer:
         condition: service_healthy
       api-gateway:

@@ -31,6 +31,7 @@ def main() -> None:
         host=env_config.service_internal_host,
         port=env_config.service_internal_port,
         log_config=None,
+        reload=env_config.debug,
     )
 
 

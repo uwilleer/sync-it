@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING, Any
 
 from aiogram import BaseMiddleware
 from aiogram.types import CallbackQuery, Message, TelegramObject
-from handlers.faq import send_faq_message
-from handlers.skills import update_skills
+from handlers.faq.helpers import send_faq_message
+from handlers.skills.update import update_skills
 from schemas.user import UserCreate
 from sqlalchemy.exc import NoResultFound
 

@@ -6,6 +6,7 @@ from clients.schemas import GradeSchema, ProfessionSchema, SkillSchema, WorkForm
 from database.models.enums import PreferencesCategoryCodeEnum
 from keyboard.inline.buttons import (
     BackToPreferencesInlineKeyboardButton,
+    EmptyDashedKeyboardButton,
     MainMenuInlineKeyboardButton,
     ProfessionInlineKeyboardButton,
 )
@@ -45,6 +46,7 @@ def preferences_keyboard() -> InlineKeyboardMarkup:
                 callback_data=PreferencesCallback(action=PreferencesActionEnum.SHOW_SOURCES).pack(),
             ),
         ],
+        [EmptyDashedKeyboardButton()],
         [MainMenuInlineKeyboardButton()],
     ]
 

@@ -1,3 +1,4 @@
+from common.environment.config import env_config
 from common.logger import get_logger
 from common.sentry.initialize import init_sentry
 from core import service_config
@@ -21,4 +22,4 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
-    uvloop.run(main())
+    uvloop.run(main(), debug=env_config.debug)

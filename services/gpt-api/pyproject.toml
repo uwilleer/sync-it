@@ -11,14 +11,8 @@ dependencies = [
     "g4f>=0.6.4.3",
 ]
 
-[dependency-groups]
-dev = [
-    "hupper>=1.12.1",
-]
-
 [tool.uv.sources]
 syncit-core = { workspace = true }
 logger-lib = { workspace = true }
 environment-lib = { workspace = true }
 sentry-lib = { workspace = true }
-

@@ -2,18 +2,13 @@
 name = "scraper-api"
 dynamic = ["version"]
 dependencies = [
-    "beautifulsoup4>=4.13.4",
     "environment-lib",
     "fastapi>=0.115.12",
     "logger-lib",
     "syncit-core",
     "uvicorn[standard]>=0.34.3",
     "sentry-lib",
-]
-
-[dependency-groups]
-dev = [
-    "hupper>=1.12.1",
+    "shared-lib",
 ]
 
 [tool.uv.sources]
@@ -21,3 +16,4 @@ syncit-core = { workspace = true }
 logger-lib = { workspace = true }
 environment-lib = { workspace = true }
 sentry-lib = { workspace = true }
+shared-lib = { workspace = true }
