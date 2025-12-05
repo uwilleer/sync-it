@@ -19,14 +19,6 @@ services:
       service: redis
       file: redis/docker-compose.yml
 
-  flower:
-    extends:
-      service: flower
-      file: flower/docker-compose.yml
-    depends_on:
-      redis:
-        condition: service_healthy
-
   api-gateway:
     extends:
       service: api-gateway
