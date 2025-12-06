@@ -9,6 +9,7 @@ dependencies = [
     "uvicorn[standard]>=0.34.3",
     "sentry-lib",
     "shared-lib",
+    "telethon>=1.42.0",
 ]
 
 [tool.uv.sources]

@@ -55,3 +55,4 @@ def _configure_base_logger() -> None:
     logging.getLogger("httpcore").setLevel(logging.WARNING)
     logging.getLogger("httpx").setLevel(logging.WARNING)
     logging.getLogger("uvicorn").setLevel(logging.WARNING)
+    logging.getLogger("telethon").setLevel(logging.WARNING)

@@ -11,13 +11,10 @@ from common.logger import get_logger
 from common.shared.clients import BaseClient
 
 
-__all__ = ["telegram_client"]
-
-
 logger = get_logger(__name__)
 
 
-class _TelegramClient(BaseClient):
+class TelegramClient(BaseClient):
     url = build_service_url(ServiceEnum.SCRAPER_API, "/api/v1/telegram/messages")
 
     def configure_client(self) -> None:
@@ -25,10 +22,12 @@ class _TelegramClient(BaseClient):
         self.client.timeout = 60
 
     async def get_newest_messages(
-        self, channel_username: str, date_gte: datetime | None = None
+        self, channel_username: str, channel_topic_id: int | None = None, date_gte: datetime | None = None
     ) -> list[TelegramChannelMessageSchema]:
+        # FIXME
         params = TelegramNewestMessagesRequest(
             channel_username=channel_username,
+            channel_topic_id=channel_topic_id,
             date_gte=date_gte,
         )
 
@@ -43,4 +42,4 @@ class _TelegramClient(BaseClient):
         return model_response.messages
 
 
-telegram_client = _TelegramClient()
+telegram_client = TelegramClient()

@@ -1,5 +1,9 @@
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
+
 from api import router as api_router
 from api.v1 import router as v1_router
+from clients import telethon_client
 from common.environment.config import env_config
 from common.logger import get_logger
 from common.sentry.initialize import init_sentry
@@ -11,8 +15,17 @@ import uvicorn
 
 logger = get_logger(__name__)
 
+
+@asynccontextmanager
+async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+    await telethon_client.start()
+    yield
+    await telethon_client.stop()
+
+
 app = FastAPI(
     title="Scraper API Service",
+    lifespan=lifespan,
     openapi_url="/openapi.json" if env_config.debug else None,
 )
 

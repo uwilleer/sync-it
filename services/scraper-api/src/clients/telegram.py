@@ -7,13 +7,10 @@ from parsers import TelegramParser
 from schemas import TelegramChannelMessageSchema
 
 
-__all__ = ["telegram_client"]
-
-
 logger = get_logger(__name__)
 
 
-class _TelegramClient(BaseParserClient):
+class TelegramClient(BaseParserClient):
     url = URL("https://t.me")
     parser = TelegramParser
 
@@ -49,4 +46,4 @@ class _TelegramClient(BaseParserClient):
         return self.parser.parse_detailed_message(response.text, channel_username, message_id)
 
 
-telegram_client = _TelegramClient()
+telegram_client = TelegramClient()

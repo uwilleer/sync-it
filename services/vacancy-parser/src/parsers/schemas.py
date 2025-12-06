@@ -1,45 +1,34 @@
-import re
-from typing import Self
-
-from common.shared.schemas import HttpsUrl
+from pydantic import HttpUrl
 
 
-__all__ = ["TelegramChannelUrl"]
-
-
-class TelegramChannelUrl(HttpsUrl):
+class TelegramChannelUrl(HttpUrl):
     """
-    A custom URL type for validating Telegram channel links.
-
-    ex. valid URL: https://t.me/s/<channel_name>
+    Custom URL for Telegram channel:
+    Accepts 'username' or 'username/topic_id' as input.
+    Internally stored as: https://t.me/s/<username>/<topic_id?>
     """
 
-    def __init__(self, url: str) -> None:
+    def __init__(self, username: str) -> None:
+        self._username, self._topic_id = self._parse_username(username)
+        url = f"https://t.me/s/{self._username}/{self._topic_id}"
+
         super().__init__(url)
-        self._validate_url()
-
-    @classmethod
-    def create(cls, username: str) -> Self:
-        return cls(f"https://t.me/s/{username}")
 
     @property
     def channel_username(self) -> str:
-        return self.path.split("/")[-1]  # type: ignore[union-attr]
+        return self._username
 
-    def _validate_url(self) -> None:
-        self._validate_host()
-        self._validate_path_structure()
+    @property
+    def channel_topic_id(self) -> int | None:
+        return self._topic_id or None
 
-    def _validate_host(self) -> None:
-        if self.host != "t.me":
-            raise ValueError(f"Invalid Telegram URL host '{self.host}'. Host must be 't.me'")
+    @staticmethod
+    def _parse_username(value: str) -> tuple[str, int | None]:
+        parts = value.split("/")
 
-    def _validate_path_structure(self) -> None:
-        """Ensure path starts with '/s/' and has username after."""
-        path_pattern = r"^/s/(?P<username>[a-zA-Z0-9_]{5,32})$"  # ex.: /s/MyChannel_0123
-        match = re.match(path_pattern, self.path or "")
-        if not match:
-            raise ValueError(
-                f"Invalid Telegram channel URL: path '{self.path}' must be in format '/s/<channel_name>' "
-                "with username 5-32 chars, letters, digits, underscore only"
-            )
+        if len(parts) == 1:
+            return parts[0], None
+        if len(parts) == 2:  # noqa: PLR2004
+            return parts[0], int(parts[1])
+
+        raise ValueError("Unexpected username format")

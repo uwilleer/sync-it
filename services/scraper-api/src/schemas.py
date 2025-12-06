@@ -11,7 +11,7 @@ __all__ = [
 
 
 def _get_default_date_gte() -> datetime:
-    start = datetime.now(UTC) - timedelta(days=30)
+    start = datetime.now(UTC) - timedelta(days=14)
 
     return start.replace(hour=0, minute=0, second=0, microsecond=0)
 

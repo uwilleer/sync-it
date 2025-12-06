@@ -6,9 +6,6 @@ from parsers import BaseParser
 from schemas import TelegramChannelMessageSchema
 
 
-__all__ = ["TelegramParser"]
-
-
 logger = get_logger(__name__)
 
 

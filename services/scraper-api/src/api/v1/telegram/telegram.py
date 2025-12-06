@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Annotated
 
 from api.v1.telegram.schemas import TelegramChannelMessagesResponse, TelegramVacanciesQuery
-from clients import telegram_client
+from clients import telegram_client, telethon_client
 from fastapi import APIRouter, Query
 
 
@@ -16,15 +16,23 @@ router = APIRouter()
 
 @router.get("/messages")
 async def channel_messages(query: Annotated[TelegramVacanciesQuery, Query()]) -> TelegramChannelMessagesResponse:
+    # TELETHON
+    if query.topic_id:
+        messages = await telethon_client.get_detailed_messages(query.date_gte, query.channel_username, query.topic_id)
+        return TelegramChannelMessagesResponse(messages=messages)
+
+    # HTTP
     newest_message_id = await telegram_client.get_newest_message_id(query.channel_username)
+
     if not newest_message_id:
         return TelegramChannelMessagesResponse(messages=[])
 
-    messages: list[TelegramChannelMessageSchema] = []
+    messages: list[TelegramChannelMessageSchema] = []  # type: ignore[no-redef]
     current_id = newest_message_id
 
     while current_id > 0:
         message = await telegram_client.get_detailed_message(query.channel_username, current_id)
+
         if message is None:
             current_id -= 1
             continue

@@ -1,9 +1,6 @@
 from parsers.schemas import TelegramChannelUrl
 
 
-__all__ = ["channel_links"]
-
-
 channel_usernames: set[str] = {
     "ai_rabota",
     "csharpdevjob",
@@ -28,6 +25,9 @@ channel_usernames: set[str] = {
     "uzdev_jobs",
     "workayte",
     "yotolabpython",
+    # Topics
+    "cyprusithr/46679",
+    "cyprusithr/46685",
 }
 
-channel_links: set[TelegramChannelUrl] = {TelegramChannelUrl.create(u) for u in channel_usernames}
+channel_links: set[TelegramChannelUrl] = {TelegramChannelUrl(u) for u in channel_usernames}

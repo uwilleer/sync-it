@@ -3,15 +3,9 @@ from datetime import datetime
 from pydantic import BaseModel
 
 
-__all__ = [
-    "TelegramChannelMessageSchema",
-    "TelegramChannelMessagesResponse",
-    "TelegramNewestMessagesRequest",
-]
-
-
 class TelegramNewestMessagesRequest(BaseModel):
     channel_username: str
+    channel_topic_id: int | None
     date_gte: datetime | None
 
 
