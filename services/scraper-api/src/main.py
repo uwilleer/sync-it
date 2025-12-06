@@ -14,8 +14,6 @@ logger = get_logger(__name__)
 app = FastAPI(
     title="Scraper API Service",
     openapi_url="/openapi.json" if env_config.debug else None,
-    docs_url="/docs" if env_config.debug else None,
-    redoc_url="/redoc" if env_config.debug else None,
 )
 
 app.add_exception_handler(HTTPException, http_exception_custom_handler)
