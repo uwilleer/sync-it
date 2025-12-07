@@ -39,13 +39,10 @@ class BaseVacancyRepository[VacancyType: Vacancy](BaseRepository):
 
     async def find_duplicate_vacancy_hash_by_fingerprint(self, fingerprint: str) -> str | None:
         """Найти дубликат вакансии по содержимому."""
-        # Костылище, чтобы гарантировать индексацию и не делать ALTER TABLE
-        await self._session.execute(text(f"SET pg_trgm.similarity_threshold = {FINGERPRINT_SIMILARITY_THRESHOLD};"))
-
         stmt = (
             select(self.model.hash)
-            .where(self.model.fingerprint.op("%")(cast(fingerprint, Text)))
-            .where(func.similarity(self.model.fingerprint, cast(fingerprint, Text)) > FINGERPRINT_SIMILARITY_THRESHOLD)
+            .where(self.model.fingerprint.op("%")(fingerprint))
+            .where(func.similarity(self.model.fingerprint, fingerprint) > FINGERPRINT_SIMILARITY_THRESHOLD)
             .limit(1)
         )
         result = await self._session.execute(stmt)

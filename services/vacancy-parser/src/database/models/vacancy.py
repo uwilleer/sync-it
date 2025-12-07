@@ -32,9 +32,9 @@ class Vacancy(Base):
         Index("idx_vacancies_hash_not_processed", "hash", postgresql_where="processed_at IS NULL"),
         Index("idx_vacancies_not_processed", "processed_at", postgresql_where="processed_at IS NULL"),
         Index(
-            "idx_vacancies_fingerprint_trgm",
+            "idx_vacancies_fingerprint_gist",
             "fingerprint",
-            postgresql_using="gin",
-            postgresql_ops={"fingerprint": "gin_trgm_ops"},
+            postgresql_using="gist",
+            postgresql_ops={"fingerprint": "gist_trgm_ops"},
         ),
     )
