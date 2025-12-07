@@ -1,9 +1,10 @@
 import base64
-import logging
 import os
 import pathlib
+import shlex
 
 import aiofiles
+import anyio
 import asyncssh
 from dotenv import load_dotenv
 from telethon import TelegramClient
@@ -47,23 +48,39 @@ async def update_env_on_server(session_b64: str) -> None:
             raise ValueError(f"Environment variable '{ENV_NAME}' not found.")
 
         updated_env = "\n".join(lines)
+        escaped_env = shlex.quote(updated_env)
 
-        await conn.run(f"cat <<EOF > {REMOTE_ENV_PATH}\n{updated_env}\nEOF", check=True)
+        await conn.run(f"echo {escaped_env} > {REMOTE_ENV_PATH}", check=True)
 
+
+async def delete_sessions():
+    try:
+        p1 = anyio.Path(f"{session_name}.session")
+        p2 = anyio.Path(f"{session_name}.session.b64")
+
+        await p1.unlink()
+        await p2.unlink()
+    except FileNotFoundError:
+        pass
 
 async def main() -> None:
-    client = TelegramClient(session_name, api_id, api_hash)
-    await client.start(phone=phone, password=password)
+    try:
+        await delete_sessions()
 
-    async with aiofiles.open(pathlib.Path(f"{session_name}.session"), "rb") as f:
-        session_bytes = await f.read()
+        client = TelegramClient(session_name, api_id, api_hash)
+        await client.start(phone=phone, password=password)
 
-    session_b64 = base64.b64encode(session_bytes).decode("utf-8")
+        async with aiofiles.open(pathlib.Path(f"{session_name}.session"), "rb") as f:
+            session_bytes = await f.read()
 
-    async with aiofiles.open(pathlib.Path("telethon.session.b64"), "w", encoding="utf-8") as f:
-        await f.write(session_b64)
+        session_b64 = base64.b64encode(session_bytes).decode("utf-8")
 
-    await update_env_on_server(session_b64)
+        async with aiofiles.open(pathlib.Path("telethon.session.b64"), "w", encoding="utf-8") as f:
+            await f.write(session_b64)
+
+        await update_env_on_server(session_b64)
+    finally:
+        await delete_sessions()
 
 
 if __name__ == "__main__":
