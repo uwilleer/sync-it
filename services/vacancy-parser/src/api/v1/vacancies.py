@@ -15,8 +15,8 @@ router = APIRouter()
 
 @router.get("/vacancies")
 async def get_vacancies(
-    service: Annotated[VacancyService, Depends(get_vacancy_service)],
     query: Annotated[VacanciesListQuery, Query()],
+    service: Annotated[VacancyService, Depends(get_vacancy_service)],
 ) -> VacancyListResponse:
     """Возвращает последние актуальные вакансии."""
     vacancies = await service.get_recent_vacancies(limit=query.limit)

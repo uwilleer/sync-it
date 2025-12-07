@@ -1,16 +1,9 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from schemas import DateGTEUTCMixin, HabrDetailedVacancySchema
 
 
-__all__ = [
-    "HabrVacanciesQuery",
-    "HabrVacancyDetailedResponse",
-    "HabrVacancyListResponse",
-]
-
-
 class HabrVacanciesQuery(DateGTEUTCMixin):
-    pass
+    model_config = ConfigDict(extra="forbid")
 
 
 class HabrVacancyListResponse(BaseModel):

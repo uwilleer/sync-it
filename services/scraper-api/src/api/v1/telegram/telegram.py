@@ -17,8 +17,10 @@ router = APIRouter()
 @router.get("/messages")
 async def channel_messages(query: Annotated[TelegramVacanciesQuery, Query()]) -> TelegramChannelMessagesResponse:
     # TELETHON
-    if query.topic_id:
-        messages = await telethon_client.get_detailed_messages(query.date_gte, query.channel_username, query.topic_id)
+    if query.channel_topic_id:
+        messages = await telethon_client.get_detailed_messages(
+            query.date_gte, query.channel_username, query.channel_topic_id
+        )
         return TelegramChannelMessagesResponse(messages=messages)
 
     # HTTP

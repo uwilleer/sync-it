@@ -7,23 +7,6 @@ from schemas.vacancy import VacanciesSummarySchema, VacancyRead
 from schemas.work_format import WorkFormatRead
 
 
-__all__ = [
-    "ExtractSkillsRequest",
-    "GradeListResponse",
-    "ProfessionListResponse",
-    "SkillItemResponse",
-    "SkillListQuery",
-    "SkillListResponse",
-    "VacanciesSummaryResponse",
-    "VacancyListQuery",
-    "VacancyListResponse",
-    "VacancyWithNeighborsBody",
-    "VacancyWithNeighborsResponse",
-    "VacancyWithNeighborsSchema",
-    "WorkFormatListResponse",
-]
-
-
 class ProfessionListResponse(BaseModel):
     professions: list[ProfessionRead]
 
@@ -38,6 +21,8 @@ class WorkFormatListResponse(BaseModel):
 
 class ExtractSkillsRequest(BaseModel):
     text: str
+
+    model_config = ConfigDict(extra="forbid")
 
 
 class SkillItemResponse(BaseModel):

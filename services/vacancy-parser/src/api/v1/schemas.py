@@ -27,6 +27,8 @@ class VacancyListResponse(BaseModel):
 class VacancyProcessedBody(BaseModel):
     hashes: list[str] = Field(description="Хеши вакансий")
 
+    model_config = ConfigDict(extra="forbid")
+
 
 class VacancyProcessedResponse(BaseModel):
     count: int

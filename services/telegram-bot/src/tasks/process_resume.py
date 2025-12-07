@@ -1,3 +1,4 @@
+import asyncio
 from tempfile import NamedTemporaryFile
 from typing import TYPE_CHECKING, Any, cast
 
@@ -5,7 +6,6 @@ from aiogram.enums import ParseMode
 from celery_app import app
 from clients import skill_client
 from common.logger import get_logger
-from common.shared.utils import get_or_create_event_loop
 from core import service_config
 from core.loader import bot
 from database.models.enums import PreferencesCategoryCodeEnum
@@ -33,8 +33,6 @@ logger = get_logger(__name__)
 def process_resume(
     self: "Task[Any, Any]", user_id: int, chat_id: int, data: dict[str, Any], *, toggle: bool = False
 ) -> None:
-    loop = get_or_create_event_loop()
-
     data_type = data.get("type")
 
     try:
@@ -44,18 +42,18 @@ def process_resume(
         elif data_type == ResumeTypeEnum.FILE:
             file_schema = FileResumePayloadSchema.model_validate(data)
             with NamedTemporaryFile(suffix=file_schema.suffix) as tmp:
-                loop.run_until_complete(bot.download_file(file_schema.file_path, destination=tmp.name))
+                asyncio.run(bot.download_file(file_schema.file_path, destination=tmp.name))
                 extractor = TextExtractor()
                 text = extractor.read(tmp.name)
         else:
             raise ValueError(f"Invalid data type: {data_type}")  # noqa: TRY301
 
-        loop.run_until_complete(_extract_and_save_user_preferences(user_id, text, chat_id, toggle=toggle))
+        asyncio.run(_extract_and_save_user_preferences(user_id, text, chat_id, toggle=toggle))
     except Exception as e:
         logger.exception("Error processing resume", exc_info=e)
 
         if self.request.retries != self.max_retries:
-            loop.run_until_complete(
+            asyncio.run(
                 bot.send_message(
                     chat_id,
                     "⚠️ Произошла ошибка при извлечении навыков.\n"
@@ -64,7 +62,7 @@ def process_resume(
             )
 
         if self.request.retries >= cast("int", self.max_retries):
-            loop.run_until_complete(
+            asyncio.run(
                 bot.send_message(
                     chat_id,
                     "⚠️ Произошла ошибка при извлечении навыков.\nПроверьте корректность содержимого файла.\n\n"
