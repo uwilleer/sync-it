@@ -23,7 +23,7 @@ jobs:
         uses: astral-sh/setup-uv@v6
 
       - name: Install dependencies
-        run: make venv-style
+        run: make venv-local
 
       - name: Check Linting and Formating
         run: make lint

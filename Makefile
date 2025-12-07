@@ -42,9 +42,6 @@ pull: # compose pull
 venv-local: # Create local venv
 	@uv sync --frozen --all-packages --all-groups
 
-venv-style: # Create style venv
-	@uv sync --frozen --group style
-
 add: # add python package to service p=<package> s=<service> [e="<extra> <extra2>"]
 	@if [ -z "$(p)" ] || [ -z "$(s)" ]; then \
 		echo 'Usage: make add s=<service> p=<package> [e="<extra> <extra2>"]'; \
