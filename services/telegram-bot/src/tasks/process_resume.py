@@ -1,4 +1,3 @@
-import asyncio
 from tempfile import NamedTemporaryFile
 from typing import TYPE_CHECKING, Any, cast
 
@@ -6,6 +5,7 @@ from aiogram.enums import ParseMode
 from celery_app import app
 from clients import skill_client
 from common.logger import get_logger
+from common.shared.utils import run_async
 from core import service_config
 from core.loader import bot
 from database.models.enums import PreferencesCategoryCodeEnum
@@ -30,6 +30,12 @@ logger = get_logger(__name__)
 def process_resume(
     self: "Task[Any, Any]", user_id: int, chat_id: int, data: dict[str, Any], *, toggle: bool = False
 ) -> None:
+    run_async(async_process_resume(self, user_id, chat_id, data, toggle=toggle))
+
+
+async def async_process_resume(
+    self: "Task[Any, Any]", user_id: int, chat_id: int, data: dict[str, Any], *, toggle: bool
+) -> None:
     data_type = data.get("type")
 
     try:
@@ -39,34 +45,30 @@ def process_resume(
         elif data_type == ResumeTypeEnum.FILE:
             file_schema = FileResumePayloadSchema.model_validate(data)
             with NamedTemporaryFile(suffix=file_schema.suffix) as tmp:
-                asyncio.run(bot.download_file(file_schema.file_path, destination=tmp.name))
+                await bot.download_file(file_schema.file_path, destination=tmp.name)
                 extractor = TextExtractor()
                 text = extractor.read(tmp.name)
         else:
             raise ValueError(f"Invalid data type: {data_type}")  # noqa: TRY301
 
-        asyncio.run(_extract_and_save_user_preferences(user_id, text, chat_id, toggle=toggle))
+        await _extract_and_save_user_preferences(user_id, text, chat_id, toggle=toggle)
     except Exception as e:
         logger.exception("Error processing resume", exc_info=e)
 
         if self.request.retries != self.max_retries:
-            asyncio.run(
-                bot.send_message(
-                    chat_id,
-                    "⚠️ Произошла ошибка при извлечении навыков.\n"
-                    f"Пробуем еще раз. Попытка {self.request.retries + 1}/{self.max_retries}",
-                )
+            await bot.send_message(
+                chat_id,
+                "⚠️ Произошла ошибка при извлечении навыков.\n"
+                f"Пробуем еще раз. Попытка {self.request.retries + 1}/{self.max_retries}",
             )
 
         if self.request.retries >= cast("int", self.max_retries):
-            asyncio.run(
-                bot.send_message(
-                    chat_id,
-                    "⚠️ Произошла ошибка при извлечении навыков.\nПроверьте корректность содержимого файла.\n\n"
-                    f"Если вы считаете, что ошибка на нашей стороне, пожалуйста, обратитесь в поддержку: "
-                    f"@{service_config.support_username}",
-                    reply_markup=main_menu_keyboard(),
-                )
+            await bot.send_message(
+                chat_id,
+                "⚠️ Произошла ошибка при извлечении навыков.\nПроверьте корректность содержимого файла.\n\n"
+                f"Если вы считаете, что ошибка на нашей стороне, пожалуйста, обратитесь в поддержку: "
+                f"@{service_config.support_username}",
+                reply_markup=main_menu_keyboard(),
             )
         else:
             raise self.retry(countdown=60, exc=e) from e
