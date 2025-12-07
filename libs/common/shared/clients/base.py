@@ -16,4 +16,4 @@ class BaseClient:
     def configure_client(self) -> None:
         """Конфигурирует клиент перед работой"""
         self.client.headers.update({"x-api-key": gateway_config.api_key})
-        self.client.timeout = 15
+        self.client.timeout = 60

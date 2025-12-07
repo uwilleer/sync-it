@@ -17,10 +17,6 @@ logger = get_logger(__name__)
 class TelegramClient(BaseClient):
     url = build_service_url(ServiceEnum.SCRAPER_API, "/api/v1/telegram/messages")
 
-    def configure_client(self) -> None:
-        super().configure_client()
-        self.client.timeout = 60
-
     async def get_newest_messages(
         self, channel_username: str, channel_topic_id: int | None = None, date_gte: datetime | None = None
     ) -> list[TelegramChannelMessageSchema]:
