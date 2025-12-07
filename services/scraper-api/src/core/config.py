@@ -5,6 +5,7 @@ class ServiceConfig(BaseSettings):
     telethon_session_name: str
     telethon_api_id: int
     telethon_api_hash: str
+    telethon_session_base64: str
 
     model_config = SettingsConfigDict(env_prefix="SCRAPER_API_")
 

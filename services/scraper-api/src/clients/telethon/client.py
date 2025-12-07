@@ -1,4 +1,6 @@
+import base64
 from datetime import UTC, datetime
+import pathlib
 
 from clients.telethon.exceptions import TelethonNotAuthorizedError
 from common.logger import get_logger
@@ -8,6 +10,12 @@ from telethon import TelegramClient  # type: ignore[import-untyped]
 
 
 logger = get_logger(__name__)
+
+
+session_bytes = base64.b64decode(service_config.telethon_session_base64)
+session_file = f"{service_config.telethon_session_name}.session"
+with pathlib.Path(session_file).open("wb") as f:
+    f.write(session_bytes)
 
 
 class TelethonClient:

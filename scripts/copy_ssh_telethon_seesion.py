@@ -53,7 +53,7 @@ async def update_env_on_server(session_b64: str) -> None:
         await conn.run(f"echo {escaped_env} > {REMOTE_ENV_PATH}", check=True)
 
 
-async def delete_sessions():
+async def delete_sessions() -> None:
     try:
         p1 = anyio.Path(f"{session_name}.session")
         p2 = anyio.Path(f"{session_name}.session.b64")
@@ -62,6 +62,7 @@ async def delete_sessions():
         await p2.unlink()
     except FileNotFoundError:
         pass
+
 
 async def main() -> None:
     try:
