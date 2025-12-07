@@ -10,7 +10,10 @@ class TelegramChannelUrl(HttpUrl):
 
     def __init__(self, username: str) -> None:
         self._username, self._topic_id = self._parse_username(username)
-        url = f"https://t.me/s/{self._username}/{self._topic_id}"
+
+        url = f"https://t.me/s/{self._username}"
+        if self._topic_id:
+            url += f"/{self._topic_id}"
 
         super().__init__(url)
 
