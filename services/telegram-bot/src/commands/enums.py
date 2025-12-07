@@ -2,9 +2,6 @@ from enum import StrEnum
 from typing import Self
 
 
-__all__ = ["CommandEnum"]
-
-
 class CommandEnum(StrEnum):
     """
     Класс для перечисления команд бота.

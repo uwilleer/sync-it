@@ -8,9 +8,6 @@ from common.redis.config import redis_config
 from common.redis.engine import get_sync_redis_client
 
 
-__all__ = ["singleton"]
-
-
 logger = get_logger(__name__)
 
 P = ParamSpec("P")

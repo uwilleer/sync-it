@@ -8,8 +8,6 @@ from sentry_sdk.integrations import Integration
 from sentry_sdk.integrations.logging import LoggingIntegration
 
 
-__all__ = ["init_sentry"]
-
 logger = get_logger(__name__)
 
 

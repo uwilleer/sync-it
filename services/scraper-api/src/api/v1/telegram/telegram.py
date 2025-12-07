@@ -8,8 +8,6 @@ from fastapi import APIRouter, Query
 if TYPE_CHECKING:
     from schemas import TelegramChannelMessageSchema
 
-__all__ = ["router"]
-
 
 router = APIRouter()
 

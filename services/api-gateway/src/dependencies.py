@@ -8,8 +8,6 @@ from starlette import status
 from starlette.requests import Request
 
 
-__all__ = ["validate_api_key"]
-
 logger = get_logger(__name__)
 
 

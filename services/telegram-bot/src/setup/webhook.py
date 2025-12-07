@@ -15,9 +15,6 @@ from starlette.requests import Request
 import uvicorn
 
 
-__all__ = ["start_webhook"]
-
-
 @asynccontextmanager
 async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
     await on_startup()

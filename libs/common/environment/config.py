@@ -3,9 +3,6 @@ from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-__all__ = ["env_config"]
-
-
 class EnvConfig(BaseSettings):
     mode: EnvironmentEnum
     service_internal_host: str

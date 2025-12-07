@@ -4,13 +4,6 @@ from pydantic import BaseModel, ConfigDict
 from schemas.user_preference import UserPreferenceRead
 
 
-__all__ = [
-    "UserCreate",
-    "UserRead",
-    "UserWithPreferences",
-]
-
-
 class BaseUser(BaseModel):
     telegram_id: int
 

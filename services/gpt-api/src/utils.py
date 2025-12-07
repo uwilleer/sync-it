@@ -1,9 +1,6 @@
 from common.logger import get_logger
 
 
-__all__ = ["validate_health_response"]
-
-
 logger = get_logger(__name__)
 
 

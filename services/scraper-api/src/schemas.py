@@ -3,13 +3,6 @@ from datetime import UTC, datetime, timedelta
 from pydantic import BaseModel, Field, field_validator
 
 
-__all__ = [
-    "DateGTEUTCMixin",
-    "HabrDetailedVacancySchema",
-    "TelegramChannelMessageSchema",
-]
-
-
 def _get_default_date_gte() -> datetime:
     start = datetime.now(UTC) - timedelta(days=21)
 

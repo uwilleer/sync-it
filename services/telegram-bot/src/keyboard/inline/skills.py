@@ -9,13 +9,6 @@ from keyboard.inline.buttons import (
 )
 
 
-__all__ = [
-    "process_update_skills_keyboard",
-    "show_skills_keyboard",
-    "update_skills_keyboard",
-]
-
-
 def update_skills_keyboard() -> InlineKeyboardMarkup:
     """Создает клавиатуру для обновленных навыков."""
     buttons = [

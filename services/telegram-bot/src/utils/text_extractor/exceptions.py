@@ -1,6 +1,3 @@
-__all__ = ["UnsupportedFileTypeError"]
-
-
 class TextExtractorError(Exception):
     pass
 

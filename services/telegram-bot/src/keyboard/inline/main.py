@@ -7,12 +7,6 @@ from keyboard.inline.buttons import (
 )
 
 
-__all__ = [
-    "main_keyboard",
-    "main_menu_keyboard",
-]
-
-
 def main_menu_keyboard() -> InlineKeyboardMarkup:
     """Создает клавиатуру для возврата в главное меню."""
     buttons = [[MainMenuInlineKeyboardButton()]]

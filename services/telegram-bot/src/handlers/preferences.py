@@ -22,9 +22,6 @@ from utils.message import get_message, safe_edit_message
 from services import UserPreferenceService
 
 
-__all__ = ["router"]
-
-
 logger = get_logger(__name__)
 
 

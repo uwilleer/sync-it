@@ -23,9 +23,6 @@ if TYPE_CHECKING:
     from celery import Task
 
 
-__all__ = ["process_resume"]
-
-
 logger = get_logger(__name__)
 
 

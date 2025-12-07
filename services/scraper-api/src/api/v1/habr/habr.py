@@ -6,8 +6,6 @@ from common.logger import get_logger
 from fastapi import APIRouter, Query
 
 
-__all__ = ["router"]
-
 logger = get_logger(__name__)
 
 router = APIRouter()

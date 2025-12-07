@@ -9,12 +9,6 @@ from common.shared.serializers import AbstractSerializer, JSONSerializer
 from redis.asyncio import Redis
 
 
-__all__ = [
-    "build_key",
-    "cache",
-]
-
-
 logger = get_logger(__name__)
 
 P = ParamSpec("P")

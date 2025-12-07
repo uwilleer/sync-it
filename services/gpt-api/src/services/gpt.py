@@ -9,9 +9,6 @@ from g4f.client import AsyncClient  # type: ignore[import-untyped]
 from g4f.typing import Message  # type: ignore[import-untyped]
 
 
-__all__ = ["get_gpt_response"]
-
-
 logger = get_logger(__name__)
 
 MAX_RETRIES = 3

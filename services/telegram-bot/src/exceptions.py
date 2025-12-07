@@ -1,10 +1,3 @@
-__all__ = [
-    "BotError",
-    "MessageNotAvailableError",
-    "MessageNotModifiedError",
-]
-
-
 class BotError(Exception):
     """Базовая ошибка для исключений в приложении с ботом"""
 

@@ -5,9 +5,6 @@ from aiogram import BaseMiddleware
 from aiogram.types import CallbackQuery, TelegramObject
 
 
-__all__ = ["AnswerCallbackMiddleware"]
-
-
 class AnswerCallbackMiddleware(BaseMiddleware):
     """Убирает анимацию загрузки callback кнопок."""
 

@@ -8,8 +8,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 if TYPE_CHECKING:
     from database.models import User
 
-__all__ = ["UserPreference"]
-
 
 class UserPreference(Base):
     __tablename__ = "user_preferences"

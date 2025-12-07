@@ -6,9 +6,6 @@ from setup import start_polling, start_webhook
 import uvloop
 
 
-__all__ = ()
-
-
 logger = get_logger(__name__)
 
 

@@ -4,9 +4,6 @@ import sys
 from common.logger.config import log_config
 
 
-__all__ = ["get_logger"]
-
-
 _is_logging_configured = False
 
 

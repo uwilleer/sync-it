@@ -3,9 +3,6 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import URL
 
 
-__all__ = ["db_config"]
-
-
 class DatabaseConfig(BaseSettings):
     host: str
     port: int = Field(ge=1, le=65535)

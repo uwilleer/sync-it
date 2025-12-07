@@ -8,9 +8,6 @@ from common.logger import get_logger
 from core import service_config
 
 
-__all__ = ["ThrottlingMiddleware"]
-
-
 logger = get_logger(__name__)
 
 

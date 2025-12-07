@@ -6,9 +6,6 @@ from pytesseract import image_to_string  # type: ignore[import-untyped]
 from utils.readers import AbstractFileReader
 
 
-__all__ = ["PdfReader"]
-
-
 class PdfReader(AbstractFileReader):
     MIN_TEXT_LEN = 300  # если текста меньше этого количества символов, считаем сканом
 

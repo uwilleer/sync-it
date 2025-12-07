@@ -8,9 +8,6 @@ from schemas.user_preference import UserPreferenceCreate, UserPreferenceRead
 from unitofwork import UnitOfWork
 
 
-__all__ = ["UserPreferenceService"]
-
-
 logger = get_logger(__name__)
 
 

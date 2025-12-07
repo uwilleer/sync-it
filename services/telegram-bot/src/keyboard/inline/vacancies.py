@@ -7,9 +7,6 @@ from common.shared.schemas import HttpsUrl
 from keyboard.inline.buttons import MainMenuInlineKeyboardButton
 
 
-__all__ = ["vacancies_keyboard"]
-
-
 def _build_skill_rows(skills: list[SkillWithMatchSchema], vacancy_id: int) -> list[list[InlineKeyboardButton]]:
     """Формирует кнопки со скиллами вакансии для переключения предпочтений."""
 

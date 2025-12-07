@@ -12,9 +12,6 @@ from sqlalchemy.exc import SAWarning
 import sqlparse
 
 
-__all__ = ["setup_alchemy_logging"]
-
-
 logger = get_logger(__name__)
 
 

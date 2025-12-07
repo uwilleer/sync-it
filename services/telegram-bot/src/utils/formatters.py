@@ -1,9 +1,6 @@
 from datetime import UTC, datetime
 
 
-__all__ = ["format_publication_time"]
-
-
 def _pluralize_ru(number: int, one: str, few: str, many: str) -> str:
     """
     Вспомогательная функция для плюрализации русских слов.

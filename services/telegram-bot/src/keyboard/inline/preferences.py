@@ -13,12 +13,6 @@ from keyboard.inline.buttons import (
 from schemas.user import UserWithPreferences
 
 
-__all__ = [
-    "options_keyboard",
-    "preferences_keyboard",
-]
-
-
 def preferences_keyboard() -> InlineKeyboardMarkup:
     buttons = [
         [

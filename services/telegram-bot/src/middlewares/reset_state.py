@@ -11,9 +11,6 @@ if TYPE_CHECKING:
     from aiogram.fsm.context import FSMContext
 
 
-__all__ = ["ResetStateMiddleware"]
-
-
 logger = get_logger(__name__)
 
 

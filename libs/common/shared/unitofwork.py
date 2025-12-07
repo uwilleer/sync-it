@@ -7,9 +7,6 @@ from common.logger import get_logger
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 
-__all__ = ["BaseUnitOfWork"]
-
-
 logger = get_logger(__name__)
 
 

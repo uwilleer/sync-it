@@ -4,9 +4,6 @@ from core.loader import bot, dp
 from setup.lifespan import on_shutdown, on_startup
 
 
-__all__ = ["start_polling"]
-
-
 logger = get_logger(__name__)
 
 

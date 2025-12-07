@@ -7,9 +7,6 @@ from sqlalchemy import select, update
 from sqlalchemy.orm import selectinload
 
 
-__all__ = ["UserRepository"]
-
-
 logger = get_logger(__name__)
 
 

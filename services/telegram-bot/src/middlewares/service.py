@@ -7,9 +7,6 @@ from aiogram.types import TelegramObject
 from services import UserPreferenceService, UserService
 
 
-__all__ = ["ServiceMiddleware"]
-
-
 class ServiceMiddleware(BaseMiddleware):
     async def __call__(
         self,

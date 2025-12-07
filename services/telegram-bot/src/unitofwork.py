@@ -2,9 +2,6 @@ from common.shared.unitofwork import BaseUnitOfWork
 from repositories import UserPreferenceRepository, UserRepository
 
 
-__all__ = ["UnitOfWork"]
-
-
 class UnitOfWork(BaseUnitOfWork):
     """Конкретная реализация UoW для SQLAlchemy."""
 

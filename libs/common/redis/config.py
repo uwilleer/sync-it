@@ -4,9 +4,6 @@ from pydantic import Field, RedisDsn, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-__all__ = ["redis_config"]
-
-
 class RedisConfig(BaseSettings):
     host: str
     port: int = Field(ge=1, le=65535)

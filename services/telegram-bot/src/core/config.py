@@ -2,9 +2,6 @@ from common.shared.schemas import HttpsUrl
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-__all__ = ["service_config"]
-
-
 class ServiceConfig(BaseSettings):
     db_schema: str = "telegram_bot"
 

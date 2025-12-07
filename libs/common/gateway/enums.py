@@ -1,9 +1,6 @@
 from enum import StrEnum
 
 
-__all__ = ["ServiceEnum"]
-
-
 class ServiceEnum(StrEnum):
     SCRAPER_API = "scraper-api"
     TELEGRAM_BOT = "telegram-bot"

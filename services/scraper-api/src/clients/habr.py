@@ -8,9 +8,6 @@ from parsers import HabrParser
 from schemas import HabrDetailedVacancySchema
 
 
-__all__ = ["habr_client"]
-
-
 logger = get_logger(__name__)
 
 

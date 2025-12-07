@@ -16,8 +16,6 @@ from utils.message import make_linked, safe_edit_message
 from services import UserPreferenceService, UserService
 
 
-__all__ = ["router"]
-
 logger = get_logger(__name__)
 
 

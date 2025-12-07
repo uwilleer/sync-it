@@ -5,9 +5,6 @@ from common.gateway.utils import build_service_url
 from common.shared.clients import BaseClient
 
 
-__all__ = ["grade_client"]
-
-
 class _GradeClient(BaseClient):
     url = build_service_url(ServiceEnum.VACANCY_PROCESSOR, "api/v1/grades")
 

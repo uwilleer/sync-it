@@ -6,17 +6,6 @@ from callbacks.skill import SkillActionEnum, SkillCallback
 from callbacks.vacancy import VacancyActionEnum, VacancyCallback
 
 
-__all__ = [
-    "BackToPreferencesInlineKeyboardButton",
-    "BackToSkillsInlineKeyboardButton",
-    "ChangePreferencesInlineKeyboardButton",
-    "EmptyDashedKeyboardButton",
-    "ImportSkillsInlineKeyboardButton",
-    "MainMenuInlineKeyboardButton",
-    "ProfessionInlineKeyboardButton",
-    "VacanciesInlineKeyboardButton",
-]
-
 # TODO: Дублируется текст в inline/buttons и reply/buttons. Можно сделать один Enum
 
 

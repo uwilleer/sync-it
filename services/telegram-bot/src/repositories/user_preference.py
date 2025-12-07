@@ -6,9 +6,6 @@ from database.models.enums import PreferencesCategoryCodeEnum
 from sqlalchemy import delete, select
 
 
-__all__ = ["UserPreferenceRepository"]
-
-
 class UserPreferenceRepository(BaseRepository):
     async def get_by_user_id(self, user_id: int) -> Sequence[UserPreference]:
         """Находит предпочтения по пользователю."""

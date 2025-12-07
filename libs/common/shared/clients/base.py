@@ -3,9 +3,6 @@ from common.shared.clients.http import http_client
 from httpx import URL, AsyncClient
 
 
-__all__ = ["BaseClient"]
-
-
 class BaseClient:
     url: URL
 

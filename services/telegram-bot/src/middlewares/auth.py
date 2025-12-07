@@ -14,9 +14,6 @@ if TYPE_CHECKING:
     from services import UserService
 
 
-__all__ = ["AuthMiddleware"]
-
-
 class AuthMiddleware(BaseMiddleware):
     """Добавляет пользователя в базу, если он ещё не создан."""
 

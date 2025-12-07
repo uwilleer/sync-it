@@ -4,9 +4,6 @@ from typing import Any
 from common.shared.serializers import AbstractSerializer
 
 
-__all__ = ["PickleSerializer"]
-
-
 class PickleSerializer(AbstractSerializer):
     def serialize(self, obj: Any) -> bytes:  # noqa: PLR6301
         return pickle.dumps(obj)

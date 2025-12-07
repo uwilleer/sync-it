@@ -6,27 +6,6 @@ from common.shared.schemas import HttpsUrl
 from pydantic import BaseModel
 
 
-__all__ = [
-    "GradeListResponse",
-    "GradeSchema",
-    "ProfessionListResponse",
-    "ProfessionSchema",
-    "SkillItemResponse",
-    "SkillListQuery",
-    "SkillListResponse",
-    "SkillSchema",
-    "SkillWithMatchSchema",
-    "SourceEnum",
-    "VacanciesSummaryResponse",
-    "VacanciesSummarySchema",
-    "VacancyWithNeighborsRequest",
-    "VacancyWithNeighborsResponse",
-    "VacancyWithNeighborsSchema",
-    "WorkFormatResponse",
-    "WorkFormatSchema",
-]
-
-
 logger = get_logger(__name__)
 
 

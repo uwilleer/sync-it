@@ -4,9 +4,6 @@ from pydantic.alias_generators import to_snake
 from starlette.responses import JSONResponse
 
 
-__all__ = ["http_exception_custom_handler"]
-
-
 class ErrorSchema(BaseModel):
     exc_name: str
     detail: str

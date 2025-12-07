@@ -6,9 +6,6 @@ from schemas.user import UserCreate, UserRead, UserWithPreferences
 from unitofwork import UnitOfWork
 
 
-__all__ = ["UserService"]
-
-
 class UserService(BaseUOWService[UnitOfWork]):
     @overload
     async def get_by_telegram_id(self, telegram_id: int, *, with_preferences: Literal[True]) -> UserWithPreferences: ...

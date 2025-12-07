@@ -16,9 +16,6 @@ from common.shared.clients import BaseClient
 from common.shared.serializers.pickle import PickleSerializer
 
 
-__all__ = ["vacancy_client"]
-
-
 # Костылище
 @dataclass
 class _SourceSchema:

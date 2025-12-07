@@ -6,12 +6,6 @@ from common.redis.engine import get_async_redis_client
 from core import service_config
 
 
-__all__ = [
-    "bot",
-    "dp",
-]
-
-
 storage = RedisStorage(
     redis=get_async_redis_client(redis_config.bot_bot_dsn),
     key_builder=DefaultKeyBuilder(with_bot_id=True),

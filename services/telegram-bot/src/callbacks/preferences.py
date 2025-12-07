@@ -4,12 +4,6 @@ from aiogram.filters.callback_data import CallbackData
 from database.models.enums import PreferencesCategoryCodeEnum
 
 
-__all__ = [
-    "PreferencesActionEnum",
-    "PreferencesCallback",
-]
-
-
 class PreferencesActionEnum(StrEnum):
     SHOW_GRADES = "show_grades"
     SHOW_PROFESSIONS = "show_professions"

@@ -4,9 +4,6 @@ from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-__all__ = ["sentry_config"]
-
-
 class SentryConfig(BaseSettings):
     enabled: bool
     dsn_url: HttpsUrl

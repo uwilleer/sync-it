@@ -4,9 +4,6 @@ from callbacks.noop import NoopActionEnum, NoopCallback
 from keyboard.inline.main import main_menu_keyboard
 
 
-__all__ = ["router"]
-
-
 router = Router(name=NoopCallback.__prefix__)
 
 

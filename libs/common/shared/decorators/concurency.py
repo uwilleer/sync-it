@@ -7,9 +7,6 @@ from typing import ParamSpec, TypeVar
 from common.logger import get_logger
 
 
-__all__ = ["limit_requests"]
-
-
 logger = get_logger(__name__)
 
 P = ParamSpec("P")

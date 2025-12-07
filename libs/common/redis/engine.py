@@ -6,12 +6,6 @@ from redis import Redis
 from redis.asyncio import Redis as AsyncRedis
 
 
-__all__ = [
-    "get_async_redis_client",
-    "get_sync_redis_client",
-]
-
-
 @lru_cache
 def get_async_redis_client(dsn: RedisDsn) -> AsyncRedis:
     return cast("AsyncRedis", AsyncRedis.from_url(str(dsn)))

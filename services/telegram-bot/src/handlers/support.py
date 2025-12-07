@@ -6,9 +6,6 @@ from core import service_config
 from keyboard.inline.main import main_menu_keyboard
 
 
-__all__ = ()
-
-
 router = Router(name=BotCommandEnum.SUPPORT)
 
 

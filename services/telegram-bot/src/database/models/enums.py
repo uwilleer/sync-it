@@ -1,9 +1,6 @@
 from enum import StrEnum
 
 
-__all__ = ["PreferencesCategoryCodeEnum"]
-
-
 class PreferencesCategoryCodeEnum(StrEnum):
     PROFESSION = "profession"
     SKILL = "skill"

@@ -6,9 +6,6 @@ from utils.readers.enums import SupportedReaderExtensionsEnum
 from utils.text_extractor.exceptions import UnsupportedFileTypeError
 
 
-__all__ = ["TextExtractor"]
-
-
 class TextExtractor:
     readers_map: ClassVar[dict[SupportedReaderExtensionsEnum, AbstractFileReader]] = {
         SupportedReaderExtensionsEnum.TXT: TxtReader(),

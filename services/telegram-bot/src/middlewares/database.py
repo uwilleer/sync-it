@@ -6,9 +6,6 @@ from aiogram.types import TelegramObject
 from unitofwork import UnitOfWork
 
 
-__all__ = ["DatabaseMiddleware"]
-
-
 class DatabaseMiddleware(BaseMiddleware):
     async def __call__(
         self,

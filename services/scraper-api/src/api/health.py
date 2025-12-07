@@ -6,8 +6,6 @@ from common.logger import get_logger
 from fastapi import APIRouter, HTTPException
 
 
-__all__ = ["router"]
-
 router = APIRouter()
 
 

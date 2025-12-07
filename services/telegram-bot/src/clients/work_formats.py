@@ -5,9 +5,6 @@ from common.gateway.utils import build_service_url
 from common.shared.clients import BaseClient
 
 
-__all__ = ["work_format_client"]
-
-
 class _WorkFormatClient(BaseClient):
     url = build_service_url(ServiceEnum.VACANCY_PROCESSOR, "api/v1/work_formats")
 

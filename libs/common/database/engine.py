@@ -3,9 +3,6 @@ from common.database.logging import setup_alchemy_logging
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 
-__all__ = ["async_session_factory"]
-
-
 setup_alchemy_logging()
 
 

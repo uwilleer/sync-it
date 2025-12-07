@@ -4,9 +4,6 @@ from httpx import URL
 from pydantic import HttpUrl
 
 
-__all__ = ["build_service_url"]
-
-
 def build_service_url(service: ServiceEnum, path: str) -> URL:
     path = path.strip("/")
 

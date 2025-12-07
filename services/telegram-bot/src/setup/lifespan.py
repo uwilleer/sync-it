@@ -4,12 +4,6 @@ from handlers import register_handler_routers
 from middlewares import register_middlewares
 
 
-__all__ = [
-    "on_shutdown",
-    "on_startup",
-]
-
-
 async def on_startup() -> None:
     register_handler_routers(dp)
     register_middlewares(dp)

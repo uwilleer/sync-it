@@ -5,9 +5,6 @@ from fastapi import Request, Response
 from pydantic import HttpUrl
 
 
-__all__ = ["proxy_client"]
-
-
 class _ProxyClient(BaseClient):
     def configure_client(self) -> None:
         super().configure_client()
