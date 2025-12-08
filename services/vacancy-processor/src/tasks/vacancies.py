@@ -1,8 +1,8 @@
 from datetime import timedelta
 
+from asgiref.sync import async_to_sync
 from celery_app import app
 from common.redis.decorators.singleton import singleton
-from common.shared.utils import run_async
 from unitofwork import UnitOfWork
 from utils.extractor import VacancyExtractor
 from utils.processor import VacancyProcessor
@@ -16,7 +16,7 @@ __all__ = ["process_vacancies"]
 @app.task(name="process_vacancies")
 @singleton(timedelta(minutes=60))
 def process_vacancies() -> None:
-    run_async(async_process_vacancies())
+    async_to_sync(async_process_vacancies)()
 
 
 async def async_process_vacancies() -> None:
