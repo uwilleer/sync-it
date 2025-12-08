@@ -21,7 +21,7 @@ services:
   telegram-bot-worker:
     <<: *service-common
     container_name: telegram-bot-worker
-    command: [ "celery", "-A", "celery_app.app", "worker", "-n", "telegram_bot", "-l", "${LOG_LEVEL}" ]
+    command: [ "celery", "-A", "celery_app.app", "worker", "-n", "telegram_bot", "--pool", "threads", "-l", "${LOG_LEVEL}" ]
     healthcheck:
       test: [ "CMD-SHELL", "celery -A celery_app.app inspect ping -d celery@telegram_bot" ]
       <<: *healthcheck-common

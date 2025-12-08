@@ -1,4 +1,6 @@
 from celery_app.app import app
 
 
-__all__ = ["app"]
+__all__ = [
+    "app",
+]
