@@ -25,13 +25,13 @@ class HeadHunterClient(BaseClient):
         super().__init__(*args, **kwargs)
         self._update_headers()
 
-    async def get_newest_vacancies_ids(self, professions: Iterable[str]) -> list[int]:
+    async def get_newest_vacancies_ids(self, professions: Iterable[str]) -> set[int]:
         """Асинхронно получает id актуальных вакансиий."""
         logger.debug("Getting hh newest vacancies ids after %s")
         text_query = " OR ".join(professions)
 
         first_page_data = await self._fetch_page(page=0, text_query=text_query)
-        all_vacancy_ids = [vacancy.id for vacancy in first_page_data.items]
+        all_vacancy_ids = {vacancy.id for vacancy in first_page_data.items}
 
         total_pages = first_page_data.pages
         if total_pages > 1:
@@ -40,7 +40,7 @@ class HeadHunterClient(BaseClient):
             tasks = [self._fetch_page(page=p, text_query=text_query) for p in range(1, total_pages)]
             for coro in asyncio.as_completed(tasks):
                 page_data = await coro
-                all_vacancy_ids.extend(vacancy.id for vacancy in page_data.items)
+                all_vacancy_ids.update(vacancy.id for vacancy in page_data.items)
 
         logger.debug("Found %s hh new vacancies", len(all_vacancy_ids))
 
