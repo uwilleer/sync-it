@@ -1,3 +1,4 @@
+import asyncio
 from datetime import timedelta
 
 from asgiref.sync import async_to_sync
@@ -31,12 +32,11 @@ async def run_all_parsers() -> None:
 
     tasks = [
         parse_telegram_vacancies(),
-        parse_habr_vacancies(),
         parse_head_hunter_vacancies(),
+        parse_habr_vacancies(),
     ]
 
-    # Нахер gather и as_completed. Celery работает через жопу.
-    for task in tasks:
+    for task in asyncio.as_completed(tasks):
         try:
             await task
         except Exception as e:
