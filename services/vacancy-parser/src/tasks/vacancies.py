@@ -1,6 +1,6 @@
-import asyncio
 from datetime import timedelta
 
+from asgiref.sync import async_to_sync
 from celery_app import app
 from common.logger import get_logger
 from common.redis.decorators.singleton import singleton
@@ -22,7 +22,7 @@ logger = get_logger(__name__)
 @singleton(timedelta(minutes=60))
 def parse_vacancies() -> None:
     """Основная задача Celery для запуска всех парсеров."""
-    asyncio.run(run_all_parsers())
+    async_to_sync(run_all_parsers)()
 
 
 async def run_all_parsers() -> None:
@@ -31,11 +31,12 @@ async def run_all_parsers() -> None:
 
     tasks = [
         parse_telegram_vacancies(),
-        parse_head_hunter_vacancies(),
         parse_habr_vacancies(),
+        parse_head_hunter_vacancies(),
     ]
 
-    for task in asyncio.as_completed(tasks):
+    # Нахер gather и as_completed. Celery работает через жопу.
+    for task in tasks:
         try:
             await task
         except Exception as e:
