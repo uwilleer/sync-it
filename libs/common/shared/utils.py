@@ -1,13 +1,18 @@
 import asyncio
-from collections.abc import Awaitable
+from collections.abc import Coroutine
 from typing import Any
 
 
-def run_async(coro: Awaitable[Any]) -> Any:
+def run_async(coro: Coroutine[Any, Any, Any]) -> Any:
+    """Запускает асинхронную корутину в синхронном контексте."""
     try:
-        loop = asyncio.get_running_loop()
-    except RuntimeError:
-        # Нет текущего loop → создаём новый
+        asyncio.get_running_loop()
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-    return loop.run_until_complete(coro)
+        try:
+            return loop.run_until_complete(coro)
+        finally:
+            loop.close()
+            asyncio.set_event_loop(None)
+    except RuntimeError:
+        return asyncio.run(coro)
