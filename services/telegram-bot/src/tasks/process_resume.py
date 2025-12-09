@@ -1,8 +1,8 @@
+import asyncio
 from tempfile import NamedTemporaryFile
 from typing import TYPE_CHECKING, Any, cast
 
 from aiogram.enums import ParseMode
-from asgiref.sync import async_to_sync
 from celery_app import app
 from clients import skill_client
 from common.logger import get_logger
@@ -30,7 +30,7 @@ logger = get_logger(__name__)
 def process_resume(
     self: "Task[Any, Any]", user_id: int, chat_id: int, data: dict[str, Any], *, toggle: bool = False
 ) -> None:
-    async_to_sync(async_process_resume)(self, user_id, chat_id, data, toggle=toggle)
+    asyncio.run(async_process_resume(self, user_id, chat_id, data, toggle=toggle))
 
 
 async def async_process_resume(

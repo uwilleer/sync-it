@@ -2,7 +2,6 @@
 name = "shared-lib"
 dynamic = ["version"]
 dependencies = [
-    "asgiref>=3.11.0",
     "async-lru>=2.0.5",
     "beautifulsoup4>=4.14.3",
     "orjson>=3.11.3",

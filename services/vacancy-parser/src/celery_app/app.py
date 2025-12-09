@@ -5,9 +5,6 @@ from common.sentry.initialize import init_sentry
 from sentry_sdk.integrations.celery import CeleryIntegration
 
 
-__all__ = ["app"]
-
-
 init_sentry([CeleryIntegration()])
 
 app = Celery(
