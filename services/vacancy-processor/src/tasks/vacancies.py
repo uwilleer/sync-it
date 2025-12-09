@@ -37,5 +37,9 @@ async def async_process_vacancies() -> None:
             work_format_service,
             skill_service,
         )
-        await processor.start()
+
+        vacancies_to_process = await processor.start()
+        while vacancies_to_process != 0:
+            vacancies_to_process = await processor.start()
+
         await uow.commit()

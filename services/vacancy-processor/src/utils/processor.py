@@ -44,11 +44,16 @@ class VacancyProcessor:
         self.work_format_service = work_format_service
         self.skill_service = skill_service
 
-    async def start(self) -> None:
+    async def start(self) -> int:
         logger.debug("Start processing vacancies")
         vacancies = await vacancy_client.get_vacancies()
         existing_vacancies = await self.uow.vacancies.get_existing_hashes([v.hash for v in vacancies])
         vacancies_to_process = [v for v in vacancies if v.hash not in existing_vacancies]
+
+        if not vacancies_to_process:
+            logger.debug("No vacancies to process")
+            return 0
+
         logger.debug("Got %s new vacancies", len(vacancies_to_process))
 
         prompts = [make_vacancy_prompt(vacancy.data) for vacancy in vacancies_to_process]
@@ -81,6 +86,8 @@ class VacancyProcessor:
         if vacancy_hashes_to_mark_as_processed:
             await vacancy_client.mark_vacancies_as_processed(vacancy_hashes_to_mark_as_processed)
             logger.debug("Deleting %s vacancies", len(vacancy_hashes_to_mark_as_processed))
+
+        return len(vacancies_to_process)
 
     async def _process_prompt(
         self, prompt: str, vacancy: VacancySchema
