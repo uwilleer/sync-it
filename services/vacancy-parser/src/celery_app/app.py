@@ -7,6 +7,7 @@ from sentry_sdk.integrations.celery import CeleryIntegration
 
 init_sentry([CeleryIntegration()])
 
+
 app = Celery(
     "vacancy-parser",
     broker=str(redis_config.celery_broker_dsn),

@@ -18,10 +18,12 @@ services:
       test: [ "CMD", "wget", "-q", "--spider", "http://vacancy-processor:${ENV_SERVICE_INTERNAL_PORT}/health" ]
       <<: *healthcheck-common
 
+
+
   vacancy-processor-worker:
     <<: *service-common
     container_name: vacancy-processor-worker
-    command: [ "celery", "-A", "celery_app.app", "worker", "-n", "vacancy_processor", "--pool", "threads", "-l", "${LOG_LEVEL}" ]
+    command: [ "celery", "-A", "celery_app.app", "worker", "-n", "vacancy_processor", "--pool", "solo", "-l", "${LOG_LEVEL}" ]
     healthcheck:
       test: [ "CMD-SHELL", "celery -A celery_app.app inspect ping -d celery@vacancy_processor" ]
       <<: *healthcheck-common

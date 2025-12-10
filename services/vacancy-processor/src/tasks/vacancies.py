@@ -2,7 +2,7 @@ from datetime import timedelta
 
 from celery_app import app
 from common.redis.decorators.singleton import singleton
-from common.shared.utils import run_async
+from common.shared.utils import get_or_create_event_loop
 from unitofwork import UnitOfWork
 from utils.extractor import VacancyExtractor
 from utils.processor import VacancyProcessor
@@ -10,13 +10,11 @@ from utils.processor import VacancyProcessor
 from services import GradeService, ProfessionService, SkillService, VacancyService, WorkFormatService
 
 
-__all__ = ["process_vacancies"]
-
-
 @app.task(name="process_vacancies")
 @singleton(timedelta(minutes=60))
 def process_vacancies() -> None:
-    run_async(async_process_vacancies())
+    loop = get_or_create_event_loop()
+    loop.run_until_complete(async_process_vacancies())
 
 
 async def async_process_vacancies() -> None:
