@@ -9,6 +9,7 @@ from keyboard.inline.buttons import (
     EmptyDashedKeyboardButton,
     MainMenuInlineKeyboardButton,
     ProfessionInlineKeyboardButton,
+    VacanciesInlineKeyboardButton,
 )
 from schemas.user import UserWithPreferences
 
@@ -76,6 +77,8 @@ def options_keyboard[OptionsType: (GradeSchema, ProfessionSchema, WorkFormatSche
     builder.adjust(1)
 
     builder.row(BackToPreferencesInlineKeyboardButton())
+    builder.row(EmptyDashedKeyboardButton())
+    builder.row(VacanciesInlineKeyboardButton())
     builder.row(MainMenuInlineKeyboardButton())
 
     return builder.as_markup()
