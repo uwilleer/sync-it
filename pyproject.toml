@@ -45,12 +45,47 @@ exclude = [
 
 [tool.ruff]
 fix = true
-unsafe-fixes = true
 line-length = 120
 lint.preview = true
 lint.select = ["ALL"]
-# TODO: Убрать игнор документации классов/функций. Дать определение для каждого ignore
-lint.ignore = ["I", "D", "DOC", "TD", "FIX001", "FIX002", "ANN401", "CPY001", "COM812", "EM", "S101", "TRY003", "RUF001", "RUF002", "RUF003", "PLR0913", "PLR0917"]
+lint.ignore = [
+    "RUF001", # String contains ambiguous `с`
+    "RUF002", # Docstring contains ambiguous `с`
+    "RUF003", # Comment contains ambiguous `с`
+    "FIX001", # Line contains FIXME, consider resolving the issue
+    "FIX002", # Line contains TODO, consider resolving the issue
+    "TD001", # Invalid TODO tag: `FIXME`
+    "TD003", # Missing issue link for this TODO
+    "TD002", # Missing author in TODO
+    "TD004", # Missing colon in TODO
+    "TD005", # Missing issue description after `TODO`
+    "D103", # Missing docstring in public function
+    "CPY001", # Missing copyright notice at top of file
+    "D100", # Missing docstring in public module
+    "D101", # Missing docstring in public class
+    "D102", # Missing docstring in public method
+    "D107", # Missing docstring in `__init__`
+    "D203", # Incorrect blank line before class
+    "D205", # 1 blank line required between summary line and description
+    "D213", # Multi line summary second line
+    "D400", # First line should end with a period
+    "D415", # First line should end with a period, question mark, or exclamation poin
+    "DOC402", # `yield` is not documented in docstring
+    "PLR0917", # Too many positional arguments
+    "PLR0913", # Too many arguments in function definition
+    "DOC201", # `return` is not documented in docstring
+    "DOC501", # Raised exception `ValueError` missing from docstring
+    "D104", # Missing docstring in public package
+    "D105", # Missing docstring in magic method
+    "ANN401", # Dynamically typed expressions (typing.Any) are disallowed in `**kwargs`
+    "EM102", # Exception must not use an f-string literal, assign to variable first
+    "TRY003", # Avoid specifying long messages outside the exception class
+    "EM101", # Exception must not use a string literal, assign to variable first
+    "S101", # Use of `assert` detected
+    "I", # Besause using isort
+    "COM812", # Trailing comma
+
+]
 extend-exclude = ["**/database/migrations/versions"]
 
 [tool.mypy]

@@ -47,8 +47,7 @@ class BaseVacancyRepository[VacancyType: Vacancy](BaseRepository):
         return result.scalar_one_or_none()
 
     async def add_bulk(self, vacancies: Sequence[VacancyType]) -> None:
-        """
-        Добавляет сразу несколько вакансий.
+        """Добавляет сразу несколько вакансий.
         Возвращает количество реально вставленных строк.
         """
         self._session.add_all(vacancies)
@@ -64,8 +63,7 @@ class BaseVacancyRepository[VacancyType: Vacancy](BaseRepository):
         return updated is not None
 
     async def mark_as_processed_bulk(self, vacancy_hashes: list[str]) -> None:
-        """
-        Помечает сразу несколько вакансий как обработанные.
+        """Помечает сразу несколько вакансий как обработанные.
         Возвращает количество обновленных строк.
         """
         if not vacancy_hashes:

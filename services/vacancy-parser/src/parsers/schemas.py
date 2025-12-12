@@ -2,8 +2,7 @@ from pydantic import HttpUrl
 
 
 class TelegramChannelUrl(HttpUrl):
-    """
-    Custom URL for Telegram channel:
+    """Custom URL for Telegram channel:
     Accepts 'username' or 'username/topic_id' as input.
     Internally stored as: https://t.me/s/<username>/<topic_id?>
     """

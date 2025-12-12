@@ -22,7 +22,6 @@ def make_linked(
     text: str, *, telegram_username: str | None = None, external_link: str | None = None, use_quotes: bool = True
 ) -> str:
     """Возвращает жирный текст, по возможности обёрнутый в ссылку."""
-
     bold_text = f"<b>{text}</b>"
 
     if telegram_username:
@@ -50,8 +49,7 @@ async def safe_edit_message(
     entity: CallbackQuery | Message,
     **kwargs: Unpack[EditMessageKwargs],
 ) -> None:
-    """
-    Безопасно редактирует сообщение.
+    """Безопасно редактирует сообщение.
     Если редактирование невозможно - отправляет новое.
     """
     message = await get_message(entity)

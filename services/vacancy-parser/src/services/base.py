@@ -56,8 +56,7 @@ class BaseVacancyService[
         await self.commit()
 
     async def add_vacancies_bulk(self, vacancies: list[VacancyCreateType]) -> None:
-        """
-        Добавляет сразу несколько вакансий пачкой.
+        """Добавляет сразу несколько вакансий пачкой.
         Возвращает количество реально добавленных вакансий.
         """
         if not vacancies:

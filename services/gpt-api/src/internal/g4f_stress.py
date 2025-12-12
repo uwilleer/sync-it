@@ -51,8 +51,7 @@ def percentile(sorted_list: list[float], p: float) -> float:
 
 
 async def call_api_once(prompt: str, provider: Any, timeout: float) -> tuple[bool, float | None, str | None]:
-    """
-    Выполнить один запрос к API.
+    """Выполнить один запрос к API.
     Возвращает (success, latency_sec или None, error_message или None).
     """
     start = time.perf_counter()
@@ -77,8 +76,7 @@ async def call_api_once(prompt: str, provider: Any, timeout: float) -> tuple[boo
 async def stress_run(
     concurrency: int, total_requests: int, timeout_per_req: float, provider: Any, prompt: str
 ) -> dict[str, Any]:
-    """
-    Один прогон: посылает total_requests задач с semaphore=concurrency.
+    """Один прогон: посылает total_requests задач с semaphore=concurrency.
     Возвращает словарь с ключевыми метриками:
       - successes, errors, duration, throughput, mean_latency, median_latency, p95_latency, std_latency
     """
@@ -128,10 +126,9 @@ async def stress_run(
 async def run_trials(
     concurrency: int, trials: int, total_requests: int, timeout_per_req: float, provider: Any, prompt: str
 ) -> dict[str, Any]:
-    """
-    Несколько прогонов для одной concurrency. Возвращает агрегированную статистику:
-      - mean_throughput, std_throughput, ci95_throughput,
-      - mean_error_rate, mean_p95_latency (median of p95), runs (список raw-слов)
+    """Несколько прогонов для одной concurrency. Возвращает агрегированную статистику:
+    - mean_throughput, std_throughput, ci95_throughput,
+    - mean_error_rate, mean_p95_latency (median of p95), runs (список raw-слов)
     """
     runs = []
     for i in range(trials):
@@ -175,8 +172,7 @@ async def find_optimal(
     max_p95_latency: float = MAX_P95_LATENCY,
     safety_factor: float = SAFETY_FACTOR,
 ) -> dict[str, Any]:
-    """
-    Основная логика перебора. Возвращает dict с рекомендацией и таблицей результатов.
+    """Основная логика перебора. Возвращает dict с рекомендацией и таблицей результатов.
     mode:
       - "throughput" — выбираем конфигурацию с максимальным mean_throughput
       - "latency" — выбираем конфигурацию с минимальным mean_latency при low error_rate

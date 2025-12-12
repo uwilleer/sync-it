@@ -46,8 +46,7 @@ class UserPreferenceService(BaseUOWService[UnitOfWork]):
         return await self._uow.user_preferences.add_bulk(new_preferences)
 
     async def toggle_preference(self, user_preference: UserPreferenceCreate) -> bool:
-        """
-        Переключает состояние предпочтения для пользователя.
+        """Переключает состояние предпочтения для пользователя.
 
         Если предпочтение было - удаляет его.
         Если не было - добавляет.

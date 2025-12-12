@@ -29,13 +29,13 @@ def generate_hash(value: str | int, algorithm: str = "md5") -> str:
 
 def generate_vacancy_hash(value: str | int, source: SourceEnum) -> str:
     """Генерирует хеш на основе переданного значения и источника,
-    чтобы избежать возможный конфликт дублирования значений."""
+    чтобы избежать возможный конфликт дублирования значений.
+    """
     return generate_hash(f"{source.value}_{value}")
 
 
 def truncate_by_bytes(s: str, max_bytes: int) -> str:
-    """
-    Обрезает строку, чтобы ее UTF-8 представление не превышало max_bytes.
+    """Обрезает строку, чтобы ее UTF-8 представление не превышало max_bytes.
 
     :param s: Исходная строка.
     :param max_bytes: Максимальное количество байт.
@@ -51,8 +51,7 @@ def truncate_by_bytes(s: str, max_bytes: int) -> str:
 
 
 def generate_fingerprint(text: str) -> str:
-    """
-    Генерирует fingerprint (отпечаток) на основе переданного текста.
+    """Генерирует fingerprint (отпечаток) на основе переданного текста.
     Fingerprint используется для поиска одинаковых вакансий на уровне БД, используя расширение pg_trgm.
 
     Пример:

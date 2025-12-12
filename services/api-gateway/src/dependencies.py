@@ -12,8 +12,7 @@ logger = get_logger(__name__)
 
 
 async def validate_api_key(request: Request, x_api_key: Annotated[str | None, Header()] = None) -> None:  # noqa: RUF029
-    """
-    Проверяет доступ к API Gateway.
+    """Проверяет доступ к API Gateway.
 
     - Пропускает запросы в dev-mode.
     - Пропускает запросы на вебхук Telegram без проверки ключа.

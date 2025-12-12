@@ -3,8 +3,7 @@ from typing import Self
 
 
 class CommandEnum(StrEnum):
-    """
-    Класс для перечисления команд бота.
+    """Класс для перечисления команд бота.
 
     Добавляет к StrEnum поле description для хранения описания команд.
     """

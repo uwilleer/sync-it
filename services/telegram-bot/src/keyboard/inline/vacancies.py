@@ -9,7 +9,6 @@ from keyboard.inline.buttons import MainMenuInlineKeyboardButton
 
 def _build_skill_rows(skills: list[SkillWithMatchSchema], vacancy_id: int) -> list[list[InlineKeyboardButton]]:
     """Формирует кнопки со скиллами вакансии для переключения предпочтений."""
-
     rows: list[list[InlineKeyboardButton]] = []
     current_row: list[InlineKeyboardButton] = []
     max_buttons_in_row = 3  # Максимальное количество Inline кнопок в ряду

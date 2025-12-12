@@ -2,8 +2,7 @@ from datetime import UTC, datetime
 
 
 def _pluralize_ru(number: int, one: str, few: str, many: str) -> str:
-    """
-    Вспомогательная функция для плюрализации русских слов.
+    """Вспомогательная функция для плюрализации русских слов.
 
     number: Число для определения формы слова.
     one: Форма для единственного числа (1, 21, 31...).
@@ -20,8 +19,7 @@ def _pluralize_ru(number: int, one: str, few: str, many: str) -> str:
 
 # FIXME Накидал через gpt. Хорошее место для добавления тестов
 def format_publication_time(vacancy_publication_date: datetime) -> str:  # noqa: PLR0911 Too many return statements
-    """
-    Форматирует время публикации вакансии в относительном виде.
+    """Форматирует время публикации вакансии в относительном виде.
 
     Примеры вывода:
     - только что (если в течении 5 минут)

@@ -35,9 +35,7 @@ def get_logger(name: str) -> logging.Logger:
 
 
 def _configure_base_logger() -> None:
-    """
-    Изменяет конфигурацию базового логгера для всех модулей, использующих logging
-    """
+    """Изменяет конфигурацию базового логгера для всех модулей, использующих logging."""
     global _is_logging_configured  # noqa: PLW0602
 
     if _is_logging_configured:
