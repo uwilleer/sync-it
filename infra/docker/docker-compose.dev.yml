@@ -114,11 +114,3 @@ services:
       dockerfile: infra/docker/telegram-bot/Dockerfile
       <<: *build-common
     <<: *service-common
-
-  flower:
-    extends:
-      service: flower
-      file: flower/docker-compose.yml
-    depends_on:
-      redis:
-        condition: service_healthy

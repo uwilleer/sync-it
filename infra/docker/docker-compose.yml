@@ -171,4 +171,3 @@ networks:
 volumes:
   postgres-data:
   redis-data:
-  flower-data:
