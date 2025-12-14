@@ -535,7 +535,7 @@ dependencies = [
 requires-dist = [
     { name = "environment-lib", editable = "libs/common/environment" },
     { name = "fastapi", specifier = ">=0.115.12" },
-    { name = "g4f", specifier = ">=0.6.4.3" },
+    { name = "g4f", specifier = ">=6.7.0" },
     { name = "logger-lib", editable = "libs/common/logger" },
     { name = "sentry-lib", editable = "libs/common/sentry" },
     { name = "syncit-core", editable = "." },
