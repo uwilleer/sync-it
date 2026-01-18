@@ -54,7 +54,7 @@ class _VacancyClient(BaseClient):
 
         return model_response.result
 
-    @cache(cache_ttl=60 * 30, serializer=PickleSerializer())
+    @cache(cache_ttl=60 * 15, serializer=PickleSerializer())
     async def get_summary_vacancies(self) -> VacanciesSummarySchema:
         response = await self.client.get(f"{self.url}/summary")
         response.raise_for_status()

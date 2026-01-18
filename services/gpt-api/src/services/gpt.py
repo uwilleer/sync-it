@@ -11,10 +11,10 @@ logger = get_logger(__name__)
 MAX_RETRIES = 3
 RETRY_DELAY = 3
 
-base_url = f"https://api.cloudflare.com/client/v4/accounts/{service_config.cloudflare_account_id}/ai/v1"
+base_url = "https://api.groq.com/openai/v1"
 
 client = AsyncOpenAI(
-    api_key=service_config.cloudflare_api_token,
+    api_key=service_config.groq_api_key,
     base_url=base_url,
 )
 
@@ -24,7 +24,7 @@ async def get_gpt_response(prompt: str) -> str | None:
     for attempt in range(1, MAX_RETRIES + 1):
         try:
             response = await client.chat.completions.create(
-                model=service_config.cloudflare_model,
+                model=service_config.groq_model,
                 messages=[{"role": "user", "content": prompt}],
             )
             return response.choices[0].message.content

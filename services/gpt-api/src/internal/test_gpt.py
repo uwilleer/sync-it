@@ -19,10 +19,9 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 
 async def main() -> None:
-    """Тестирует подключение к GPT сервису через Cloudflare Workers AI."""
-    print("🔍 Testing GPT Service (Cloudflare Workers AI)...")
-    print(f"Model: {service_config.cloudflare_model}")
-    print(f"Account ID: {service_config.cloudflare_account_id[:8]}...")
+    """Тестирует подключение к GPT сервису через Groq API."""
+    print("🔍 Testing GPT Service (Groq API)...")
+    print(f"Model: {service_config.groq_model}")
     print()
 
     # Тест 1: Простой запрос
