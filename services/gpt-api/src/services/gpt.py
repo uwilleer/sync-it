@@ -19,7 +19,7 @@ client = AsyncOpenAI(
 )
 
 
-@limit_requests(128)
+@limit_requests(16)
 async def get_gpt_response(prompt: str) -> str | None:
     for attempt in range(1, MAX_RETRIES + 1):
         try:
