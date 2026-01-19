@@ -1,5 +1,5 @@
 from common.database.config import db_config
-from common.database.logging import setup_alchemy_logging
+from common.database.logger import setup_alchemy_logging
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 

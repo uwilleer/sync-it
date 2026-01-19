@@ -52,6 +52,7 @@ lint.ignore = [
     "RUF001", # String contains ambiguous `с`
     "RUF002", # Docstring contains ambiguous `с`
     "RUF003", # Comment contains ambiguous `с`
+    "RUF067", # `__init__` module should only contain docstrings and re-exports
     "FIX001", # Line contains FIXME, consider resolving the issue
     "FIX002", # Line contains TODO, consider resolving the issue
     "TD001", # Invalid TODO tag: `FIXME`
