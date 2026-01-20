@@ -4,7 +4,7 @@ from typing import cast
 from aiohttp import ClientResponseError
 from common.logger import get_logger
 from common.shared.decorators.concurency import limit_requests
-from g4f.Provider import Startnest  # type: ignore[import-untyped]
+from g4f.Provider import CohereForAI_C4AI_Command  # type: ignore[import-untyped]
 from g4f.client import AsyncClient  # type: ignore[import-untyped]
 from g4f.typing import Message  # type: ignore[import-untyped]
 
@@ -24,8 +24,7 @@ async def get_gpt_response(prompt: str) -> str | None:
     for attempt in range(1, MAX_RETRIES + 1):
         try:
             response = await client.chat.completions.create(
-                model="gpt-4o-mini",
-                provider=Startnest,
+                provider=CohereForAI_C4AI_Command,
                 messages=[message],
             )
             return cast("str", response.choices[0].message.content)
