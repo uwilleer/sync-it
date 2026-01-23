@@ -522,6 +522,7 @@ source = { editable = "libs/common/gateway" }
 name = "gpt-api"
 source = { virtual = "services/gpt-api" }
 dependencies = [
+    { name = "aiohttp" },
     { name = "environment-lib" },
     { name = "fastapi" },
     { name = "g4f" },
@@ -533,6 +534,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+    { name = "aiohttp", specifier = ">=3.13.2" },
     { name = "environment-lib", editable = "libs/common/environment" },
     { name = "fastapi", specifier = ">=0.115.12" },
     { name = "g4f", specifier = ">=6.7.0" },
