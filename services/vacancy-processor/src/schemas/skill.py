@@ -1,22 +1,25 @@
+from typing import Any
+
+from common.shared.schemas.model import ModelFields
+from database.models import Skill
 from database.models.enums import SkillEnum
 from pydantic import BaseModel, ConfigDict
 
 
-__all__ = [
-    "SkillCreate",
-    "SkillRead",
-]
+class SkillFields(ModelFields):
+    __model__ = Skill
 
-
-class BaseSkill(BaseModel):
-    name: SkillEnum
-
-
-class SkillCreate(BaseSkill):
-    pass
-
-
-class SkillRead(BaseSkill):
     id: int
+    name: SkillEnum
+    vacancies: list[Any]
+
+
+class SkillCreate(BaseModel):
+    name: SkillEnum = SkillFields.name
+
+
+class SkillRead(BaseModel):
+    id: int = SkillFields.id
+    name: SkillEnum = SkillFields.name
 
     model_config = ConfigDict(from_attributes=True)

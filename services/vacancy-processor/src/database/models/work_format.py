@@ -10,9 +10,6 @@ if TYPE_CHECKING:
     from database.models import Vacancy
 
 
-__all__ = ["WorkFormat"]
-
-
 class WorkFormat(Base):
     __tablename__ = "work_formats"
 

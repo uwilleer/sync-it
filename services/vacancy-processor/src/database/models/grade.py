@@ -10,9 +10,6 @@ if TYPE_CHECKING:
     from database.models import Vacancy
 
 
-__all__ = ["Grade"]
-
-
 class Grade(Base):
     __tablename__ = "grades"
 

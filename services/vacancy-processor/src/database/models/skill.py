@@ -14,11 +14,16 @@ __all__ = ["Skill"]
 
 
 class Skill(Base):
+    """Навык"""
+
     __tablename__ = "skills"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(String(32), unique=True)
+    id: Mapped[int] = mapped_column(primary_key=True, doc="ID навыка")
+    name: Mapped[str] = mapped_column(String(32), unique=True, doc="Название навыка")
 
     vacancies: Mapped[list["Vacancy"]] = relationship(
-        secondary=vacancy_skills_table, back_populates="skills", passive_deletes=True
+        secondary=vacancy_skills_table,
+        back_populates="skills",
+        passive_deletes=True,
+        doc="Список вакансий, связанных с данным навыком",
     )

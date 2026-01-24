@@ -24,7 +24,7 @@ class WorkFormatRepository(BaseRepository):
         stmt = select(WorkFormat)
         result = await self._session.execute(stmt)
 
-        return result.scalars().all()
+        return result.scalars().unique().all()
 
     async def get_by_ids(self, ids: Sequence[int]) -> Sequence[WorkFormat]:
         """Возвращает форматы работы по списку ID."""

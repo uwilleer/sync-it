@@ -15,30 +15,38 @@ __all__ = ["Vacancy"]
 
 
 class Vacancy(Base):
+    """Вакансия"""
+
     __tablename__ = "vacancies"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-    source: Mapped[str] = mapped_column(String(16), index=True)
-    hash: Mapped[str] = mapped_column(String(32), unique=True)
-    link: Mapped[str] = mapped_column(String(256))
+    id: Mapped[int] = mapped_column(primary_key=True, doc="ID вакансии")
+    source: Mapped[str] = mapped_column(String(16), index=True, doc="Источник вакансии")
+    hash: Mapped[str] = mapped_column(String(32), unique=True, doc="Хеш вакансии")
+    link: Mapped[str] = mapped_column(String(256), doc="Ссылка на вакансию")
 
-    company_name: Mapped[str | None] = mapped_column(String(128))
-    salary: Mapped[str | None] = mapped_column(String(96))
-    workplace_description: Mapped[str | None] = mapped_column(Text)
-    responsibilities: Mapped[str | None] = mapped_column(Text)
-    requirements: Mapped[str | None] = mapped_column(Text)
-    conditions: Mapped[str | None] = mapped_column(Text)
+    company_name: Mapped[str | None] = mapped_column(String(128), doc="Название компании")
+    salary: Mapped[str | None] = mapped_column(String(96), doc="Зарплата")
+    workplace_description: Mapped[str | None] = mapped_column(Text, doc="Описание места работы")
+    responsibilities: Mapped[str | None] = mapped_column(Text, doc="Обязанности")
+    requirements: Mapped[str | None] = mapped_column(Text, doc="Требования")
+    conditions: Mapped[str | None] = mapped_column(Text, doc="Условия работы")
 
-    published_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
+    published_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True, doc="Дата публикации вакансии")
 
-    profession_id: Mapped[int | None] = mapped_column(ForeignKey("professions.id", ondelete="CASCADE"))
-    profession: Mapped["Profession"] = relationship(back_populates="vacancies")
-
-    grades: Mapped[list["Grade"]] = relationship(secondary=vacancy_grades_table, back_populates="vacancies")
-    work_formats: Mapped[list["WorkFormat"]] = relationship(
-        secondary=vacancy_work_formats_table, back_populates="vacancies"
+    profession_id: Mapped[int | None] = mapped_column(
+        ForeignKey("professions.id", ondelete="CASCADE"), doc="ID профессии"
     )
-    skills: Mapped[list["Skill"]] = relationship(secondary=vacancy_skills_table, back_populates="vacancies")
+    profession: Mapped["Profession"] = relationship(back_populates="vacancies", doc="Профессия")
+
+    grades: Mapped[list["Grade"]] = relationship(
+        secondary=vacancy_grades_table, back_populates="vacancies", doc="Уровни вакансии"
+    )
+    work_formats: Mapped[list["WorkFormat"]] = relationship(
+        secondary=vacancy_work_formats_table, back_populates="vacancies", doc="Форматы работы"
+    )
+    skills: Mapped[list["Skill"]] = relationship(
+        secondary=vacancy_skills_table, back_populates="vacancies", doc="Навыки, требуемые для вакансии"
+    )
 
     __table_args__ = (
         Index("idx_vacancy_published_at_id", "published_at", "id"),

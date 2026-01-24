@@ -1,9 +1,11 @@
+# isort: off
 from database.models.base import Base
+from database.models.work_format import WorkFormat
 from database.models.grade import Grade
 from database.models.profession import Profession
 from database.models.skill import Skill
 from database.models.vacancy import Vacancy
-from database.models.work_format import WorkFormat
+# isort: on
 
 
 __all__ = [

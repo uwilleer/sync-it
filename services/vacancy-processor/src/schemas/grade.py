@@ -1,19 +1,25 @@
+from typing import Any
+
+from common.shared.schemas.model import ModelFields
+from database.models import Grade
 from database.models.enums import GradeEnum
 from pydantic import BaseModel, ConfigDict
 
 
-__all__ = ["GradeCreate", "GradeRead"]
+class GradeFields(ModelFields):
+    __model__ = Grade
 
-
-class BaseGrade(BaseModel):
-    name: GradeEnum
-
-
-class GradeCreate(BaseGrade):
-    pass
-
-
-class GradeRead(BaseGrade):
     id: int
+    name: GradeEnum
+    vacancies: list[Any]
+
+
+class GradeCreate(BaseModel):
+    name: GradeEnum = GradeFields.name
+
+
+class GradeRead(BaseModel):
+    id: int = GradeFields.id
+    name: GradeEnum = GradeFields.name
 
     model_config = ConfigDict(from_attributes=True)
