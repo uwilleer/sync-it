@@ -2,7 +2,7 @@ from datetime import datetime
 from enum import StrEnum
 
 from common.logger import get_logger
-from common.shared.schemas import HttpsUrl
+from common.shared.schemas.http import HttpsUrl
 from pydantic import BaseModel
 
 

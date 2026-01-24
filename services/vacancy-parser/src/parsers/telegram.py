@@ -2,7 +2,7 @@ from collections.abc import Iterable
 
 from clients import telegram_client
 from common.logger import get_logger
-from common.shared.schemas import HttpsUrl
+from common.shared.schemas.http import HttpsUrl
 from parsers.base import BaseParser
 from parsers.schemas import TelegramChannelUrl
 from schemas.vacancies import TelegramVacancyCreate

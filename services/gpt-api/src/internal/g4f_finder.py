@@ -2,8 +2,8 @@ import asyncio
 import logging
 from typing import Any
 
-from g4f import Provider
-from g4f.client import AsyncClient
+from g4f import Provider  # type: ignore[import-untyped]
+from g4f.client import AsyncClient  # type: ignore[import-untyped]
 
 
 logging.basicConfig(

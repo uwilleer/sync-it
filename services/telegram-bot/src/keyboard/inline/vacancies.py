@@ -3,7 +3,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from callbacks.noop import NoopActionEnum, NoopCallback
 from callbacks.vacancy import VacancyActionEnum, VacancyCallback
 from clients.schemas import SkillWithMatchSchema
-from common.shared.schemas import HttpsUrl
+from common.shared.schemas.http import HttpsUrl
 from keyboard.inline.buttons import MainMenuInlineKeyboardButton
 
 

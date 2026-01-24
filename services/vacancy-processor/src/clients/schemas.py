@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from common.shared.schemas import HttpsUrl
+from common.shared.schemas.http import HttpsUrl
 from database.models.enums import SourceEnum
 from pydantic import BaseModel, Field
 

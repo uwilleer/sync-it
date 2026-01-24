@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 from clients import habr_client
 from common.logger import get_logger
-from common.shared.schemas import HttpsUrl
+from common.shared.schemas.http import HttpsUrl
 from database.models.enums import SourceEnum
 from parsers.base import BaseParser
 from schemas.vacancies import HabrVacancyCreate

@@ -1,5 +1,5 @@
 from common.sentry.enums import ProfileLifecycleEnum
-from common.shared.schemas import HttpsUrl
+from common.shared.schemas.http import HttpsUrl
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 

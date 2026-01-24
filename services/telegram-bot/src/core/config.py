@@ -1,4 +1,4 @@
-from common.shared.schemas import HttpsUrl
+from common.shared.schemas.http import HttpsUrl
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
