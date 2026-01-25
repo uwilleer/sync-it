@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from database.models import Base
 from database.models.tables import vacancy_grades_table, vacancy_skills_table, vacancy_work_formats_table
@@ -9,9 +9,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 if TYPE_CHECKING:
     from database.models import Grade, Profession, Skill, WorkFormat
-
-
-__all__ = ["Vacancy"]
 
 
 class Vacancy(Base):
@@ -36,7 +33,7 @@ class Vacancy(Base):
     profession_id: Mapped[int | None] = mapped_column(
         ForeignKey("professions.id", ondelete="CASCADE"), doc="ID профессии"
     )
-    profession: Mapped["Profession"] = relationship(back_populates="vacancies", doc="Профессия")
+    profession: Mapped[Optional["Profession"]] = relationship(back_populates="vacancies", doc="Профессия")
 
     grades: Mapped[list["Grade"]] = relationship(
         secondary=vacancy_grades_table, back_populates="vacancies", doc="Уровни вакансии"

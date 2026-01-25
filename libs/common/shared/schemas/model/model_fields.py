@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, get_args, get_origin
 
 from common.shared.schemas.model.utils import col
 from pydantic import Field
@@ -7,8 +7,29 @@ from sqlalchemy.inspection import inspect
 from sqlalchemy.orm import ColumnProperty, RelationshipProperty
 
 
+def _is_optional_type(annotation: Any) -> bool:
+    """Проверяет, является ли тип аннотации Optional (Union[T, None] или T | None)."""
+    if annotation is None or annotation is type(None):
+        return True
+
+    origin = get_origin(annotation)
+    if origin is None:
+        return False
+
+    # Проверяем Union[T, None] или T | None
+    if origin is type(None) or origin is type(Any):
+        return True
+
+    args = get_args(annotation)
+    if not args:
+        return False
+
+    # Проверяем Union[...] или | синтаксис
+    return type(None) in args or Any in args
+
+
 class ModelFieldsMeta(type):
-    def __new__(
+    def __new__(  # noqa: PLR0914 C901
         mcls: Any,
         name: Any,
         bases: Any,
@@ -24,7 +45,13 @@ class ModelFieldsMeta(type):
         if model is None:
             raise AssertionError(f"{name}.__model__ is not defined")
 
-        declared_annotations = namespace.get("__annotations__", {})  # FIXME Проверить всегда ли default
+        # Объединяем аннотации из namespace и базовых классов
+        declared_annotations = dict(namespace.get("__annotations__", {}))
+        # Добавляем аннотации из базовых классов, если они есть
+        for base in bases:
+            base_annotations = getattr(base, "__annotations__", {})
+            declared_annotations.update(base_annotations)
+
         declared_attrs = set(namespace.keys())
         mapper = inspect(model)
         columns = {attr.key: attr for attr in mapper.attrs if isinstance(attr, ColumnProperty)}
@@ -33,6 +60,31 @@ class ModelFieldsMeta(type):
         for field_name in (*columns, *relationships):
             if field_name not in declared_annotations and field_name not in declared_attrs:
                 raise AttributeError(f"{cls.__name__}.{field_name} is not defined")
+
+            # Проверка соответствия типов для колонок
+            if field_name in columns:
+                model_attr = getattr(model, field_name)
+                column = model_attr.property.columns[0]
+                is_nullable = column.nullable
+
+                # Получаем аннотацию типа из ModelFields
+                field_annotation = declared_annotations.get(field_name)
+                if field_annotation is not None:
+                    annotation_allows_none = _is_optional_type(field_annotation)
+
+                    # Проверяем соответствие nullable статуса колонки и типа аннотации
+                    if is_nullable and not annotation_allows_none:
+                        raise TypeError(
+                            f"{cls.__name__}.{field_name}: SQLAlchemy column is nullable, "
+                            f"but type annotation '{field_annotation.__name__}' does not allow None. "
+                            f"Use '{field_annotation.__name__} | None' or 'Optional[{field_annotation.__name__}]'"
+                        )
+                    if not is_nullable and annotation_allows_none:
+                        raise TypeError(
+                            f"{cls.__name__}.{field_name}: SQLAlchemy column is not nullable, "
+                            f"but type annotation '{field_annotation}' allows None. "
+                            f"Remove 'None' or 'Optional' from the type annotation"
+                        )
 
             model_attr = getattr(model, field_name)
             default_data = col(model_attr)
