@@ -9,8 +9,8 @@ __all__ = ["TelegramVacancy"]
 class TelegramVacancy(Vacancy):
     __tablename__ = "telegram_vacancies"
 
-    id: Mapped[int] = mapped_column(ForeignKey("vacancies.id", ondelete="CASCADE"), primary_key=True)
-    channel_username: Mapped[str] = mapped_column(String(32))
+    id: Mapped[int] = mapped_column(ForeignKey("vacancies.id", ondelete="CASCADE"), primary_key=True, doc="ID вакансии")
+    channel_username: Mapped[str] = mapped_column(String(32), doc="Имя пользователя Telegram канала")
 
     __mapper_args__ = {  # noqa: RUF012
         "polymorphic_identity": "telegram",

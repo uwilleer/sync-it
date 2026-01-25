@@ -1,22 +1,26 @@
+from datetime import datetime
+
+from common.shared.schemas.http import HttpsUrl
+from database.models import HeadHunterVacancy
 from database.models.enums import SourceEnum
-from pydantic import Field, computed_field
-from schemas.vacancies import BaseVacancy, BaseVacancyCreate, BaseVacancyRead
+from pydantic import ConfigDict, Field, computed_field
+from schemas.vacancy import BaseVacancyCreate, BaseVacancyRead
+from schemas.vacancy.vacancy import VacancyFields
 from utils import generate_vacancy_hash
 
 
-__all__ = [
-    "HeadHunterVacancyCreate",
-    "HeadHunterVacancyRead",
-]
+class HeadHunterVacancyFields(VacancyFields):
+    __model__ = HeadHunterVacancy
 
-
-class BaseHeadHunterVacancy(BaseVacancy):
-    source: SourceEnum = SourceEnum.HEAD_HUNTER
     vacancy_id: int
 
 
-class HeadHunterVacancyCreate(BaseHeadHunterVacancy, BaseVacancyCreate):
-    # Exclude поля нужны для расчета data. Для модели они лишние
+class HeadHunterVacancyCreate(BaseVacancyCreate):
+    fingerprint: str = HeadHunterVacancyFields.fingerprint
+    link: HttpsUrl = HeadHunterVacancyFields.link
+    published_at: datetime = HeadHunterVacancyFields.published_at
+    vacancy_id: int = HeadHunterVacancyFields.vacancy_id
+
     employer: str = Field(exclude=True)
     name: str = Field(exclude=True)
     description: str = Field(exclude=True)
@@ -30,6 +34,11 @@ class HeadHunterVacancyCreate(BaseHeadHunterVacancy, BaseVacancyCreate):
     @property
     def hash(self) -> str:
         return generate_vacancy_hash(self.vacancy_id, SourceEnum.HEAD_HUNTER)
+
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def source(self) -> SourceEnum:
+        return SourceEnum.HEAD_HUNTER
 
     @computed_field  # type: ignore[prop-decorator]
     @property
@@ -52,5 +61,14 @@ class HeadHunterVacancyCreate(BaseHeadHunterVacancy, BaseVacancyCreate):
         return "\n".join(text_parts)
 
 
-class HeadHunterVacancyRead(BaseHeadHunterVacancy, BaseVacancyRead):
-    data: str
+class HeadHunterVacancyRead(BaseVacancyRead):
+    id: int = HeadHunterVacancyFields.id
+    hash: str = HeadHunterVacancyFields.hash
+    data: str = HeadHunterVacancyFields.data
+    source: SourceEnum = HeadHunterVacancyFields.source
+    fingerprint: str = HeadHunterVacancyFields.fingerprint
+    link: HttpsUrl = HeadHunterVacancyFields.link
+    published_at: datetime = HeadHunterVacancyFields.published_at
+    vacancy_id: int = HeadHunterVacancyFields.vacancy_id
+
+    model_config = ConfigDict(from_attributes=True)

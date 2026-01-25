@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict, Field
-from schemas.vacancies.vacancy import VacancyRead
+from schemas.vacancy.vacancy import VacancyRead
 
 
 __all__ = [

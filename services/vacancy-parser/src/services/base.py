@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any
 
 from common.logger import get_logger
 from common.shared.services import BaseUOWService
-from schemas.vacancies import BaseVacancyCreate, BaseVacancyRead
+from schemas.vacancy import BaseVacancyCreate, BaseVacancyRead
 from unitofwork import UnitOfWork
 
 

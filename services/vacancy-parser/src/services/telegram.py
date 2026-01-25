@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from repositories import TelegramVacancyRepository
-from schemas.vacancies import TelegramVacancyCreate, TelegramVacancyRead
+from schemas.vacancy import TelegramVacancyCreate, TelegramVacancyRead
 
 from services import BaseVacancyService
 

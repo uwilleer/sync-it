@@ -7,7 +7,7 @@ from common.shared.clients.head_hunter import head_hunter_client
 from common.shared.schemas.http import HttpsUrl
 from database.models.enums import SourceEnum
 from parsers.base import BaseParser
-from schemas.vacancies import HeadHunterVacancyCreate
+from schemas.vacancy import HeadHunterVacancyCreate
 from unitofwork import UnitOfWork
 from utils import clear_html, generate_fingerprint, generate_vacancy_hash
 

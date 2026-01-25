@@ -9,8 +9,8 @@ __all__ = ["HeadHunterVacancy"]
 class HeadHunterVacancy(Vacancy):
     __tablename__ = "head_hunter_vacancies"
 
-    id: Mapped[int] = mapped_column(ForeignKey("vacancies.id", ondelete="CASCADE"), primary_key=True)
-    vacancy_id: Mapped[int] = mapped_column()
+    id: Mapped[int] = mapped_column(ForeignKey("vacancies.id", ondelete="CASCADE"), primary_key=True, doc="ID вакансии")
+    vacancy_id: Mapped[int] = mapped_column(doc="ID вакансии на HeadHunter")
 
     __mapper_args__ = {  # noqa: RUF012
         "polymorphic_identity": "head_hunter",

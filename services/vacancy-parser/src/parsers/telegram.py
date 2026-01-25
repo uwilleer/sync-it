@@ -5,7 +5,7 @@ from common.logger import get_logger
 from common.shared.schemas.http import HttpsUrl
 from parsers.base import BaseParser
 from parsers.schemas import TelegramChannelUrl
-from schemas.vacancies import TelegramVacancyCreate
+from schemas.vacancy import TelegramVacancyCreate
 from unitofwork import UnitOfWork
 from utils import generate_fingerprint
 

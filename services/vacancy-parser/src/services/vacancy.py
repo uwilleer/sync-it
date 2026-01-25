@@ -1,6 +1,6 @@
 from repositories import VacancyRepository
-from schemas.vacancies import VacancyRead
-from schemas.vacancies.vacancy import VacancyCreate
+from schemas.vacancy import VacancyRead
+from schemas.vacancy.vacancy import VacancyCreate
 
 from services import BaseVacancyService
 

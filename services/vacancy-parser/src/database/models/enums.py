@@ -2,13 +2,6 @@ from enum import StrEnum
 from typing import Self
 
 
-__all__ = [
-    "BaseStrEnum",
-    "SourceEnum",
-]
-
-
-# TODO: DRY
 class BaseStrEnum(StrEnum):
     @classmethod
     def get_safe(cls, label: str) -> Self | None:

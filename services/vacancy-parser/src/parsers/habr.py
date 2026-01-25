@@ -6,7 +6,7 @@ from common.logger import get_logger
 from common.shared.schemas.http import HttpsUrl
 from database.models.enums import SourceEnum
 from parsers.base import BaseParser
-from schemas.vacancies import HabrVacancyCreate
+from schemas.vacancy import HabrVacancyCreate
 from utils import generate_fingerprint, generate_vacancy_hash
 
 

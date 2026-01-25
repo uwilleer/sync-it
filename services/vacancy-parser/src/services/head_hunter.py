@@ -1,5 +1,5 @@
 from repositories import HeadHunterVacancyRepository
-from schemas.vacancies import HeadHunterVacancyCreate, HeadHunterVacancyRead
+from schemas.vacancy import HeadHunterVacancyCreate, HeadHunterVacancyRead
 
 from services import BaseVacancyService
 

@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from repositories.habr import HabrVacancyRepository
-from schemas.vacancies import HabrVacancyCreate, HabrVacancyRead
+from schemas.vacancy import HabrVacancyCreate, HabrVacancyRead
 
 from services import BaseVacancyService
 
