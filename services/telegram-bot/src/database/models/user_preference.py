@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 
 from database.models import Base
+from database.models.enums import PreferencesCategoryCodeEnum
 from sqlalchemy import ForeignKey, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -23,15 +24,15 @@ class UserPreference(Base):
     user_id: Mapped[int] = mapped_column(
         ForeignKey("users.id"), doc="ID пользователя, которому принадлежит предпочтение"
     )
-
-    # ex.: grade, profession, work_format
-    category_code: Mapped[str] = mapped_column(String(16), index=True, doc="Код категории предпочтения")
-
-    item_id: Mapped[int] = mapped_column(doc="ID элемента в соответствующей категории")
-    item_name: Mapped[str] = mapped_column(String(32), doc="Название элемента для отображения")
-
     user: Mapped["User"] = relationship(
         back_populates="preferences", lazy="selectin", doc="Пользователь, которому принадлежит предпочтение"
     )
+
+    category_code: Mapped[PreferencesCategoryCodeEnum] = mapped_column(
+        String(16), index=True, doc="Код категории предпочтения"
+    )
+
+    item_id: Mapped[int] = mapped_column(doc="ID элемента в соответствующей категории")
+    item_name: Mapped[str] = mapped_column(String(32), doc="Название элемента для отображения")
 
     __table_args__ = (UniqueConstraint("user_id", "category_code", "item_id", name="uq_user_category_item"),)
