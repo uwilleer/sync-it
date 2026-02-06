@@ -6,7 +6,6 @@ from pydantic import BaseModel, Field
 __all__ = [
     "HabrVacanciesDetailedResponse",
     "HabrVacanciesListResponse",
-    "HabrVacanciesListResponse",
     "HabrVacanciesRequest",
     "HabrVacancySchema",
 ]

@@ -14,8 +14,7 @@ logger = get_logger(__name__)
 
 session_bytes = base64.b64decode(service_config.telethon_session_base64)
 session_file = f"{service_config.telethon_session_name}.session"
-with pathlib.Path(session_file).open("wb") as f:
-    f.write(session_bytes)
+pathlib.Path(session_file).write_bytes(session_bytes)
 
 
 class TelethonClient:

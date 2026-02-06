@@ -1,12 +1,10 @@
 import asyncio
-from typing import cast
 
 from aiohttp import ClientResponseError
 from common.logger import get_logger
 from common.shared.decorators.concurency import limit_requests
-from g4f.Provider import CohereForAI_C4AI_Command  # type: ignore[import-untyped]
-from g4f.client import AsyncClient  # type: ignore[import-untyped]
-from g4f.typing import Message  # type: ignore[import-untyped]
+from core.config import service_config
+from google import genai
 
 
 logger = get_logger(__name__)
@@ -14,25 +12,23 @@ logger = get_logger(__name__)
 MAX_RETRIES = 3
 RETRY_DELAY = 3
 
-client = AsyncClient()
+client = genai.Client(api_key=service_config.gemini_api_key.get_secret_value())
 
 
 @limit_requests(128)
 async def get_gpt_response(prompt: str) -> str | None:
-    message = Message(role="user", content=prompt)
-
     for attempt in range(1, MAX_RETRIES + 1):
         try:
-            response = await client.chat.completions.create(
-                provider=CohereForAI_C4AI_Command,
-                messages=[message],
+            response = client.models.generate_content(
+                model=service_config.gemini_model,
+                contents=prompt,
             )
-            return cast("str", response.choices[0].message.content)
-
         except ClientResponseError as e:
             logger.exception("Failed to get GPT response on attempt %s", attempt, exc_info=e)
             if attempt == MAX_RETRIES:
                 return None
             await asyncio.sleep(RETRY_DELAY)
+        else:
+            return response.text
 
     return None
