@@ -26,7 +26,7 @@ class HeadHunterVacancyCreate(BaseVacancyCreate):
     description: str = Field(exclude=True)
     salary: str | None = Field(exclude=True)
     experience: str = Field(exclude=True)
-    schedule: str = Field(exclude=True)
+    schedule: str | None = Field(None, exclude=True)
     work_formats: list[str] = Field(exclude=True)
     key_skills: list[str] = Field(exclude=True)
 

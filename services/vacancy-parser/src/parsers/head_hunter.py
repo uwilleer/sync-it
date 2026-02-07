@@ -77,7 +77,7 @@ class HeadHunterParser(BaseParser["HeadHunterVacancyService", "HeadHunterVacancy
                 description=clear_html(vacancy_detail.description),
                 salary=vacancy_detail.salary.humanize() if vacancy_detail.salary else None,
                 experience=vacancy_detail.experience.name,
-                schedule=vacancy_detail.schedule.name,
+                schedule=vacancy_detail.schedule.name if vacancy_detail.schedule else None,
                 work_formats=[wf.name for wf in vacancy_detail.work_format],
                 key_skills=[ks.name for ks in vacancy_detail.key_skills],
                 published_at=vacancy_detail.published_at,
