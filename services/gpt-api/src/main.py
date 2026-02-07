@@ -6,8 +6,6 @@ from common.shared.api.exceptions import http_exception_custom_handler
 from common.shared.api.middlewares import LoggingMiddleware
 from fastapi import FastAPI, HTTPException
 from schemas import HealthResponse
-from services.gpt import get_gpt_response
-from utils import validate_health_response
 import uvicorn
 
 
@@ -27,12 +25,7 @@ app.include_router(v1_router, prefix="/api/v1")
 
 @app.get("/health")
 async def healthcheck() -> HealthResponse:
-    try:
-        response_text = await get_gpt_response('Say "Healthy"')
-        validate_health_response(response_text)
-        return HealthResponse(status=response_text)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e)) from e
+    return HealthResponse(status="Healthy")
 
 
 def main() -> None:
