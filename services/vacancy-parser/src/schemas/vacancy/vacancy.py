@@ -26,6 +26,10 @@ class VacancyRead(BaseVacancyRead):
     id: int = VacancyFields.id
     hash: str = VacancyFields.hash
     data: str = VacancyFields.data
+    source: SourceEnum
+    fingerprint: str
+    link: HttpsUrl
+    published_at: datetime
     processed_at: datetime | None = VacancyFields.processed_at
 
     model_config = ConfigDict(from_attributes=True)
