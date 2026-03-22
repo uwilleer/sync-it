@@ -15,6 +15,8 @@ class ServiceConfig(BaseSettings):
     state_ttl: int
     data_ttl: int
 
+    proxy: str | None = None
+
     model_config = SettingsConfigDict(env_prefix="TELEGRAM_BOT_")
 
 

@@ -1,4 +1,5 @@
 from aiogram import Bot, Dispatcher
+from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.fsm.storage.base import DefaultKeyBuilder
 from aiogram.fsm.storage.redis import RedisStorage
 from common.redis.config import redis_config
@@ -13,5 +14,6 @@ storage = RedisStorage(
     data_ttl=service_config.data_ttl,
 )
 
-bot = Bot(token=service_config.token)
+session = AiohttpSession(proxy=service_config.proxy) if service_config.proxy else None
+bot = Bot(token=service_config.token, session=session)
 dp = Dispatcher(storage=storage)
