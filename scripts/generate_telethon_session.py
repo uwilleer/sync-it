@@ -21,8 +21,7 @@ async def main() -> None:
         await client.start(phone=phone, password=password)
         session_string = client.session.save()
 
-        print("\nСтрока сессии (SCRAPER_API_TELETHON_SESSION_STRING):\n")
-        print(session_string)
+        raise Exception(f"SCRAPER_API_TELETHON_SESSION_STRING={session_string}")  # noqa: TRY002
 
 
 if __name__ == "__main__":
