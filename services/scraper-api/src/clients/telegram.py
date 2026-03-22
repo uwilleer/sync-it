@@ -1,8 +1,10 @@
 from clients.base import BaseParserClient
 from clients.schemas import PingResponse, TelegramDetailedMessageParams
 from common.logger import get_logger
+from common.shared.clients.http import limits as http_limits
 from common.shared.decorators.concurency import limit_requests
-from httpx import URL
+from core.config import service_config
+from httpx import URL, AsyncClient
 from parsers import TelegramParser
 from schemas import TelegramChannelMessageSchema
 
@@ -13,6 +15,11 @@ logger = get_logger(__name__)
 class TelegramClient(BaseParserClient):
     url = URL("https://t.me")
     parser = TelegramParser
+
+    def configure_client(self) -> None:
+        super().configure_client()
+        if service_config.proxy:
+            self.client = AsyncClient(limits=http_limits, proxy=service_config.proxy)
 
     async def ping(self) -> PingResponse:
         url = f"{self.url}/telegram"
