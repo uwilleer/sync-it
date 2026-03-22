@@ -2,7 +2,7 @@ import asyncio
 
 from common.logger import get_logger
 from common.shared.clients import http_client
-from common.shared.clients import limits as http_limits
+from common.shared.clients.http import limits as http_limits
 from common.shared.decorators.concurency import limit_requests
 from core.config import service_config
 import httpx
