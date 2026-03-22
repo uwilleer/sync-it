@@ -1,20 +1,14 @@
-import base64
 from datetime import UTC, datetime
-import pathlib
 
 from clients.telethon.exceptions import TelethonNotAuthorizedError
 from common.logger import get_logger
 from core.config import service_config
 from schemas import TelegramChannelMessageSchema
 from telethon import TelegramClient  # type: ignore[import-untyped]
+from telethon.sessions import StringSession  # type: ignore[import-untyped]
 
 
 logger = get_logger(__name__)
-
-
-session_bytes = base64.b64decode(service_config.telethon_session_base64)
-session_file = f"{service_config.telethon_session_name}.session"
-pathlib.Path(session_file).write_bytes(session_bytes)
 
 
 class TelethonClient:
@@ -68,7 +62,7 @@ class TelethonClient:
 
 telethon_client = TelethonClient(
     TelegramClient(
-        service_config.telethon_session_name,
+        StringSession(service_config.telethon_session_string),
         service_config.telethon_api_id,
         service_config.telethon_api_hash,
     )
