@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Annotated
 
 from api.v1.telegram.schemas import TelegramChannelMessagesResponse, TelegramVacanciesQuery
 from clients import telegram_client, telethon_client
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, HTTPException, Query
 
 
 if TYPE_CHECKING:
@@ -16,6 +16,8 @@ router = APIRouter()
 async def channel_messages(query: Annotated[TelegramVacanciesQuery, Query()]) -> TelegramChannelMessagesResponse:
     # TELETHON
     if query.channel_topic_id:
+        if not telethon_client.is_available:
+            raise HTTPException(status_code=503, detail="Telethon client is unavailable")
         messages = await telethon_client.get_detailed_messages(
             query.date_gte, query.channel_username, query.channel_topic_id
         )

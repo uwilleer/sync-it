@@ -18,7 +18,10 @@ logger = get_logger(__name__)
 
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
-    await telethon_client.start()
+    try:
+        await telethon_client.start()
+    except Exception:
+        logger.exception("Failed to start Telethon client, continuing without it")
     yield
     await telethon_client.stop()
 

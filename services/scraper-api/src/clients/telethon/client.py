@@ -17,6 +17,10 @@ class TelethonClient:
         self._is_started = False
 
     @property
+    def is_available(self) -> bool:
+        return self._is_started
+
+    @property
     def client(self) -> TelegramClient:
         if not self._is_started:
             raise RuntimeError("TelethonClient is not started")
