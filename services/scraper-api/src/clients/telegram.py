@@ -13,7 +13,7 @@ logger = get_logger(__name__)
 
 
 class TelegramClient(BaseParserClient):
-    url = URL("https://t.me")
+    url = URL("https://telegram.dog") # Зеркало
     parser = TelegramParser
 
     def configure_client(self) -> None:
