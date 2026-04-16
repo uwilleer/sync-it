@@ -7,9 +7,13 @@ on:
 
 jobs:
   deploy:
-    name: Deploy to Production
+    name: Deploy to production
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    environment: production
+    timeout-minutes: 10
+    concurrency:
+      group: deploy-prod
+      cancel-in-progress: false
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -20,20 +24,19 @@ jobs:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "infra/docker, Makefile"
+          source: "deploy.sh,infra/docker,Makefile"
           target: "/srv/${{ vars.ENV_PROJECT_NAME }}"
 
-      - name: Start Docker services
+      - name: Run deploy
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          command_timeout: 8m
           script: |
-            cd /srv/${{ vars.ENV_PROJECT_NAME }}
-            make pull
-            make migrate
-            make up
+            chmod +x /srv/${{ vars.ENV_PROJECT_NAME }}/deploy.sh
+            /srv/${{ vars.ENV_PROJECT_NAME }}/deploy.sh
 
       - name: Notify Telegram on Failure
         if: failure()
