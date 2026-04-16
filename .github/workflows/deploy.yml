@@ -7,13 +7,9 @@ on:
 
 jobs:
   deploy:
-    name: Deploy to production
+    name: Deploy to Production
     runs-on: ubuntu-latest
-    environment: production
-    timeout-minutes: 10
-    concurrency:
-      group: deploy-prod
-      cancel-in-progress: false
+    timeout-minutes: 3
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -21,19 +17,29 @@ jobs:
       - name: Copy files to server
         uses: appleboy/scp-action@v1
         with:
-          host: ${{ secrets.SSH_HOST }}
+          host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "deploy.sh,infra/docker,Makefile"
-          target: "/srv/${{ vars.PROJECT_NAME }}"
+          source: "infra/docker, Makefile"
+          target: "/srv/${{ vars.ENV_PROJECT_NAME }}"
 
-      - name: Run deploy
+      - name: Start Docker services
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ secrets.SSH_HOST }}
+          host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          command_timeout: 8m
           script: |
-            chmod +x /srv/${{ vars.PROJECT_NAME }}/deploy.sh
-            /srv/${{ vars.PROJECT_NAME }}/deploy.sh
+            cd /srv/${{ vars.ENV_PROJECT_NAME }}
+            make pull
+            make migrate
+            make up
+
+      - name: Notify Telegram on Failure
+        if: failure()
+        uses: ./.github/actions/telegram-notify
+        with:
+          job_name: Deploy
+          title: ❌ Deploy Failure ❌
+          to: ${{ secrets.TELEGRAM_NOTIFIER_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_NOTIFIER_BOT_TOKEN }}
