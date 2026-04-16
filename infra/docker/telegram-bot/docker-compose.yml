@@ -14,6 +14,8 @@ services:
   telegram-bot:
     <<: *service-common
     container_name: telegram-bot
+    ports:
+      - "127.0.0.1:${TELEGRAM_BOT_PORT}:${ENV_SERVICE_INTERNAL_PORT}"
     healthcheck:
       test: [ "CMD", "wget", "-q", "--spider", "http://telegram-bot:${ENV_SERVICE_INTERNAL_PORT:-8000}/health" ]
       <<: *healthcheck-common
