@@ -1,4 +1,4 @@
-name: ${ENV_PROJECT_NAME}
+name: ${ENV_PROJECT_NAME:-syncit}
 
 services:
   postgres:

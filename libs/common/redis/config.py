@@ -5,13 +5,13 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class RedisConfig(BaseSettings):
-    host: str
-    port: int = Field(ge=1, le=65535)
+    host: str = "redis"
+    port: int = Field(default=6379, ge=1, le=65535)
 
-    cache_db: int
-    celery_broker_db: int
-    celery_result_db: int
-    bot_db: int
+    cache_db: int = 0
+    celery_broker_db: int = 1
+    celery_result_db: int = 2
+    bot_db: int = 3
 
     model_config = SettingsConfigDict(env_prefix="REDIS_")
 

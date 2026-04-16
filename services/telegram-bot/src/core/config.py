@@ -7,13 +7,13 @@ class ServiceConfig(BaseSettings):
 
     token: str
     support_username: str
-    rate_limit: float  # for throttling control in seconds
-    use_webhook: bool
-    webhook_url: HttpsUrl
-    webhook_api_key: str
+    rate_limit: float = 0.5  # throttling control in seconds
+    use_webhook: bool = False
+    webhook_url: HttpsUrl | None = None
+    webhook_api_key: str | None = None
 
-    state_ttl: int
-    data_ttl: int
+    state_ttl: int = 600  # 10 minutes
+    data_ttl: int = 86400  # 1 day
 
     proxy: str | None = None
 

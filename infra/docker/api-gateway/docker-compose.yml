@@ -1,14 +1,14 @@
 services:
   api-gateway:
     container_name: api-gateway
-    image: ${ENV_DOCKER_USERNAME}/${ENV_PROJECT_NAME}-api-gateway:latest
-    env_file: ${SERVICE_PROJECT_ROOT}/infra/.env
+    image: ${ENV_DOCKER_USERNAME:-diplomatgmg}/${ENV_PROJECT_NAME:-syncit}-api-gateway:latest
+    env_file: ${SERVICE_PROJECT_ROOT:-../../..}/infra/.env
     ports:
-      - "${API_GATEWAY_PORT}:${API_GATEWAY_PORT}"
+      - "${API_GATEWAY_PORT:-8000}:${API_GATEWAY_PORT:-8000}"
     networks:
       - app-network
     healthcheck:
-      test: [ "CMD", "wget", "-q", "--spider", "http://api-gateway:${API_GATEWAY_PORT}/health" ]
+      test: [ "CMD", "wget", "-q", "--spider", "http://api-gateway:${API_GATEWAY_PORT:-8000}/health" ]
       interval: 10s
       timeout: 1s
       retries: 3

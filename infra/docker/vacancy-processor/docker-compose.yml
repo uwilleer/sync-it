@@ -1,6 +1,6 @@
 x-service-common: &service-common
-  image: ${ENV_DOCKER_USERNAME}/${ENV_PROJECT_NAME}-vacancy-processor:latest
-  env_file: ${SERVICE_PROJECT_ROOT}/infra/.env
+  image: ${ENV_DOCKER_USERNAME:-diplomatgmg}/${ENV_PROJECT_NAME:-syncit}-vacancy-processor:latest
+  env_file: ${SERVICE_PROJECT_ROOT:-../../..}/infra/.env
   networks:
     - app-network
 
@@ -15,7 +15,7 @@ services:
     <<: *service-common
     container_name: vacancy-processor
     healthcheck:
-      test: [ "CMD", "wget", "-q", "--spider", "http://vacancy-processor:${ENV_SERVICE_INTERNAL_PORT}/health" ]
+      test: [ "CMD", "wget", "-q", "--spider", "http://vacancy-processor:${ENV_SERVICE_INTERNAL_PORT:-8000}/health" ]
       <<: *healthcheck-common
 
 
@@ -23,7 +23,7 @@ services:
   vacancy-processor-worker:
     <<: *service-common
     container_name: vacancy-processor-worker
-    command: [ "celery", "-A", "celery_app.app", "worker", "-n", "vacancy_processor", "--pool", "solo", "-l", "${LOG_LEVEL}" ]
+    command: [ "celery", "-A", "celery_app.app", "worker", "-n", "vacancy_processor", "--pool", "solo", "-l", "${LOG_LEVEL:-INFO}" ]
     healthcheck:
       test: [ "CMD-SHELL", "celery -A celery_app.app inspect ping -d celery@vacancy_processor" ]
       <<: *healthcheck-common
@@ -31,4 +31,4 @@ services:
   vacancy-processor-beat:
     <<: *service-common
     container_name: vacancy-processor-beat
-    command: [ "celery", "-A", "celery_app.app", "beat", "-l", "${LOG_LEVEL}" ]
+    command: [ "celery", "-A", "celery_app.app", "beat", "-l", "${LOG_LEVEL:-INFO}" ]

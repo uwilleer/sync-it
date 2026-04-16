@@ -4,10 +4,10 @@ from sqlalchemy import URL
 
 
 class DatabaseConfig(BaseSettings):
-    host: str
-    port: int = Field(ge=1, le=65535)
-    db: str
-    user: str
+    host: str = "pgbouncer"
+    port: int = Field(default=6432, ge=1, le=65535)
+    db: str = "syncit"
+    user: str = "syncit"
     password: SecretStr
 
     model_config = SettingsConfigDict(env_prefix="DATABASE_")

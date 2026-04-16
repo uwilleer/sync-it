@@ -1,14 +1,14 @@
-name: ${ENV_PROJECT_NAME}
+name: ${ENV_PROJECT_NAME:-syncit}
 
 x-service-common: &service-common
   image: "" # Для dev разработки не нужен image
   volumes:
-    - ${MAIN_COMPOSE_PROJECT_ROOT}/services:/app/services
-    - ${MAIN_COMPOSE_PROJECT_ROOT}/libs:/app/libs
+    - ${MAIN_COMPOSE_PROJECT_ROOT:-../..}/services:/app/services
+    - ${MAIN_COMPOSE_PROJECT_ROOT:-../..}/libs:/app/libs
 
 x-build-common: &build-common
   context: ../..
-  target: ${ENV_MODE}
+  target: ${ENV_MODE:-production}
 
 services:
   api-gateway:
@@ -22,7 +22,7 @@ services:
       dockerfile: infra/docker/gpt-api/Dockerfile
       <<: *build-common
     ports:
-      - "${GPT_API_PORT}:${ENV_SERVICE_INTERNAL_PORT}"
+      - "${GPT_API_PORT:-8001}:${ENV_SERVICE_INTERNAL_PORT:-8000}"
     <<: *service-common
 
   scraper-api:
@@ -30,7 +30,7 @@ services:
       dockerfile: infra/docker/scraper-api/Dockerfile
       <<: *build-common
     ports:
-      - "${SCRAPER_API_PORT}:${ENV_SERVICE_INTERNAL_PORT}"
+      - "${SCRAPER_API_PORT:-8002}:${ENV_SERVICE_INTERNAL_PORT:-8000}"
     <<: *service-common
 
   vacancy-parser:
@@ -38,7 +38,7 @@ services:
       dockerfile: infra/docker/vacancy-parser/Dockerfile
       <<: *build-common
     ports:
-      - "${VACANCY_PARSER_PORT}:${ENV_SERVICE_INTERNAL_PORT}"
+      - "${VACANCY_PARSER_PORT:-8003}:${ENV_SERVICE_INTERNAL_PORT:-8000}"
     <<: *service-common
 
   vacancy-parser-worker:
@@ -64,7 +64,7 @@ services:
       dockerfile: infra/docker/vacancy-processor/Dockerfile
       <<: *build-common
     ports:
-      - "${VACANCY_PROCESSOR_PORT}:${ENV_SERVICE_INTERNAL_PORT}"
+      - "${VACANCY_PROCESSOR_PORT:-8004}:${ENV_SERVICE_INTERNAL_PORT:-8000}"
     <<: *service-common
 
   vacancy-processor-worker:
@@ -90,7 +90,7 @@ services:
       dockerfile: infra/docker/vacancy-matcher/Dockerfile
       <<: *build-common
     ports:
-      - "${VACANCY_MATCHER_PORT}:${ENV_SERVICE_INTERNAL_PORT}"
+      - "${VACANCY_MATCHER_PORT:-8006}:${ENV_SERVICE_INTERNAL_PORT:-8000}"
     <<: *service-common
 
   telegram-bot:
@@ -98,7 +98,7 @@ services:
       dockerfile: infra/docker/telegram-bot/Dockerfile
       <<: *build-common
     ports:
-      - "${TELEGRAM_BOT_PORT}:${ENV_SERVICE_INTERNAL_PORT}"
+      - "${TELEGRAM_BOT_PORT:-8005}:${ENV_SERVICE_INTERNAL_PORT:-8000}"
     healthcheck:
       test: [ "CMD", "true" ] # supress because webhook may be disabled
     <<: *service-common
