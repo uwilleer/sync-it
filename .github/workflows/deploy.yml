@@ -21,22 +21,22 @@ jobs:
       - name: Copy files to server
         uses: appleboy/scp-action@v1
         with:
-          host: ${{ secrets.SERVER_IP }}
+          host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "deploy.sh,infra/docker,Makefile"
-          target: "/srv/${{ vars.ENV_PROJECT_NAME }}"
+          target: "/srv/${{ vars.PROJECT_NAME }}"
 
       - name: Run deploy
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ secrets.SERVER_IP }}
+          host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           command_timeout: 8m
           script: |
-            chmod +x /srv/${{ vars.ENV_PROJECT_NAME }}/deploy.sh
-            /srv/${{ vars.ENV_PROJECT_NAME }}/deploy.sh
+            chmod +x /srv/${{ vars.PROJECT_NAME }}/deploy.sh
+            /srv/${{ vars.PROJECT_NAME }}/deploy.sh
 
       - name: Notify Telegram on Failure
         if: failure()
@@ -44,5 +44,5 @@ jobs:
         with:
           job_name: Deploy
           title: ❌ Deploy Failure ❌
-          to: ${{ secrets.TELEGRAM_NOTIFIER_CHAT_ID }}
-          token: ${{ secrets.TELEGRAM_NOTIFIER_BOT_TOKEN }}
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
