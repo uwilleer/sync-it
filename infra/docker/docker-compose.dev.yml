@@ -11,6 +11,18 @@ x-build-common: &build-common
   target: ${ENV_MODE:-production}
 
 services:
+  postgres:
+    ports:
+      - "${POSTGRES_PORT:-5432}:${POSTGRES_PORT:-5432}"
+
+  pgbouncer:
+    ports:
+      - "${PGBOUNCER_PORT:-6432}:${PGBOUNCER_PORT:-6432}"
+
+  redis:
+    ports:
+      - "${REDIS_PORT:-6379}:${REDIS_PORT:-6379}"
+
   api-gateway:
     build:
       dockerfile: infra/docker/api-gateway/Dockerfile

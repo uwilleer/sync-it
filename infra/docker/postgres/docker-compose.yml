@@ -4,8 +4,6 @@ services:
     container_name: postgres
     env_file: ${SERVICE_PROJECT_ROOT:-../../..}/infra/.env
     command: -p ${POSTGRES_PORT:-5432}
-    ports:
-      - "${POSTGRES_PORT:-5432}:${POSTGRES_PORT:-5432}"
     volumes:
       - postgres-data:/var/lib/postgresql/data
     networks:

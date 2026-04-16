@@ -164,6 +164,14 @@ services:
       vacancy-processor:
         condition: service_healthy
 
+  caddy:
+    extends:
+      service: caddy
+      file: caddy/docker-compose.yml
+    depends_on:
+      telegram-bot:
+        condition: service_healthy
+
 networks:
   app-network:
     driver: bridge
@@ -171,3 +179,5 @@ networks:
 volumes:
   postgres-data:
   redis-data:
+  caddy-data:
+  caddy-config:
