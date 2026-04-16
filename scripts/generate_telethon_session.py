@@ -2,10 +2,10 @@ import os
 import shlex
 
 import asyncssh
+import uvloop
 from dotenv import load_dotenv
 from telethon import TelegramClient
 from telethon.sessions import StringSession
-import uvloop
 
 
 load_dotenv("../infra/.env")
