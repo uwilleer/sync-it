@@ -14,6 +14,8 @@ services:
       - MAX_CLIENT_CONN=${PGBOUNCER_MAX_CLIENT_CONN:-1000}
       - POOL_MODE=transaction
       - AUTH_TYPE=scram-sha-256
+    ports:
+      - "${PGBOUNCER_PORT:-6432}:${PGBOUNCER_PORT:-6432}"
     networks:
       - app-network
     healthcheck:
