@@ -3,7 +3,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class LogConfig(BaseSettings):
-    level: LogLevelEnum = LogLevelEnum.INFO
+    level: LogLevelEnum
 
     model_config = SettingsConfigDict(env_prefix="LOG_")
 
