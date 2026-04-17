@@ -1,8 +1,6 @@
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
-import socket
 from typing import Annotated
-from urllib.parse import urlparse
 
 from aiogram.types import Update
 from common.environment.config import env_config
@@ -56,15 +54,9 @@ async def healthcheck() -> HealthResponse:
 
 
 async def start_webhook() -> None:
-    webhook_url = str(service_config.webhook_url)
-    hostname = urlparse(webhook_url).hostname
-    assert hostname, f"Cannot parse hostname from {webhook_url}"
-    ip_address = socket.gethostbyname(hostname)
-
     await bot.delete_webhook(drop_pending_updates=False)
     await bot.set_webhook(
-        url=webhook_url,
-        ip_address=ip_address,
+        url=str(service_config.webhook_url),
         drop_pending_updates=True,
         secret_token=service_config.webhook_api_key,
     )
