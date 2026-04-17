@@ -54,6 +54,7 @@ async def healthcheck() -> HealthResponse:
 
 
 async def start_webhook() -> None:
+    await bot.delete_webhook(drop_pending_updates=False)
     await bot.set_webhook(
         url=str(service_config.webhook_url),
         drop_pending_updates=True,
